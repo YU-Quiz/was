@@ -19,7 +19,7 @@ public class Report {
     private String reason;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "error_type")
+    @Column(name = "report_type")
     private ReportType reportType;
 
     @ManyToOne(fetch = FetchType.LAZY)
