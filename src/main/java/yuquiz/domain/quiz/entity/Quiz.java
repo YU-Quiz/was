@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
-import yuquiz.domain.error.entity.Error;
+import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.converter.StringListConverter;
 import yuquiz.domain.quizLike.entity.QuizLike;
@@ -65,7 +65,7 @@ public class Quiz extends BaseTimeEntity {
     private List<QuizLike> quizLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz")
-    private List<Error> errors = new ArrayList<>();
+    private List<Report> reports = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")

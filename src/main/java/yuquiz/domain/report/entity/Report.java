@@ -1,4 +1,4 @@
-package yuquiz.domain.error.entity;
+package yuquiz.domain.report.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,7 +10,7 @@ import yuquiz.domain.quiz.entity.Quiz;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Error {
+public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,15 +20,15 @@ public class Error {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "error_type")
-    private ErrorType errorType;
+    private ReportType reportType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
     @Builder
-    public Error(String reason, ErrorType errorType) {
+    public Report(String reason, ReportType reportType) {
         this.reason = reason;
-        this.errorType = errorType;
+        this.reportType = reportType;
     }
 }
