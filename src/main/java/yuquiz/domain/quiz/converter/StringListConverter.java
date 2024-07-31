@@ -1,4 +1,4 @@
-package yuquiz.domain.post.converter;
+package yuquiz.domain.quiz.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
