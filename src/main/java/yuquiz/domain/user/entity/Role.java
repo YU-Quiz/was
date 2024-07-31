@@ -1,2 +1,6 @@
-package yuquiz.domain.User.entity;public enum Role {
+package yuquiz.domain.user.entity;
+
+public enum Role {
+    USER, ADMIN
 }
+
