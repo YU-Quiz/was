@@ -27,8 +27,8 @@ permissions:
   contents: read
 
 jobs:
-  develop-test:
-    runs-on: ubuntu-22.04
+  testing:
+    runs-on: ubuntu-20.04
 
     steps:
       # 1. Compare branch 코드 내려 받기
@@ -44,20 +44,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. 테스트를 위한 DB 설정
-      - name: Setup MySQL
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql database: ${{ secrets.MYSQL_TEST_DATABASE }}
-          mysql user: ${{ secrets.MYSQL_TEST_USER }}
-          mysql password: ${{ secrets.MYSQL_TEST_PASSWORD }}
-
-      # 4. Gradlew 실행 권한 설정
-      - name: Run chmod to make gradlew executable
-        run: chmod +x ./gradlew
-
-      # 5. Gradle Test 실행
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
-        with:
-          arguments: build
+      # 3. Gradle Test 실행
+      - name: Test with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --info --parallel test
