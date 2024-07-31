@@ -1,2 +1,43 @@
-package yuquiz.domain.subject.entity;public class Subject {
+package yuquiz.domain.subject.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import yuquiz.domain.major.entity.Major;
+import yuquiz.domain.quiz.entity.Quiz;
+import yuquiz.domain.subSubjects.entity.SubSubjects;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+public class Subject {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    @Column(name = "subject_name")
+    private String subjectName;
+
+    @OneToMany(mappedBy = "subject")
+    private List<SubSubjects> subSubjects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "subject")
+    private List<Quiz> quizzes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "major_id")
+    private Major major;
+
+    @Builder
+    public Subject(String subjectName) {
+        this.subjectName = subjectName;
+    }
 }
