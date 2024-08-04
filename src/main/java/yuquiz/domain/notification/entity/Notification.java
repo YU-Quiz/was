@@ -21,6 +21,9 @@ public class Notification extends BaseTimeEntity {
     private String title;
 
     @NotNull
+    private String message;
+
+    @NotNull
     @Column(name = "redirect_url")
     private String redirectUrl;
 
