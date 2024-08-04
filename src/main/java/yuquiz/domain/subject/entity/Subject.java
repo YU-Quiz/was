@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.domain.major.entity.Major;
 import yuquiz.domain.quiz.entity.Quiz;
-import yuquiz.domain.subSubjects.entity.SubSubjects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,6 @@ public class Subject {
     @NotNull
     @Column(name = "subject_name")
     private String subjectName;
-
-    @OneToMany(mappedBy = "subject")
-    private List<SubSubjects> subSubjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "subject")
     private List<Quiz> quizzes = new ArrayList<>();

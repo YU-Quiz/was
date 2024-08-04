@@ -13,7 +13,6 @@ import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quizLike.entity.QuizLike;
-import yuquiz.domain.subSubjects.entity.SubSubjects;
 import yuquiz.domain.triedQuiz.entity.TriedQuiz;
 
 import java.util.ArrayList;
@@ -63,9 +62,6 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Notification> notifications = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<SubSubjects> subSubjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "writer")
     private List<Quiz> quizzes = new ArrayList<>();
