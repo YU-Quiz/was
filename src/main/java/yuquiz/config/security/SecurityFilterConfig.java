@@ -1,4 +1,4 @@
-package yuquiz.config;
+package yuquiz.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
