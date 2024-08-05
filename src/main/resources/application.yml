@@ -1,5 +1,4 @@
 spring:
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:yu-quiz}
@@ -16,3 +15,20 @@ spring:
       hibernate:
         default_batch_fetch_size: 1000
         dialect: org.hibernate.dialect.MySQLDialect
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASS:}
+
+jwt:
+  secret: ${JWT_KEY:exampleSecretKeyForYUQuizSystemAccessSecretKeyTestForPadding}
+  access-expiration: ${JWT_ACCESS_EXPIRATION:1800000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:86400000}
+  issuer: ${JWT_ISSUER:your-news}
+
+token:
+  refresh:
+    in-cookie: ${COOKIE_REFRESH_EXPIRATION:648000}
+    in-redis: ${REDIS_REFRESH_EXPIRATION:648000}
