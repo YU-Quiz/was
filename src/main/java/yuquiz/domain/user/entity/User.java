@@ -77,7 +77,7 @@ public class User extends BaseTimeEntity {
 
     @Builder
     public User(String username, String password, String nickname,
-                String email, String majorName, boolean agreeEmail) {
+                String email, String majorName, boolean agreeEmail, Role role) {
 
         this.username = username;
         this.password = password;
@@ -85,5 +85,6 @@ public class User extends BaseTimeEntity {
         this.email = email;
         this.majorName = majorName;
         this.agreeEmail = agreeEmail;
+        this.role = role;
     }
 }
