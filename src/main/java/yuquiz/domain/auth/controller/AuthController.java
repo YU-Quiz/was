@@ -37,7 +37,7 @@ public class AuthController {
 
     /* AccessToken 재발급 */
     @GetMapping("/token-reissue")
-    public ResponseEntity<?> reIssueToken(@CookieValue(REFRESH_COOKIE_VALUE) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<?> reIssueToken(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken, HttpServletResponse response) {
 
         if (refreshToken == null) {     // 쿠키에 Refresh Token이 없다면
             throw new CustomException(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND);
@@ -50,7 +50,7 @@ public class AuthController {
 
     /* 로그아웃 */
     @GetMapping("/sign-out")
-    public ResponseEntity<?> signOut(@CookieValue(REFRESH_COOKIE_VALUE) String refreshToken,
+    public ResponseEntity<?> signOut(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
                                      HttpServletResponse response) {
 
         if (refreshToken == null) {
