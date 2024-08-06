@@ -7,7 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import yuquiz.common.exception.dto.ErrorRes;
+import yuquiz.common.exception.dto.ExceptionsRes;
 import yuquiz.common.exception.exceptionCode.ExceptionCode;
 import yuquiz.common.exception.exceptionCode.GlobalExceptionCode;
 
@@ -23,9 +23,9 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> customExceptionHandler(CustomException ex) {
 
         ExceptionCode exceptionCode = ex.getExceptionCode();
-        ErrorRes errorRes = ErrorRes.fromEntity(exceptionCode);
+        ExceptionsRes exceptionsRes = ExceptionsRes.of(exceptionCode.getStatus(), exceptionCode.getMessage());
         log.error("Error occurred : {}, Stack trace: {}", ex.getMessage(), getCustomStackTrace(ex));
-        return ResponseEntity.status(errorRes.getStatus()).body(errorRes);
+        return ResponseEntity.status(exceptionsRes.status()).body(exceptionsRes);
     }
 
     /* 유효성 검사 예외 처리 */
@@ -45,9 +45,9 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> customServerException(Exception ex) {
 
         ExceptionCode exceptionCode = GlobalExceptionCode.INTERNAL_SERVER_ERROR;
-        ErrorRes errorRes = ErrorRes.fromEntity(exceptionCode);
+        ExceptionsRes exceptionsRes = ExceptionsRes.of(exceptionCode.getStatus(), exceptionCode.getMessage());
         log.error("Error occurred : {}, Stack trace: {}", ex.getMessage(), getCustomStackTrace(ex));
-        return ResponseEntity.status(errorRes.getStatus()).body(errorRes);
+        return ResponseEntity.status(exceptionsRes.status()).body(exceptionsRes);
     }
 
     /* 오류 코드 5줄 불러오기 */
