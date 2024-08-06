@@ -68,11 +68,9 @@ public class AuthControllerTest {
     @DisplayName("로그인 테스트")
     void signInTest() throws Exception {
         // given
-        SignInReq signInReq = new SignInReq();
-        signInReq.setUsername("test");
-        signInReq.setPassword("password1234");
+        SignInReq signInReq = new SignInReq("test", "password1234");
 
-        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, tokenDto.getRefreshToken())
+        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())
                 .path("/")
                 .httpOnly(true)
                 .maxAge(60)
@@ -81,7 +79,7 @@ public class AuthControllerTest {
                 .build();
 
         given(authService.signIn(any(SignInReq.class))).willReturn(tokenDto);
-        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.getRefreshToken())).willReturn(responseCookie);
+        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())).willReturn(responseCookie);
 
         // then
         ResultActions resultActions = mockMvc.perform(
@@ -94,8 +92,8 @@ public class AuthControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value(tokenDto.getAccessToken()))
-                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, tokenDto.getRefreshToken()));
+                .andExpect(jsonPath("$.accessToken").value(tokenDto.accessToken()))
+                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()));
     }
 
     @Test
@@ -106,7 +104,7 @@ public class AuthControllerTest {
         String reIssueAccessToken = "reIssueAccessToken";
         TokenDto newTokenDto = TokenDto.of(reIssueAccessToken, reIssueRefreshToken);
 
-        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, newTokenDto.getRefreshToken())
+        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, newTokenDto.refreshToken())
                 .path("/")
                 .httpOnly(true)
                 .maxAge(60)
@@ -114,21 +112,21 @@ public class AuthControllerTest {
                 .sameSite("None")
                 .build();
 
-        given(authService.reissueAccessToken(tokenDto.getRefreshToken())).willReturn(newTokenDto);
-        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, newTokenDto.getRefreshToken())).willReturn(responseCookie);
+        given(authService.reissueAccessToken(tokenDto.refreshToken())).willReturn(newTokenDto);
+        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, newTokenDto.refreshToken())).willReturn(responseCookie);
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/auth/token-reissue")
-                        .cookie(new Cookie(REFRESH_COOKIE_VALUE, tokenDto.getRefreshToken()))
+                        .cookie(new Cookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()))
         );
 
         // then
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value(newTokenDto.getAccessToken()))
-                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, newTokenDto.getRefreshToken()));
+                .andExpect(jsonPath("$.accessToken").value(newTokenDto.accessToken()))
+                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, newTokenDto.refreshToken()));
     }
 
     @Test
@@ -152,7 +150,7 @@ public class AuthControllerTest {
     @DisplayName("로그아웃 테스트")
     void signOutTest() throws Exception {
         // given
-        doNothing().when(authService).signOut(eq(tokenDto.getRefreshToken()), any(HttpServletResponse.class));
+        doNothing().when(authService).signOut(eq(tokenDto.refreshToken()), any(HttpServletResponse.class));
 
         doAnswer(invocation -> {
             HttpServletResponse resp = invocation.getArgument(1);
@@ -170,7 +168,7 @@ public class AuthControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/auth/sign-out")
-                        .cookie(new Cookie(REFRESH_COOKIE_VALUE, tokenDto.getRefreshToken()))
+                        .cookie(new Cookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()))
         );
 
         // then

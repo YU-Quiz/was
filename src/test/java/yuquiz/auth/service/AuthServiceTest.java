@@ -60,13 +60,11 @@ public class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        signInReq = new SignInReq();
-        signInReq.setUsername("test");
-        signInReq.setPassword("password1234");
+        signInReq = new SignInReq("test", "password1234");
 
         this.user = User.builder()
                 .username("test")
-                .password(passwordEncoder.encode(signInReq.getPassword()))
+                .password(passwordEncoder.encode(signInReq.password()))
                 .role(Role.USER)
                 .build();
         Long userId = 1L;
@@ -92,8 +90,8 @@ public class AuthServiceTest {
         String accessToken = "accessToken";
         String refreshToken = "refreshToken";
 
-        when(userRepository.findByUsername(signInReq.getUsername())).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(signInReq.getPassword(), user.getPassword())).thenReturn(true);
+        when(userRepository.findByUsername(signInReq.username())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(signInReq.password(), user.getPassword())).thenReturn(true);
         when(jwtProvider.generateAccessToken(String.valueOf(user.getRole()), user.getId(), user.getUsername())).thenReturn(accessToken);
         when(jwtProvider.generateRefreshToken(String.valueOf(user.getRole()), user.getId(), user.getUsername())).thenReturn(refreshToken);
 
@@ -102,11 +100,11 @@ public class AuthServiceTest {
 
         // Then
         assertNotNull(tokenDto);
-        assertEquals(TOKEN_PREFIX + accessToken, tokenDto.getAccessToken());
-        assertEquals(refreshToken, tokenDto.getRefreshToken());
+        assertEquals(TOKEN_PREFIX + accessToken, tokenDto.accessToken());
+        assertEquals(refreshToken, tokenDto.refreshToken());
 
-        verify(userRepository, times(1)).findByUsername(signInReq.getUsername());
-        verify(passwordEncoder, times(1)).matches(signInReq.getPassword(), user.getPassword());
+        verify(userRepository, times(1)).findByUsername(signInReq.username());
+        verify(passwordEncoder, times(1)).matches(signInReq.password(), user.getPassword());
         verify(jwtProvider, times(1)).generateAccessToken(String.valueOf(user.getRole()), user.getId(), user.getUsername());
         verify(jwtProvider, times(1)).generateRefreshToken(String.valueOf(user.getRole()), user.getId(), user.getUsername());
         verify(refreshTokenService, times(1)).saveRefreshToken(user.getUsername(), refreshToken);
@@ -116,7 +114,7 @@ public class AuthServiceTest {
     @DisplayName("로그인 테스트 - 아이디 불일치")
     void signInFailedByMismatchUsernameTest() {
         // given
-        when(userRepository.findByUsername(signInReq.getUsername()))
+        when(userRepository.findByUsername(signInReq.username()))
                 .thenThrow(new CustomException(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD));
 
         // when
@@ -126,15 +124,15 @@ public class AuthServiceTest {
 
         // then
         assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD, exception.getExceptionCode());
-        verify(userRepository, times(1)).findByUsername(signInReq.getUsername());
+        verify(userRepository, times(1)).findByUsername(signInReq.username());
     }
 
     @Test
     @DisplayName("로그인 테스트 - 비밀번호 불일치")
     void signInFailedByMismatchPasswordTest() {
         // given
-        when(userRepository.findByUsername(signInReq.getUsername())).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(signInReq.getPassword(), user.getPassword())).thenReturn(false);
+        when(userRepository.findByUsername(signInReq.username())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(signInReq.password(), user.getPassword())).thenReturn(false);
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> {
@@ -143,8 +141,8 @@ public class AuthServiceTest {
 
         // then
         assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD, exception.getExceptionCode());
-        verify(userRepository, times(1)).findByUsername(signInReq.getUsername());
-        verify(passwordEncoder, times(1)).matches(signInReq.getPassword(), user.getPassword());
+        verify(userRepository, times(1)).findByUsername(signInReq.username());
+        verify(passwordEncoder, times(1)).matches(signInReq.password(), user.getPassword());
     }
 
     @Test
@@ -164,8 +162,8 @@ public class AuthServiceTest {
 
         // then
         assertNotNull(tokenDto);
-        assertEquals(TOKEN_PREFIX + reIssueAccessToken, tokenDto.getAccessToken());
-        assertEquals(reIssueRefreshToken, tokenDto.getRefreshToken());
+        assertEquals(TOKEN_PREFIX + reIssueAccessToken, tokenDto.accessToken());
+        assertEquals(reIssueRefreshToken, tokenDto.refreshToken());
 
         verify(refreshTokenService, times(1)).findRefreshToken(refreshToken);
         verify(refreshTokenService, times(1)).accessTokenReIssue(refreshToken);

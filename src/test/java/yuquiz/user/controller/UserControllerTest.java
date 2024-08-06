@@ -46,14 +46,8 @@ public class UserControllerTest {
     @DisplayName("회원가입 테스트")
     void signUpTest() throws Exception {
         // given
-        SignUpReq signUpReq = SignUpReq.builder()
-                .username("test")
-                .password("password123")
-                .nickname("테스터")
-                .email("test@naver.com")
-                .majorName("컴퓨터공학과")
-                .agreeEmail(true)
-                .build();
+        SignUpReq signUpReq = new SignUpReq("test", "password1234",
+                "테스터", "test@naver.com", "컴퓨터공학과", true);
 
         doNothing().when(userService).createUser(any(SignUpReq.class));
 
@@ -75,7 +69,7 @@ public class UserControllerTest {
     @DisplayName("회원가입 테스트 - 유효성 검사 실패")
     void signUpInvalidFailedTest() throws Exception {
         // given
-        SignUpReq signUpReq = SignUpReq.builder().build();
+        SignUpReq signUpReq = new SignUpReq(null, null, null, null, null, true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -99,14 +93,8 @@ public class UserControllerTest {
     @DisplayName("회원가입 테스트 - 조건 불충족")
     void signUpInsufficientTest() throws Exception {
         // given
-        SignUpReq signUpReq = SignUpReq.builder()
-                .username("te")
-                .password("password")
-                .nickname("x")
-                .email("testnaver.com")
-                .majorName("컴퓨터공학과")
-                .agreeEmail(true)
-                .build();
+        SignUpReq signUpReq = new SignUpReq("te", "password", "x",
+                "testnaver.com", "컴퓨터공학과", true);
 
         // when
         ResultActions resultActions = mockMvc.perform(

@@ -33,15 +33,11 @@ public class UserServiceTest {
     @DisplayName("회원가입 테스트")
     void signUpTest() {
         // given
-        SignUpReq signUpReq = SignUpReq.builder()
-                .username("test")
-                .password("password")
-                .email("test@naver.com")
-                .majorName("컴퓨터공학과")
-                .agreeEmail(true)
-                .build();
+        SignUpReq signUpReq = new SignUpReq("test", "password",
+                        "테스터", "test@naver.com", "컴퓨터공학과", true);
 
-        User user = signUpReq.toEntity();
+        String encodePassword = passwordEncoder.encode(signUpReq.password());
+        User user = signUpReq.toEntity(encodePassword);
         given(userRepository.save(any(User.class))).willReturn(user);
 
         // when
