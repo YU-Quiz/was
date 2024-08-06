@@ -67,11 +67,11 @@ public class AuthController {
     private ResponseEntity<?> createTokenRes(TokenDto tokenDto) {
 
         Map<String, Object> responseData = new HashMap<>();
-        responseData.put("accessToken", tokenDto.getAccessToken());
+        responseData.put("accessToken", tokenDto.accessToken());
 
         return ResponseEntity.ok()
                 .header("Set-Cookie",
-                        cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.getRefreshToken()).toString())
+                        cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()).toString())
                 .body(responseData);
     }
 }

@@ -32,10 +32,10 @@ public class AuthService {
     @Transactional(readOnly = true)
     public TokenDto signIn(SignInReq signInReq) {
 
-        User foundUser = userRepository.findByUsername(signInReq.getUsername()).orElseThrow(() ->
+        User foundUser = userRepository.findByUsername(signInReq.username()).orElseThrow(() ->
                 new CustomException(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD));
 
-        if (!checkPassword(signInReq.getPassword(), foundUser.getPassword())) {
+        if (!checkPassword(signInReq.password(), foundUser.getPassword())) {
             throw new CustomException(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD);
         }
 

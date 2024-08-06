@@ -18,7 +18,7 @@ public class UserService {
     @Transactional
     public void createUser(SignUpReq signUpReq) {
 
-        signUpReq.setPassword(passwordEncoder.encode(signUpReq.getPassword()));
-        userRepository.save(signUpReq.toEntity());
+        String encodePassword = passwordEncoder.encode(signUpReq.password());
+        userRepository.save(signUpReq.toEntity(encodePassword));
     }
 }
