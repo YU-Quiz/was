@@ -25,7 +25,7 @@ public record SignUpReq(
 
         @NotBlank(message = "학과는 필수 선택 값입니다.")
         String majorName,
-
+        
         boolean agreeEmail,
 
         Role role
