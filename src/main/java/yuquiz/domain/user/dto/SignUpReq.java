@@ -3,6 +3,7 @@ package yuquiz.domain.user.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 
 public record SignUpReq(
@@ -25,7 +26,9 @@ public record SignUpReq(
         @NotBlank(message = "학과는 필수 선택 값입니다.")
         String majorName,
 
-        boolean agreeEmail
+        boolean agreeEmail,
+
+        Role role
 ) {
     public User toEntity(String encodePassword) {
         return User.builder()
@@ -35,6 +38,7 @@ public record SignUpReq(
                 .email(email)
                 .majorName(majorName)
                 .agreeEmail(agreeEmail)
+                .role(role)
                 .build();
     }
 }
