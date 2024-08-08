@@ -1,9 +1,9 @@
 package yuquiz.security.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import yuquiz.domain.user.entity.User;
 
@@ -12,6 +12,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecurityUserDetails implements UserDetails {
 
     private User user;
@@ -19,7 +20,7 @@ public class SecurityUserDetails implements UserDetails {
 
     public SecurityUserDetails(User user) {
         this.user = user;
-        this.authorities = List.of(new SimpleGrantedAuthority(user.getRole().getValue()));
+        this.authorities = List.of(new CustomGrantedAuthority(user.getRole().getValue()));
     }
 
     @Override
@@ -39,12 +40,12 @@ public class SecurityUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     @Override
@@ -54,6 +55,6 @@ public class SecurityUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        throw new UnsupportedOperationException();
+        return true;
     }
 }
