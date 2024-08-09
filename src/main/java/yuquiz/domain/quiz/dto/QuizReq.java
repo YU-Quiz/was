@@ -11,33 +11,32 @@ import yuquiz.domain.user.entity.User;
 
 import java.util.List;
 
-@Getter
-@Setter
-public class QuizReq {
+
+public record QuizReq (
     @NotBlank(message = "제목은 필수 입력입니다.")
-    String title;
+    String title,
 
     @NotBlank(message = "질문은 필수 입력입니다.")
-    String question;
+    String question,
 
-    List<String> quizImg;
+    List<String> quizImg,
 
     @NotBlank(message = "정답은 필수 입력입니다.")
-    String answer;
+    String answer,
 
     @NotNull(message = "퀴즈 유형은 필수 입력입니다.")
-    QuizType quizType;
+    QuizType quizType,
 
-    List<String> choices;
+    List<String> choices,
 
     @NotNull(message = "과목은 필수 입력입니다.")
-    Long subjectId;
+    Long subjectId,
 
-    Subject subject;
+    Subject subject,
 
-    User writer;
-
-    public Quiz toEntity() {
+    User writer
+){
+    public Quiz toEntity(User writer, Subject subject) {
         return Quiz.builder()
                 .title(this.title)
                 .question(this.question)
@@ -45,8 +44,9 @@ public class QuizReq {
                 .answer(this.answer)
                 .quizType(this.quizType)
                 .choices(this.choices)
-                .writer(this.writer)
-                .subject(this.subject)
+                .writer(writer)
+                .subject(subject)
                 .build();
     }
+
 }

@@ -12,11 +12,11 @@ public enum SubjectExceptionCode implements ExceptionCode {
 
     @Override
     public int getStatus() {
-        return 0;
+        return this.status;
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return this.message;
     }
 }

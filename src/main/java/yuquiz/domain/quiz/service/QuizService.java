@@ -20,46 +20,47 @@ import java.security.Principal;
 @Service
 @RequiredArgsConstructor
 public class QuizService {
+
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
 
     @Transactional
-    public void createQuiz(QuizReq quizReq, Principal principal) {
-        User user = findUserByPrincipal(principal);
+    public void createQuiz(QuizReq quizReq, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new CustomException(UserExceptionCode.INVALID_USERID));
 
-        Subject subject = subjectRepository.findById(quizReq.getSubjectId())
+        Subject subject = subjectRepository.findById(quizReq.subjectId())
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        quizReq.setWriter(user);
-        quizReq.setSubject(subject);
 
-        Quiz quiz = quizReq.toEntity();
+        Quiz quiz = quizReq.toEntity(user, subject);
         quizRepository.save(quiz);
     }
 
     @Transactional
-    public void deleteQuiz(Long quizId, Principal principal) {
-        Quiz quiz = findQuizByIdAndValidateUser(quizId, principal);
+    public void deleteQuiz(Long quizId, Long userId) {
+        Quiz quiz = findQuizByIdAndValidateUser(quizId, userId);
         quizRepository.delete(quiz);
     }
 
     @Transactional
-    public void updateQuiz(Long quizId, QuizReq quizReq, Principal principal) {
-        Quiz quiz = findQuizByIdAndValidateUser(quizId, principal);
+    public void updateQuiz(Long quizId, QuizReq quizReq, Long userId) {
+        Quiz quiz = findQuizByIdAndValidateUser(quizId, userId);
 
-        quizReq.setSubject(subjectRepository.findById(quizReq.getSubjectId())
-                .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID)));
-        quiz.update(quizReq);
+        Subject subject = subjectRepository.findById(quizReq.subjectId())
+                .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
+
+        quiz.update(quizReq, subject);
     }
 
-    private User findUserByPrincipal(Principal principal) {
-        return userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERNAME));
+    private User findUserByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
     }
 
-    private Quiz findQuizByIdAndValidateUser(Long quizId, Principal principal) {
-        User user = findUserByPrincipal(principal);
+    private Quiz findQuizByIdAndValidateUser(Long quizId, Long userId) {
+        User user = findUserByUserId(userId);
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
 
