@@ -14,9 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
+import yuquiz.common.exception.dto.ExceptionsRes;
 import yuquiz.common.exception.exceptionCode.ExceptionCode;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.jwt.JwtProvider;
+import yuquiz.security.token.blacklist.BlackListTokenService;
 
 import java.io.IOException;
 
@@ -28,6 +30,7 @@ import static yuquiz.common.utils.jwt.JwtProperties.TOKEN_PREFIX;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
+    private final BlackListTokenService blackListTokenService;
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
 
@@ -67,6 +70,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             handleExceptionToken(response, JwtExceptionCode.ACCESS_TOKEN_EXPIRED);
             return null;
         }
+
+        if (blackListTokenService.existsBlackListCheck(accessToken)) {
+            handleExceptionToken(response, JwtExceptionCode.BLACKLIST_ACCESS_TOKEN);
+            return null;
+        }
         return accessToken;
     }
 
@@ -84,7 +92,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /* 예외 처리 */
     private void handleExceptionToken(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
 
-        String messageBody = objectMapper.writeValueAsString(exceptionCode);
+        ExceptionsRes exceptionsRes = ExceptionsRes.of(exceptionCode.getStatus(), exceptionCode.getMessage());
+        String messageBody = objectMapper.writeValueAsString(exceptionsRes);
 
         log.error("Error occurred: {}", exceptionCode.getMessage());
 
