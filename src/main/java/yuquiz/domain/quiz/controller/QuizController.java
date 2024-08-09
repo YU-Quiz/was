@@ -31,7 +31,7 @@ public class QuizController {
     @PutMapping
     public ResponseEntity<?> updateQuiz(
             @RequestParam(value = "quizId") Long quizId,
-            @RequestBody QuizReq quizReq,
+            @Valid @RequestBody QuizReq quizReq,
             Principal principal) {
         quizService.updateQuiz(quizId, quizReq, principal);
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("퀴즈 수정 성공."));
