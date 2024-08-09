@@ -32,3 +32,5 @@ token:
   refresh:
     in-cookie: ${COOKIE_REFRESH_EXPIRATION:648000}
     in-redis: ${REDIS_REFRESH_EXPIRATION:648000}
+  blacklist:
+    in-redis: ${REDIS_BLACKLIST_EXPIRATION:3600}
