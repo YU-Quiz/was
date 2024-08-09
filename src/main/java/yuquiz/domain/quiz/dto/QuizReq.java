@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class QuizCreateReq {
+public class QuizReq {
     @NotBlank(message = "제목은 필수 입력입니다.")
     String title;
 

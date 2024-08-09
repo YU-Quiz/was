@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
+import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.converter.StringListConverter;
@@ -87,5 +88,15 @@ public class Quiz extends BaseTimeEntity {
         this.quizType = quizType;
         this.writer = writer;
         this.subject = subject;
+    }
+
+    public void update(QuizReq quizReq) {
+        this.title = quizReq.getTitle();
+        this.question = quizReq.getQuestion();
+        this.choices = quizReq.getChoices();
+        this.quizImgs = quizReq.getQuizImg();
+        this.answer = quizReq.getAnswer();
+        this.quizType = quizReq.getQuizType();
+        this.subject = quizReq.getSubject();
     }
 }
