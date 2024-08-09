@@ -16,6 +16,7 @@ import yuquiz.domain.auth.service.AuthService;
 import java.util.HashMap;
 import java.util.Map;
 
+import static yuquiz.common.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
 import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 
 @RestController
@@ -50,14 +51,15 @@ public class AuthController {
 
     /* 로그아웃 */
     @GetMapping("/sign-out")
-    public ResponseEntity<?> signOut(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
+    public ResponseEntity<?> signOut(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
+                                     @CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
                                      HttpServletResponse response) {
 
-        if (refreshToken == null) {
-            throw new CustomException(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        if (accessToken == null || refreshToken == null) {
+            throw new CustomException(JwtExceptionCode.TOKEN_NOT_FOUND);
         }
 
-        authService.signOut(refreshToken, response);
+        authService.signOut(accessToken, refreshToken, response);
 
         return ResponseEntity.ok(SuccessRes.from("로그아웃 되었습니다."));
     }

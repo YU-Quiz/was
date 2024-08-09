@@ -13,6 +13,7 @@ import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
+import yuquiz.security.token.blacklist.BlackListTokenService;
 import yuquiz.security.token.refresh.RefreshTokenService;
 
 import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
@@ -25,6 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
+    private final BlackListTokenService blackListTokenService;
     private final CookieUtil cookieUtil;
     private final JwtProvider jwtProvider;
 
@@ -71,10 +73,13 @@ public class AuthService {
     }
 
     /* 로그아웃 */
-    public void signOut(String refreshToken, HttpServletResponse response) {
+    public void signOut(String accessTokenInHeader, String refreshToken, HttpServletResponse response) {
 
         cookieUtil.deleteCookie(REFRESH_COOKIE_VALUE, response);    // 쿠키값 삭제
 
         refreshTokenService.deleteRefreshToken(refreshToken);       // 로그아웃 시 redis에서 refreshToken 삭제
+
+        String accessToken = accessTokenInHeader.substring(TOKEN_PREFIX.length()).trim();
+        blackListTokenService.saveBlackList(accessToken);           // accessToken blackList에 저장
     }
 }
