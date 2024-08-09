@@ -1,6 +1,7 @@
 package yuquiz.domain.quiz.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import yuquiz.domain.quiz.entity.Quiz;
@@ -24,12 +25,12 @@ public class QuizReq {
     @NotBlank(message = "정답은 필수 입력입니다.")
     String answer;
 
-    @NotBlank(message = "퀴즈 유형은 필수 입력입니다.")
+    @NotNull(message = "퀴즈 유형은 필수 입력입니다.")
     QuizType quizType;
 
     List<String> choices;
 
-    @NotBlank(message = "과목은 필수 입력입니다.")
+    @NotNull(message = "과목은 필수 입력입니다.")
     Long subjectId;
 
     Subject subject;

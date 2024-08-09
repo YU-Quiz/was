@@ -1,5 +1,6 @@
 package yuquiz.domain.quiz.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.security.Principal;
 public class QuizController {
     private final QuizService quizService;
     @PostMapping
-    public ResponseEntity<?> createQuiz(@RequestBody QuizReq quizReq, Principal principal) {
+    public ResponseEntity<?> createQuiz(@Valid  @RequestBody QuizReq quizReq, Principal principal) {
         quizService.createQuiz(quizReq,principal);
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("퀴즈 생성 성공."));
     }
