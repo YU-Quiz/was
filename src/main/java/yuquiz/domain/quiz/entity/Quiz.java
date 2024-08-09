@@ -77,7 +77,7 @@ public class Quiz extends BaseTimeEntity {
 
     @Builder
     public Quiz(String title, String question, List<String> choices,
-                List<String> quizImgs, String answer, QuizType quizType) {
+                List<String> quizImgs, String answer, QuizType quizType, User writer, Subject subject) {
 
         this.title = title;
         this.question = question;
@@ -85,5 +85,7 @@ public class Quiz extends BaseTimeEntity {
         this.quizImgs = quizImgs;
         this.answer = answer;
         this.quizType = quizType;
+        this.writer = writer;
+        this.subject = subject;
     }
 }
