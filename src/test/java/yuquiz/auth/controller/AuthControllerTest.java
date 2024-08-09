@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static yuquiz.common.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
 import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 
 @WebMvcTest(AuthController.class)
@@ -150,7 +151,10 @@ public class AuthControllerTest {
     @DisplayName("로그아웃 테스트")
     void signOutTest() throws Exception {
         // given
-        doNothing().when(authService).signOut(eq(tokenDto.refreshToken()), any(HttpServletResponse.class));
+        String accessToken = "accessToken";
+        String refreshToken = "refreshToken";
+
+        doNothing().when(authService).signOut(eq(accessToken), eq(refreshToken), any(HttpServletResponse.class));
 
         doAnswer(invocation -> {
             HttpServletResponse resp = invocation.getArgument(1);
@@ -169,6 +173,7 @@ public class AuthControllerTest {
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/auth/sign-out")
                         .cookie(new Cookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()))
+                        .header(ACCESS_HEADER_VALUE, accessToken)
         );
 
         // then
@@ -180,19 +185,41 @@ public class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("로그아웃 테스트 - Refresh Token 없음")
-    void signOutExceptionTest() throws Exception {
+    @DisplayName("로그아웃 테스트 - 쿠키에 Refresh Token 없음")
+    void signOutFailedByNotFoundRefreshTokenInCookieTest() throws Exception {
         // given
+        String accessToken = "accessToken";
+        String refreshToken = "refreshToken";
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/auth/sign-out")
+                        .header(ACCESS_HEADER_VALUE, accessToken)
         );
 
         // then
         resultActions
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
+                .andExpect(jsonPath("$.message").value(JwtExceptionCode.TOKEN_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("로그아웃 테스트 - 헤더에 access Token 없음")
+    void signOutFailedByNotFoundAccessTokenInHeaderTest() throws Exception {
+        // given
+        String refreshToken = "refreshToken";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/auth/sign-out")
+                        .cookie(new Cookie(REFRESH_COOKIE_VALUE, refreshToken))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(JwtExceptionCode.TOKEN_NOT_FOUND.getMessage()));
     }
 }

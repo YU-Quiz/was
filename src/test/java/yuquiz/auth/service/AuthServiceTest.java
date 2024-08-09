@@ -19,6 +19,7 @@ import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
+import yuquiz.security.token.blacklist.BlackListTokenService;
 import yuquiz.security.token.refresh.RefreshTokenService;
 
 import java.lang.reflect.Field;
@@ -42,6 +43,9 @@ public class AuthServiceTest {
 
     @Mock
     private RefreshTokenService refreshTokenService;
+
+    @Mock
+    private BlackListTokenService blackListTokenService;
 
     @Mock
     private CookieUtil cookieUtil;
@@ -175,15 +179,19 @@ public class AuthServiceTest {
     void signOutTest() {
         // given
         String refreshToken = "refreshToken";
+        String accessToken = "Bearer accessToken";
+        String trimAccessToken = "accessToken";
 
         doNothing().when(cookieUtil).deleteCookie(REFRESH_COOKIE_VALUE, response);
         doNothing().when(refreshTokenService).deleteRefreshToken(refreshToken);
+        doNothing().when(blackListTokenService).saveBlackList(trimAccessToken);
 
         // when
-        authService.signOut(refreshToken, response);
+        authService.signOut(accessToken, refreshToken, response);
 
         // then
         verify(cookieUtil, times(1)).deleteCookie(REFRESH_COOKIE_VALUE, response);
         verify(refreshTokenService, times(1)).deleteRefreshToken(refreshToken);
+        verify(blackListTokenService, times(1)).saveBlackList(trimAccessToken);
     }
 }
