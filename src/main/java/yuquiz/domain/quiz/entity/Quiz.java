@@ -59,13 +59,13 @@ public class Quiz extends BaseTimeEntity {
     @Column(columnDefinition = "boolean default true")
     private boolean visibility = true;
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<TriedQuiz> triedQuizzes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<PinnedQuiz> pinnedQuizzes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<QuizLike> quizLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)

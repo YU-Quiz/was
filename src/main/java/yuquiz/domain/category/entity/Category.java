@@ -24,7 +24,7 @@ public class Category {
     @Column(name = "category_name", unique = true)
     private String categoryName;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
     private List<Post> posts = new ArrayList<>();
 
     @Builder

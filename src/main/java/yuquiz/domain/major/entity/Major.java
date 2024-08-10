@@ -24,7 +24,7 @@ public class Major {
     @Column(name = "major_name")
     private String majorName;
 
-    @OneToMany(mappedBy = "major")
+    @OneToMany(mappedBy = "major", cascade = CascadeType.REMOVE)
     private List<Subject> subjects = new ArrayList<>();
 
     @Builder

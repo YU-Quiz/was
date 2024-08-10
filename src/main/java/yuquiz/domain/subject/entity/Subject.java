@@ -25,7 +25,7 @@ public class Subject {
     @Column(name = "subject_name")
     private String subjectName;
 
-    @OneToMany(mappedBy = "subject")
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.REMOVE)
     private List<Quiz> quizzes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
