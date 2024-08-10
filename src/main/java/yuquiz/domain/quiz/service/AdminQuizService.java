@@ -1,12 +1,15 @@
 package yuquiz.domain.quiz.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yuquiz.common.exception.CustomException;
 import yuquiz.domain.quiz.dto.QuizRes;
 import yuquiz.domain.quiz.entity.Quiz;
+import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
 
 @Service
@@ -23,5 +26,14 @@ public class AdminQuizService {
         Page<Quiz> page = quizRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         return page.map(quiz -> QuizRes.from(quiz));
+    }
+
+    @Transactional
+    public void deleteQuiz(Long quizId){
+
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
+
+        quizRepository.delete(quiz);
     }
 }
