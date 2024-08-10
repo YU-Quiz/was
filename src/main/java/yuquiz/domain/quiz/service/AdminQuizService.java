@@ -31,9 +31,10 @@ public class AdminQuizService {
     @Transactional
     public void deleteQuiz(Long quizId){
 
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
-
-        quizRepository.delete(quiz);
+        try{
+           quizRepository.deleteById(quizId);
+        } catch (EmptyResultDataAccessException e) {
+           throw new CustomException(QuizExceptionCode.INVALID_ID);
+        }
     }
 }
