@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 
 @Schema(name = "SignUpDto", description = "회원가입 요청 DTO")
@@ -31,9 +32,10 @@ public record SignUpReq(
         @Schema(description = "학과", example = "컴퓨터공학과")
         @NotBlank(message = "학과는 필수 선택 값입니다.")
         String majorName,
-
+        
         @Schema(description = "이메일 수신 동의", example = "true")
         boolean agreeEmail
+
 ) {
     public User toEntity(String encodePassword) {
         return User.builder()
@@ -43,6 +45,7 @@ public record SignUpReq(
                 .email(email)
                 .majorName(majorName)
                 .agreeEmail(agreeEmail)
+                .role(Role.USER)
                 .build();
     }
 }
