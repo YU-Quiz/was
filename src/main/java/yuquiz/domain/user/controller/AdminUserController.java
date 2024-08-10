@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuquiz.domain.quiz.dto.QuizRes;
-import yuquiz.domain.quiz.service.AdminQuizService;
 import yuquiz.domain.user.dto.UserRes;
 import yuquiz.domain.user.service.AdminUserService;
 

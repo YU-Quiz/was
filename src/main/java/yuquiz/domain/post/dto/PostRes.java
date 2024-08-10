@@ -1,6 +1,5 @@
 package yuquiz.domain.post.dto;
 
-import yuquiz.domain.category.entity.Category;
 import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.user.entity.User;
 
