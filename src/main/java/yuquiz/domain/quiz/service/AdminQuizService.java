@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.quiz.dto.QuizRes;
+import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
@@ -21,12 +21,12 @@ public class AdminQuizService {
 
     private static final Integer QUIZ_PER_PAGE = 10;
 
-    public Page<QuizRes> getQuizPage(Integer pageNumber){
+    public Page<QuizSummaryRes> getQuizPage(Integer pageNumber){
 
         Pageable pageable = PageRequest.of(pageNumber, QUIZ_PER_PAGE);
         Page<Quiz> page = quizRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(QuizRes::fromEntity);
+        return page.map(QuizSummaryRes::fromEntity);
     }
 
     @Transactional

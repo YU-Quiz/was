@@ -4,14 +4,14 @@ import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.report.entity.ReportType;
 
 
-public record ReportRes(
+public record ReportSummaryRes(
         Long reportId,
         Long quizId,
         String reason,
         ReportType type
 ) {
-    public static ReportRes fromEntity(Report report) {
-        return new ReportRes(
+    public static ReportSummaryRes fromEntity(Report report) {
+        return new ReportSummaryRes(
                 report.getId(),
                 report.getQuiz().getId(),
                 report.getReason(),

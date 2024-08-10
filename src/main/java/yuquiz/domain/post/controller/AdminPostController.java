@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuquiz.domain.post.dto.PostRes;
+import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.domain.post.service.AdminPostService;
 
 @RestController
@@ -19,7 +19,7 @@ public class AdminPostController {
     @GetMapping
     public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer pageNumber) {
 
-        Page<PostRes> page = adminPostService.getLatestPostsByPage(pageNumber);
+        Page<PostSummaryRes> page = adminPostService.getLatestPostsByPage(pageNumber);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }

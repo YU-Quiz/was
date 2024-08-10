@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuquiz.domain.user.dto.UserRes;
+import yuquiz.domain.user.dto.UserSummaryRes;
 import yuquiz.domain.user.service.AdminUserService;
 
 @RestController
@@ -19,7 +19,7 @@ public class AdminUserController {
     @GetMapping
     public ResponseEntity<?> getUserPage(@RequestParam @Min(0) Integer pageNumber) {
 
-        Page<UserRes> page = adminUserService.getUserPage(pageNumber);
+        Page<UserSummaryRes> page = adminUserService.getUserPage(pageNumber);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }

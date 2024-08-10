@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuquiz.domain.report.dto.ReportRes;
+import yuquiz.domain.report.dto.ReportSummaryRes;
 import yuquiz.domain.report.service.AdminReportService;
 
 @RestController
@@ -19,7 +19,7 @@ public class AdminReportController {
     @GetMapping
     public ResponseEntity<?> getReportPage(@RequestParam @Min(0) Integer pageNumber) {
 
-        Page<ReportRes> page = adminReportService.getReportPage(pageNumber);
+        Page<ReportSummaryRes> page = adminReportService.getReportPage(pageNumber);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import yuquiz.domain.user.dto.UserRes;
+import yuquiz.domain.user.dto.UserSummaryRes;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.repository.UserRepository;
 
@@ -17,11 +17,11 @@ public class AdminUserService {
 
     private static final Integer USER_PER_PAGE = 10;
 
-    public Page<UserRes> getUserPage(Integer pageNumber) {
+    public Page<UserSummaryRes> getUserPage(Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, USER_PER_PAGE);
         Page<User> page = userRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(UserRes::fromEntity);
+        return page.map(UserSummaryRes::fromEntity);
     }
 }

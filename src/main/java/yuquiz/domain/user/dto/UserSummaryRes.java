@@ -4,15 +4,15 @@ import yuquiz.domain.user.entity.User;
 
 import java.time.LocalDateTime;
 
-public record UserRes(
+public record UserSummaryRes(
         Long id,
         String username,
         String nickname,
         String email,
         LocalDateTime createdAt
 ) {
-    public static UserRes fromEntity(User user) {
-        return new UserRes(
+    public static UserSummaryRes fromEntity(User user) {
+        return new UserSummaryRes(
                 user.getId(),
                 user.getUsername(),
                 user.getNickname(),

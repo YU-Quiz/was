@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import yuquiz.domain.report.dto.ReportRes;
+import yuquiz.domain.report.dto.ReportSummaryRes;
 import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.report.repository.ReportRepository;
 
@@ -17,11 +17,11 @@ public class AdminReportService {
 
     private static final Integer REPORT_PER_PAGE = 10;
 
-    public Page<ReportRes> getReportPage(Integer pageNumber) {
+    public Page<ReportSummaryRes> getReportPage(Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, REPORT_PER_PAGE);
         Page<Report> page = reportRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(ReportRes::fromEntity);
+        return page.map(ReportSummaryRes::fromEntity);
     }
 }

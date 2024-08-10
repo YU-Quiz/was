@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuquiz.domain.quiz.dto.QuizRes;
+import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.service.AdminQuizService;
 
 @RestController
@@ -19,7 +19,7 @@ public class AdminQuizController {
     @GetMapping
     public ResponseEntity<?> getQuizPage(@RequestParam @Min(0) Integer pageNumber) {
 
-        Page<QuizRes> page = adminQuizService.getQuizPage(pageNumber);
+        Page<QuizSummaryRes> page = adminQuizService.getQuizPage(pageNumber);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
