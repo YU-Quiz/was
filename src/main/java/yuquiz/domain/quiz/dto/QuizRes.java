@@ -10,7 +10,7 @@ public record QuizRes(
         String nickname,
         LocalDateTime createdAt
 ) {
-    public static QuizRes from(Quiz quiz){
+    public static QuizRes fromEntity(Quiz quiz){
         return new QuizRes(
                 quiz.getId(),
                 quiz.getTitle(),

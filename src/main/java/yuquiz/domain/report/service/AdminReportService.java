@@ -22,6 +22,6 @@ public class AdminReportService {
         Pageable pageable = PageRequest.of(pageNumber, REPORT_PER_PAGE);
         Page<Report> page = reportRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(ReportRes::from);
+        return page.map(ReportRes::fromEntity);
     }
 }

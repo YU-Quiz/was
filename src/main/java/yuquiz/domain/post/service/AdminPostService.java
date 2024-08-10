@@ -26,7 +26,7 @@ public class AdminPostService {
         Pageable pageable = PageRequest.of(pageNumber, POST_PER_PAGE);
         Page<Post> page = postRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(PostRes::from);
+        return page.map(PostRes::fromEntity);
     }
 
     @Transactional

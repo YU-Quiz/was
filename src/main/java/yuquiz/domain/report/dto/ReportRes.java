@@ -10,7 +10,7 @@ public record ReportRes(
         String reason,
         ReportType type
 ) {
-    public static ReportRes from(Report report) {
+    public static ReportRes fromEntity(Report report) {
         return new ReportRes(
                 report.getId(),
                 report.getQuiz().getId(),
