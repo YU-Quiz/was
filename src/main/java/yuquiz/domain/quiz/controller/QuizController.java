@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
@@ -39,5 +40,17 @@ public class QuizController {
             @AuthenticationPrincipal SecurityUserDetails userDetails) {
         quizService.updateQuiz(quizId, quizReq, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("퀴즈 수정 성공."));
+    }
+
+    @GetMapping("/{quizId}")
+    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId){
+        return ResponseEntity.status(HttpStatus.OK).body(quizService.getQuizById(quizId));
+    }
+
+    @PostMapping("/{quizId}/check")
+    public ResponseEntity<?> gradeQuiz(
+            @PathVariable(value = "quizId") Long quizId,
+            @Valid @RequestBody AnswerReq answerReq) {
+        return ResponseEntity.status(HttpStatus.OK).body(quizService.gradeQuiz(quizId, answerReq.answer()));
     }
 }

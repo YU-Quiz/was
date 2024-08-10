@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.quiz.dto.QuizReq;
+import yuquiz.domain.quiz.dto.QuizRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
@@ -54,15 +55,31 @@ public class QuizService {
         quiz.update(quizReq, subject);
     }
 
+    public QuizRes getQuizById(Long quizId) {
+        Quiz quiz = findQuizByQuizId(quizId);
+
+        return QuizRes.fromEntity(quiz);
+    }
+
+    public boolean gradeQuiz(Long quizId, String answer) {
+        Quiz quiz = findQuizByQuizId(quizId);
+
+        return quiz.getAnswer().equals(answer);
+    }
+
     private User findUserByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
     }
 
+    private Quiz findQuizByQuizId(Long quizId) {
+        return quizRepository.findById(quizId)
+                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
+    }
+
     private Quiz findQuizByIdAndValidateUser(Long quizId, Long userId) {
         User user = findUserByUserId(userId);
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
+        Quiz quiz = findQuizByQuizId(quizId);
 
         if (!quiz.getWriter().equals(user)) {
             throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
