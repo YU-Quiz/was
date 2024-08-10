@@ -34,9 +34,7 @@ public record SignUpReq(
         String majorName,
         
         @Schema(description = "이메일 수신 동의", example = "true")
-        boolean agreeEmail,
-
-        Role role
+        boolean agreeEmail
 
 ) {
     public User toEntity(String encodePassword) {
@@ -47,7 +45,7 @@ public record SignUpReq(
                 .email(email)
                 .majorName(majorName)
                 .agreeEmail(agreeEmail)
-                .role(role)
+                .role(Role.USER)
                 .build();
     }
 }
