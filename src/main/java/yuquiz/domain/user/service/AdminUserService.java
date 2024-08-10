@@ -22,6 +22,6 @@ public class AdminUserService {
         Pageable pageable = PageRequest.of(pageNumber, USER_PER_PAGE);
         Page<User> page = userRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(user -> UserRes.from(user));
+        return page.map(UserRes::from);
     }
 }
