@@ -2,6 +2,7 @@ package yuquiz.domain.quiz.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
+import yuquiz.domain.quiz.dto.QuizRes;
+import yuquiz.domain.quiz.dto.SortType;
+import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -20,7 +24,7 @@ public class QuizController {
     private final QuizService quizService;
 
     @PostMapping
-    public ResponseEntity<?> createQuiz(@Valid  @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails) {
+    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails) {
         quizService.createQuiz(quizReq, userDetails.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("퀴즈 생성 성공."));
     }
@@ -41,7 +45,7 @@ public class QuizController {
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId){
+    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId) {
         return ResponseEntity.status(HttpStatus.OK).body(quizService.getQuizById(quizId));
     }
 
@@ -56,4 +60,13 @@ public class QuizController {
     public ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId) {
         return ResponseEntity.status(HttpStatus.OK).body(quizService.getAnswer(quizId));
     }
+
+    @GetMapping("/subject/{subjectId}/{pageNum}/{sortType}")
+    public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
+                                                 @PathVariable(value = "pageNum") Integer pageNum,
+                                                 @PathVariable(value = "sortType") SortType sortType) {
+        Page<QuizRes> quizzes = quizService.getQuizzesBySubject(subjectId, sortType, pageNum);
+        return ResponseEntity.status(HttpStatus.OK).body(quizzes);
+    }
+
 }
