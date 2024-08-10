@@ -16,8 +16,6 @@ import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
 
-import java.security.Principal;
-
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -65,6 +63,10 @@ public class QuizService {
         Quiz quiz = findQuizByQuizId(quizId);
 
         return quiz.getAnswer().equals(answer);
+    }
+
+    public String getAnswer(Long quizId) {
+        return findQuizByQuizId(quizId).getAnswer();
     }
 
     private User findUserByUserId(Long userId) {
