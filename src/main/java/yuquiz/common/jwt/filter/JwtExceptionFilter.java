@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
+import yuquiz.common.exception.dto.ExceptionsRes;
 import yuquiz.common.exception.exceptionCode.ExceptionCode;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 
@@ -34,7 +35,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     /* 예외 처리 */
     private void handleExceptionToken(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
 
-        String messageBody = objectMapper.writeValueAsString(exceptionCode);
+        ExceptionsRes exceptionsRes = ExceptionsRes.of(exceptionCode.getStatus(), exceptionCode.getMessage());
+        String messageBody = objectMapper.writeValueAsString(exceptionsRes);
 
         log.error("Error occurred: {}", exceptionCode.getMessage());
 
