@@ -3,6 +3,7 @@ package yuquiz.domain.quiz.dto;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.entity.QuizType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record QuizRes(
@@ -14,11 +15,15 @@ public record QuizRes(
 
         QuizType quizType,
 
+        Integer likeCount,
+
         List<String> choices,
 
         String subject,
 
-        String writer
+        String writer,
+
+        LocalDateTime createdAt
 ) {
     public static QuizRes fromEntity(Quiz quiz) {
         return new QuizRes(
@@ -26,9 +31,11 @@ public record QuizRes(
                 quiz.getQuestion(),
                 quiz.getQuizImgs(),
                 quiz.getQuizType(),
+                quiz.getLikeCount(),
                 quiz.getChoices(),
                 quiz.getSubject().getSubjectName(),
-                quiz.getWriter().getNickname()
+                quiz.getWriter().getNickname(),
+                quiz.getCreatedAt()
         );
     }
 }
