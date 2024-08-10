@@ -23,6 +23,8 @@ public class Notification extends BaseTimeEntity {
     @NotNull
     private String message;
 
+    private boolean isChecked;
+
     @NotNull
     @Column(name = "redirect_url")
     private String redirectUrl;

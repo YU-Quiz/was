@@ -7,5 +7,7 @@ import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.subject.entity.Subject;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
+  
+    Page<Quiz> findAllByOrderByCreatedAtDesc(Pageable pageable);
     Page<Quiz> findAllBySubject(Subject subject, Pageable pageable);
 }
