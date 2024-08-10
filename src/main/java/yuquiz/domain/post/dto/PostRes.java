@@ -6,16 +6,16 @@ import yuquiz.domain.user.entity.User;
 import java.time.LocalDateTime;
 
 public record PostRes(
-        Long id,
-        String title,
-        User writer,
+        Long postId,
+        String postTitle,
+        String nickname,
         LocalDateTime createdAt
 ) {
     public static PostRes from(Post post){
         return new PostRes(
                 post.getId(),
                 post.getTitle(),
-                post.getWriter(),
+                post.getWriter().getNickname(),
                 post.getCreatedAt()
         );
     }
