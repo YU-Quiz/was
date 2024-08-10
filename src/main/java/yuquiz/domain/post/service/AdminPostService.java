@@ -2,6 +2,7 @@ package yuquiz.domain.post.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +32,10 @@ public class AdminPostService {
     @Transactional
     public void deletePost(Long postId) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
-
-        postRepository.delete(post);
+        try{
+            postRepository.deleteById(postId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException(PostExceptionCode.INVALID_ID);
+        }
     }
 }
