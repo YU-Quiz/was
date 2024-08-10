@@ -16,7 +16,7 @@ public class AdminPostController {
 
     private final AdminPostService adminPostService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer pageNumber){
 
         Page<PostRes> page = adminPostService.getLatestPostsByPage(pageNumber);

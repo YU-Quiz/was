@@ -16,7 +16,7 @@ public class AdminQuizController {
 
     private final AdminQuizService adminQuizService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> getQuizPage(@RequestParam @Min(0) Integer pageNumber){
 
         Page<QuizRes> page = adminQuizService.getQuizPage(pageNumber);
