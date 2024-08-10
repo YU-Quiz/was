@@ -29,6 +29,8 @@ public class QuizService {
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
 
+    private static final Integer POST_PER_PAGE = 20;
+
     @Transactional
     public void createQuiz(QuizReq quizReq, Long userId) {
         User user = userRepository.findById(userId)
@@ -78,7 +80,7 @@ public class QuizService {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        Pageable pageable = PageRequest.of(page, 20, sort.getSort());
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
         Page<Quiz> quizzes =  quizRepository.findAllBySubject(subject, pageable);
 
         return quizzes.map(QuizRes::fromEntity);
