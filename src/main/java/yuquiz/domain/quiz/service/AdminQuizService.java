@@ -26,7 +26,7 @@ public class AdminQuizService {
         Pageable pageable = PageRequest.of(pageNumber, QUIZ_PER_PAGE);
         Page<Quiz> page = quizRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(quiz -> QuizRes.from(quiz));
+        return page.map(QuizRes::from);
     }
 
     @Transactional
