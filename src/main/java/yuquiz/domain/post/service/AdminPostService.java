@@ -18,7 +18,7 @@ public class AdminPostService {
 
     private final PostRepository postRepository;
 
-    public static final Integer POST_PER_PAGE = 10;
+    private static final Integer POST_PER_PAGE = 10;
 
     public Page<PostRes> getLatestPostsByPage(Integer pageNumber){
 
