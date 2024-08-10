@@ -2,16 +2,19 @@ package yuquiz.domain.quiz.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
+import yuquiz.domain.quiz.dto.QuizRes;
+import yuquiz.domain.quiz.dto.SortType;
+import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/quizzes")
@@ -21,7 +24,7 @@ public class QuizController {
     private final QuizService quizService;
 
     @PostMapping
-    public ResponseEntity<?> createQuiz(@Valid  @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails) {
+    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails) {
         quizService.createQuiz(quizReq, userDetails.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("퀴즈 생성 성공."));
     }
@@ -40,4 +43,30 @@ public class QuizController {
         quizService.updateQuiz(quizId, quizReq, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("퀴즈 수정 성공."));
     }
+
+    @GetMapping("/{quizId}")
+    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId) {
+        return ResponseEntity.status(HttpStatus.OK).body(quizService.getQuizById(quizId));
+    }
+
+    @PostMapping("/{quizId}/grade")
+    public ResponseEntity<?> gradeQuiz(
+            @PathVariable(value = "quizId") Long quizId,
+            @Valid @RequestBody AnswerReq answerReq) {
+        return ResponseEntity.status(HttpStatus.OK).body(quizService.gradeQuiz(quizId, answerReq.answer()));
+    }
+
+    @GetMapping("/{quizId}/answer")
+    public ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId) {
+        return ResponseEntity.status(HttpStatus.OK).body(quizService.getAnswer(quizId));
+    }
+
+    @GetMapping("/subject/{subjectId}")
+    public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
+                                                 @RequestParam(value = "page") Integer page,
+                                                 @RequestParam(value = "sort") SortType sort) {
+        Page<QuizRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
+        return ResponseEntity.status(HttpStatus.OK).body(quizzes);
+    }
+
 }

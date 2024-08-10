@@ -51,6 +51,9 @@ public class Quiz extends BaseTimeEntity {
     @Column(name = "like_count")
     private int likeCount;
 
+    @Column(name = "view_count")
+    private int viewCount;
+
     private boolean modified;
 
     @Column(columnDefinition = "boolean default true")
