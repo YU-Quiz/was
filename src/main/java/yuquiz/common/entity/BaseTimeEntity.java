@@ -1,5 +1,6 @@
 package yuquiz.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -16,10 +17,12 @@ import java.time.LocalDateTime;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
+    @JsonIgnore
     @Column(name = "created_At", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @JsonIgnore
     @Column(name = "modified_At")
     private LocalDateTime modifiedAt;
 }
