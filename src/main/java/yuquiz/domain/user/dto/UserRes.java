@@ -11,7 +11,7 @@ public record UserRes(
         String email,
         LocalDateTime createdAt
 ) {
-    public static UserRes from(User user){
+    public static UserRes from(User user) {
         return new UserRes(
                 user.getId(),
                 user.getUsername(),

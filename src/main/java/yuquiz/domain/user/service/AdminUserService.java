@@ -17,7 +17,7 @@ public class AdminUserService {
 
     private static final Integer USER_PER_PAGE = 10;
 
-    public Page<UserRes> getUserPage(Integer pageNumber){
+    public Page<UserRes> getUserPage(Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, USER_PER_PAGE);
         Page<User> page = userRepository.findAllByOrderByCreatedAtDesc(pageable);

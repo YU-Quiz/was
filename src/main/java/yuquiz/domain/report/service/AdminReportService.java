@@ -17,7 +17,7 @@ public class AdminReportService {
 
     private static final Integer REPORT_PER_PAGE = 10;
 
-    public Page<ReportRes> getReportPage(Integer pageNumber){
+    public Page<ReportRes> getReportPage(Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, REPORT_PER_PAGE);
         Page<Report> page = reportRepository.findAllByOrderByCreatedAtDesc(pageable);

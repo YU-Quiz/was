@@ -17,7 +17,7 @@ public class AdminQuizController {
     private final AdminQuizService adminQuizService;
 
     @GetMapping
-    public ResponseEntity<?> getQuizPage(@RequestParam @Min(0) Integer pageNumber){
+    public ResponseEntity<?> getQuizPage(@RequestParam @Min(0) Integer pageNumber) {
 
         Page<QuizRes> page = adminQuizService.getQuizPage(pageNumber);
 
@@ -25,7 +25,7 @@ public class AdminQuizController {
     }
 
     @DeleteMapping("/{quizId}")
-    public ResponseEntity<?> deleteQuiz(@PathVariable("quizId") Long quizId){
+    public ResponseEntity<?> deleteQuiz(@PathVariable("quizId") Long quizId) {
 
         adminQuizService.deleteQuiz(quizId);
 

@@ -17,7 +17,7 @@ public class AdminUserController {
     private final AdminUserService adminUserService;
 
     @GetMapping
-    public ResponseEntity<?> getUserPage(@RequestParam @Min(0) Integer pageNumber){
+    public ResponseEntity<?> getUserPage(@RequestParam @Min(0) Integer pageNumber) {
 
         Page<UserRes> page = adminUserService.getUserPage(pageNumber);
 

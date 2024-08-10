@@ -20,7 +20,7 @@ public class AdminPostService {
 
     private static final Integer POST_PER_PAGE = 10;
 
-    public Page<PostRes> getLatestPostsByPage(Integer pageNumber){
+    public Page<PostRes> getLatestPostsByPage(Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, POST_PER_PAGE);
         Page<Post> page = postRepository.findAllByOrderByCreatedAtDesc(pageable);
@@ -29,7 +29,7 @@ public class AdminPostService {
     }
 
     @Transactional
-    public void deletePost(Long postId){
+    public void deletePost(Long postId) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));

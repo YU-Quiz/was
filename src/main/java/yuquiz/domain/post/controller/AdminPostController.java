@@ -17,7 +17,7 @@ public class AdminPostController {
     private final AdminPostService adminPostService;
 
     @GetMapping
-    public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer pageNumber){
+    public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer pageNumber) {
 
         Page<PostRes> page = adminPostService.getLatestPostsByPage(pageNumber);
 
@@ -25,7 +25,7 @@ public class AdminPostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId){
+    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) {
 
         adminPostService.deletePost(postId);
 

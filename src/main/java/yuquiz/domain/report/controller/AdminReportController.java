@@ -17,7 +17,7 @@ public class AdminReportController {
     private final AdminReportService adminReportService;
 
     @GetMapping
-    public ResponseEntity<?> getReportPage(@RequestParam @Min(0) Integer pageNumber){
+    public ResponseEntity<?> getReportPage(@RequestParam @Min(0) Integer pageNumber) {
 
         Page<ReportRes> page = adminReportService.getReportPage(pageNumber);
 

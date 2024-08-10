@@ -11,7 +11,7 @@ public record PostRes(
         String nickname,
         LocalDateTime createdAt
 ) {
-    public static PostRes from(Post post){
+    public static PostRes from(Post post) {
         return new PostRes(
                 post.getId(),
                 post.getTitle(),
