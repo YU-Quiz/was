@@ -9,17 +9,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.user.api.UserApi;
 import yuquiz.domain.user.dto.SignUpReq;
 import yuquiz.domain.user.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserApi {
 
     private final UserService userService;
 
     /* 회원가입 */
+    @Override
     @PostMapping
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq) {
 
