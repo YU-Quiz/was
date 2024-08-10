@@ -63,9 +63,9 @@ public class QuizController {
 
     @GetMapping("/subject/{subjectId}")
     public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
-                                                 @RequestParam(value = "pageNum") Integer pageNum,
-                                                 @RequestParam(value = "sortType") SortType sortType) {
-        Page<QuizRes> quizzes = quizService.getQuizzesBySubject(subjectId, sortType, pageNum);
+                                                 @RequestParam(value = "page") Integer page,
+                                                 @RequestParam(value = "sort") SortType sort) {
+        Page<QuizRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 

@@ -74,11 +74,11 @@ public class QuizService {
         return findQuizByQuizId(quizId).getAnswer();
     }
 
-    public Page<QuizRes> getQuizzesBySubject(Long subjectId, SortType sortType, Integer pageNum) {
+    public Page<QuizRes> getQuizzesBySubject(Long subjectId, SortType sort, Integer page) {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        Pageable pageable = PageRequest.of(pageNum, 20, sortType.getSort());
+        Pageable pageable = PageRequest.of(page, 20, sort.getSort());
         Page<Quiz> quizzes =  quizRepository.findAllBySubject(subject, pageable);
 
         return quizzes.map(QuizRes::fromEntity);
