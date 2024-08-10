@@ -30,11 +30,7 @@ public record QuizReq (
     List<String> choices,
 
     @NotNull(message = "과목은 필수 입력입니다.")
-    Long subjectId,
-
-    Subject subject,
-
-    User writer
+    Long subjectId
 ){
     public Quiz toEntity(User writer, Subject subject) {
         return Quiz.builder()
