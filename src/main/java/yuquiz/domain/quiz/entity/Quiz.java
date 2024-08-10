@@ -65,7 +65,7 @@ public class Quiz extends BaseTimeEntity {
     @OneToMany(mappedBy = "quiz")
     private List<QuizLike> quizLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<Report> reports = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
