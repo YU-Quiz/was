@@ -60,4 +60,44 @@ public interface QuizApi {
     })
     public ResponseEntity<?> deleteQuiz(@PathVariable(value = "quizId") Long quizId, @AuthenticationPrincipal SecurityUserDetails userDetails);
 
+    @Operation(summary = "퀴즈 수정", description = "퀴즈 수정 관련 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퀴즈 수정 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                {
+                                    "response": "퀴즈 수정 성공."
+                                }
+                                """)
+                    })),
+            @ApiResponse(responseCode = "403", description = "작성자 불일치",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                {
+                                    "status": 403,
+                                    "message": "권한이 없습니다."
+                                }
+                                """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성 검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                {
+                                    "answer": "정답은 필수 입력입니다.",
+                                    "question": "질문은 필수 입력입니다.",
+                                    "title": "제목은 필수 입력입니다."
+                                }
+                                """),
+                            @ExampleObject(name = "notNull", value = """
+                                {
+                                    "quizType": "퀴즈 유형은 필수 입력입니다.",
+                                    "subjectId": "과목은 필수 입력입니다."
+                                }
+                                """)
+                    }))
+    })
+    public ResponseEntity<?> updateQuiz(
+            @PathVariable(value = "quizId") Long quizId,
+            @Valid @RequestBody QuizReq quizReq,
+            @AuthenticationPrincipal SecurityUserDetails userDetails);
 }
