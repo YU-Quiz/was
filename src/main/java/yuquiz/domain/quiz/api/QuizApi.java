@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -100,4 +101,65 @@ public interface QuizApi {
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody QuizReq quizReq,
             @AuthenticationPrincipal SecurityUserDetails userDetails);
+
+    @Operation(summary = "특정 퀴즈 조회", description = "퀴즈를 풀기 위해 특정 퀴즈를 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퀴즈 조회 성공",
+                content = @Content(mediaType = "application/json", examples = {
+                        @ExampleObject(value = """
+                                {
+                                    "title": "퀴즈 제목",
+                                    "question": "퀴즈 질문",
+                                    "quizImg": null,
+                                    "quizType": "MULTIPLE_CHOICE",
+                                    "likeCount": 0,
+                                    "choices": [
+                                        "1.뭐요",
+                                        "2.뭘봐요",
+                                        "3.아닌데"
+                                    ],
+                                    "subject": "마이크로프로세서",
+                                    "writer": "테스터입니다",
+                                    "createdAt": "2024-08-10T16:33:00"
+                                }
+                                """)
+                })),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+                content = @Content(mediaType = "application/json", examples = {
+                        @ExampleObject(value = """
+                                {
+                                    "status": 404,
+                                    "message": "존재하지 않는 퀴즈입니다."
+                                }
+                                """)
+                })),
+
+    })
+    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId);
+
+    @Operation(summary = "퀴즈 채점", description = "퀴즈를 풀고 채점하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "채점 성공",
+                content = @Content(mediaType = "application/json", examples = {
+                        @ExampleObject(value = """
+                                {
+                                    true
+                                }
+                                """)
+                })),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+                content = @Content(mediaType = "application/json", examples = {
+                        @ExampleObject(value = """
+                                {
+                                    "status": 404,
+                                    "message": "존재하지 않는 퀴즈입니다."
+                                }
+                                """)
+                }))
+    })
+    public ResponseEntity<?> gradeQuiz(
+            @PathVariable(value = "quizId") Long quizId,
+            @Valid @RequestBody AnswerReq answerReq);
+
+
 }
