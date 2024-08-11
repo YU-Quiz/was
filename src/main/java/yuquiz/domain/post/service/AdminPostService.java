@@ -21,12 +21,12 @@ public class AdminPostService {
 
     private static final Integer POST_PER_PAGE = 10;
 
-    public Page<PostSummaryRes> getLatestPostsByPage(Integer pageNumber) {
+    public Page<PostSummaryRes> getLatestPostsByPage(Integer page) {
 
-        Pageable pageable = PageRequest.of(pageNumber, POST_PER_PAGE);
-        Page<Post> page = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE);
+        Page<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(PostSummaryRes::fromEntity);
+        return posts.map(PostSummaryRes::fromEntity);
     }
 
     @Transactional

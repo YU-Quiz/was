@@ -17,11 +17,11 @@ public class AdminPostController {
     private final AdminPostService adminPostService;
 
     @GetMapping
-    public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer pageNumber) {
+    public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer page) {
 
-        Page<PostSummaryRes> page = adminPostService.getLatestPostsByPage(pageNumber);
+        Page<PostSummaryRes> posts = adminPostService.getLatestPostsByPage(page);
 
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     @DeleteMapping("/{postId}")

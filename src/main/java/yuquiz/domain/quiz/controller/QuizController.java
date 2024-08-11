@@ -1,6 +1,7 @@
 package yuquiz.domain.quiz.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -8,11 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
-import yuquiz.domain.quiz.dto.AnswerReq;
-import yuquiz.domain.quiz.dto.QuizReq;
-import yuquiz.domain.quiz.dto.QuizRes;
-import yuquiz.domain.quiz.dto.SortType;
-import yuquiz.domain.quiz.entity.Quiz;
+import yuquiz.domain.quiz.dto.*;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -63,10 +60,9 @@ public class QuizController {
 
     @GetMapping("/subject/{subjectId}")
     public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
-                                                 @RequestParam(value = "page") Integer page,
+                                                 @RequestParam(value = "page") @Min(0) Integer page,
                                                  @RequestParam(value = "sort") SortType sort) {
-        Page<QuizRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
-
 }

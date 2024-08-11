@@ -17,11 +17,11 @@ public class AdminQuizController {
     private final AdminQuizService adminQuizService;
 
     @GetMapping
-    public ResponseEntity<?> getQuizPage(@RequestParam @Min(0) Integer pageNumber) {
+    public ResponseEntity<?> getQuizPage(@RequestParam @Min(0) Integer page) {
 
-        Page<QuizSummaryRes> page = adminQuizService.getQuizPage(pageNumber);
+        Page<QuizSummaryRes> quizzes = adminQuizService.getQuizPage(page);
 
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 
     @DeleteMapping("/{quizId}")
