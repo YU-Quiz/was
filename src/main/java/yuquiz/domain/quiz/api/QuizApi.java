@@ -161,5 +161,21 @@ public interface QuizApi {
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody AnswerReq answerReq);
 
-
+    @Operation(summary = "퀴즈 정답 보기", description = "특정 퀴즈의 정답을 확인하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정답 조회 성공",
+                content = @Content(mediaType = "text/plain", examples = {
+                        @ExampleObject(value = "1")
+                })),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                {
+                                    "status": 404,
+                                    "message": "존재하지 않는 퀴즈입니다."
+                                }
+                                """)
+                    }))
+    })
+    public ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId);
 }
