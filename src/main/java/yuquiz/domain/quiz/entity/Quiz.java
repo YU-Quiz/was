@@ -91,6 +91,8 @@ public class Quiz extends BaseTimeEntity {
         this.quizType = quizType;
         this.writer = writer;
         this.subject = subject;
+        this.likeCount = 0;
+        this.viewCount = 0;
     }
 
     public void update(QuizReq quizReq, Subject subject) {
