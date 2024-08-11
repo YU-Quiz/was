@@ -10,16 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import yuquiz.domain.report.api.AdminReportApi;
 import yuquiz.domain.report.dto.ReportSummaryRes;
 import yuquiz.domain.report.service.AdminReportService;
 
 @RestController
 @RequestMapping("/api/v1/admin/report")
 @RequiredArgsConstructor
-public class AdminReportController {
+public class AdminReportController implements AdminReportApi {
 
     private final AdminReportService adminReportService;
 
+    @Override
     @GetMapping
     public ResponseEntity<?> getReportPage(@RequestParam @Min(0) Integer page) {
 
