@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yuquiz.domain.quiz.api.AdminQuizApi;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.service.AdminQuizService;
 
 @RestController
 @RequestMapping("/api/v1/admin/quizzes")
 @RequiredArgsConstructor
-public class AdminQuizController {
+public class AdminQuizController implements AdminQuizApi {
 
     private final AdminQuizService adminQuizService;
 
