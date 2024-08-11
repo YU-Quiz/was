@@ -1,7 +1,6 @@
 package yuquiz.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,11 +50,7 @@ public class UserService {
     @Transactional
     public void deleteUserInfo(Long userId) {
 
-        try {
-            userRepository.deleteById(userId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException(UserExceptionCode.INVALID_USERID);
-        }
+        userRepository.deleteById(userId);
     }
 
     /* 사용자 불러오기 */

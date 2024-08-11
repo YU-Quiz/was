@@ -118,17 +118,6 @@ public interface UserApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "사용자 탈퇴 성공",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "유저 존재하지 않음",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                        {
-                                            "status": 404,
-                                            "message": "존재하지 않는 사용자입니다."
-                                        }
-                                    """)
                     }))
     })
     ResponseEntity<?> deleteUserInfo(@AuthenticationPrincipal SecurityUserDetails userDetails);
