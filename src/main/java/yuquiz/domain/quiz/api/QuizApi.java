@@ -44,4 +44,20 @@ public interface QuizApi {
                     }))
     })
     public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails);
+
+    @Operation(summary = "퀴즈 삭제", description = "퀴즈 삭제 관련 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "퀴즈 삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "작성자 불일치",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                {
+                                    "status": 403,
+                                    "message": "권한이 없습니다."
+                                }
+                                """)
+                    }))
+    })
+    public ResponseEntity<?> deleteQuiz(@PathVariable(value = "quizId") Long quizId, @AuthenticationPrincipal SecurityUserDetails userDetails);
+
 }
