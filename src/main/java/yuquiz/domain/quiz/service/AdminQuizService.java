@@ -21,7 +21,7 @@ public class AdminQuizService {
 
     private static final Integer QUIZ_PER_PAGE = 10;
 
-    public Page<QuizSummaryRes> getQuizPage(Integer pageNumber){
+    public Page<QuizSummaryRes> getQuizPage(Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, QUIZ_PER_PAGE);
         Page<Quiz> page = quizRepository.findAllByOrderByCreatedAtDesc(pageable);

@@ -17,11 +17,11 @@ public class AdminUserService {
 
     private static final Integer USER_PER_PAGE = 10;
 
-    public Page<UserSummaryRes> getUserPage(Integer pageNumber) {
+    public Page<UserSummaryRes> getUserPage(Integer page) {
 
-        Pageable pageable = PageRequest.of(pageNumber, USER_PER_PAGE);
-        Page<User> page = userRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Pageable pageable = PageRequest.of(page, USER_PER_PAGE);
+        Page<User> users = userRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        return page.map(UserSummaryRes::fromEntity);
+        return users.map(UserSummaryRes::fromEntity);
     }
 }

@@ -17,10 +17,10 @@ public class AdminUserController {
     private final AdminUserService adminUserService;
 
     @GetMapping
-    public ResponseEntity<?> getUserPage(@RequestParam @Min(0) Integer pageNumber) {
+    public ResponseEntity<?> getUserPage(@RequestParam @Min(0) Integer page) {
 
-        Page<UserSummaryRes> page = adminUserService.getUserPage(pageNumber);
+        Page<UserSummaryRes> users = adminUserService.getUserPage(page);
 
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 }
