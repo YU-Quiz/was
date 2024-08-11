@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.quiz.api.QuizApi;
 import yuquiz.domain.quiz.dto.*;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
@@ -16,7 +17,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 @RestController
 @RequestMapping("/api/v1/quizzes")
 @RequiredArgsConstructor
-public class QuizController {
+public class QuizController implements QuizApi {
 
     private final QuizService quizService;
 
