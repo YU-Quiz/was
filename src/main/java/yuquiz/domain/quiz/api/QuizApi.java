@@ -43,7 +43,7 @@ public interface QuizApi {
                                 """)
                     }))
     })
-    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails);
+    ResponseEntity<?> createQuiz(@Valid @RequestBody QuizReq quizReq, @AuthenticationPrincipal SecurityUserDetails userDetails);
 
     @Operation(summary = "퀴즈 삭제", description = "퀴즈 삭제 관련 API")
     @ApiResponses({
@@ -52,13 +52,13 @@ public interface QuizApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                 {
-                                    "status": 403,
+                                    "status": 401,
                                     "message": "권한이 없습니다."
                                 }
                                 """)
                     }))
     })
-    public ResponseEntity<?> deleteQuiz(@PathVariable(value = "quizId") Long quizId, @AuthenticationPrincipal SecurityUserDetails userDetails);
+    ResponseEntity<?> deleteQuiz(@PathVariable(value = "quizId") Long quizId, @AuthenticationPrincipal SecurityUserDetails userDetails);
 
     @Operation(summary = "퀴즈 수정", description = "퀴즈 수정 관련 API")
     @ApiResponses({
@@ -74,7 +74,7 @@ public interface QuizApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                 {
-                                    "status": 403,
+                                    "status": 401,
                                     "message": "권한이 없습니다."
                                 }
                                 """)
@@ -92,7 +92,7 @@ public interface QuizApi {
                                 """)
                     }))
     })
-    public ResponseEntity<?> updateQuiz(
+    ResponseEntity<?> updateQuiz(
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody QuizReq quizReq,
             @AuthenticationPrincipal SecurityUserDetails userDetails);
@@ -130,7 +130,7 @@ public interface QuizApi {
                 })),
 
     })
-    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId);
+    ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId);
 
     @Operation(summary = "퀴즈 채점", description = "퀴즈를 풀고 채점하는 API")
     @ApiResponses({
@@ -138,7 +138,7 @@ public interface QuizApi {
                 content = @Content(mediaType = "application/json", examples = {
                         @ExampleObject(value = """
                                 {
-                                    true
+                                    "response": true
                                 }
                                 """)
                 })),
@@ -152,15 +152,19 @@ public interface QuizApi {
                                 """)
                 }))
     })
-    public ResponseEntity<?> gradeQuiz(
+    ResponseEntity<?> gradeQuiz(
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody AnswerReq answerReq);
 
     @Operation(summary = "퀴즈 정답 보기", description = "특정 퀴즈의 정답을 확인하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정답 조회 성공",
-                content = @Content(mediaType = "text/plain", examples = {
-                        @ExampleObject(value = "1")
+                content = @Content(mediaType = "application/json", examples = {
+                        @ExampleObject(value = """
+                                {
+                                    "response": "1"
+                                }
+                                """)
                 })),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
                     content = @Content(mediaType = "application/json", examples = {
@@ -172,7 +176,7 @@ public interface QuizApi {
                                 """)
                     }))
     })
-    public ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId);
+    ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId);
 
     @Operation(summary = "과목별 퀴즈 조회", description = "과목별 퀴즈 목록을 조회하는 API")
     @ApiResponses({
@@ -237,7 +241,7 @@ public interface QuizApi {
                                 """)
                     }))
     })
-    public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
+    ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
                                                  @RequestParam(value = "page") @Min(0) Integer page,
                                                  @RequestParam(value = "sort") SortType sort);
 }
