@@ -7,12 +7,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
+import yuquiz.domain.quiz.dto.SortType;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[퀴즈 API]", description = "퀴즈 관련 API")
@@ -29,15 +32,11 @@ public interface QuizApi {
                     })),
             @ApiResponse(responseCode = "400", description = "유효성 검사 실패",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(name = "notBlank", value = """
+                            @ExampleObject(value = """
                                 {
                                     "answer": "정답은 필수 입력입니다.",
                                     "question": "질문은 필수 입력입니다.",
-                                    "title": "제목은 필수 입력입니다."
-                                }
-                                """),
-                            @ExampleObject(name = "notNull", value = """
-                                {
+                                    "title": "제목은 필수 입력입니다.",
                                     "quizType": "퀴즈 유형은 필수 입력입니다.",
                                     "subjectId": "과목은 필수 입력입니다."
                                 }
@@ -82,15 +81,11 @@ public interface QuizApi {
                     })),
             @ApiResponse(responseCode = "400", description = "유효성 검사 실패",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(name = "notBlank", value = """
+                            @ExampleObject(value = """
                                 {
                                     "answer": "정답은 필수 입력입니다.",
                                     "question": "질문은 필수 입력입니다.",
-                                    "title": "제목은 필수 입력입니다."
-                                }
-                                """),
-                            @ExampleObject(name = "notNull", value = """
-                                {
+                                    "title": "제목은 필수 입력입니다.",
                                     "quizType": "퀴즈 유형은 필수 입력입니다.",
                                     "subjectId": "과목은 필수 입력입니다."
                                 }
@@ -178,4 +173,71 @@ public interface QuizApi {
                     }))
     })
     public ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId);
+
+    @Operation(summary = "과목별 퀴즈 조회", description = "과목별 퀴즈 목록을 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퀴즈 목록 조회 성공",
+                content = @Content(mediaType = "application/json",examples = {
+                        @ExampleObject(value = """
+                                {
+                                     "totalPages": 1,
+                                     "totalElements": 2,
+                                     "first": true,
+                                     "last": true,
+                                     "size": 20,
+                                     "content": [
+                                         {
+                                             "quizId": 4,
+                                             "quizTitle": "보지마세요",
+                                             "nickname": "테스터다",
+                                             "createdAt": "2024-08-10T16:33:00",
+                                             "likeCount": 0,
+                                             "viewCount": 1
+                                         },
+                                         {
+                                             "quizId": 7,
+                                             "quizTitle": "testing",
+                                             "nickname": "테스터111",
+                                             "createdAt": "2024-08-11T19:43:53",
+                                             "likeCount": 5,
+                                             "viewCount": 15
+                                         }
+                                     ],
+                                     "number": 0,
+                                     "sort": {
+                                         "empty": false,
+                                         "sorted": true,
+                                         "unsorted": false
+                                     },
+                                     "numberOfElements": 2,
+                                     "pageable": {
+                                         "pageNumber": 0,
+                                         "pageSize": 20,
+                                         "sort": {
+                                             "empty": false,
+                                             "sorted": true,
+                                             "unsorted": false
+                                         },
+                                         "offset": 0,
+                                         "paged": true,
+                                         "unpaged": false
+                                     },
+                                     "empty": false
+                                 }
+                                """)
+
+                })),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 과목",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                {
+                                    "status": 404,
+                                    "message": "존재하지 않는 과목입니다."
+                                }
+                                """)
+                    }))
+    })
+    public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
+                                                 @RequestParam(value = "page") @Min(0) Integer page,
+                                                 @RequestParam(value = "sort") SortType sort);
 }
