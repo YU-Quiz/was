@@ -91,8 +91,8 @@ public class QuizService {
         return quizzes.map(QuizSummaryRes::fromEntity);
     }
 
-    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, SortType sort, Integer page) {
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, QuizSortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
         Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
 

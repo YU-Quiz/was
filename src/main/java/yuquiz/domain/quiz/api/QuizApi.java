@@ -243,7 +243,7 @@ public interface QuizApi {
     })
     ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
                                           @RequestParam(value = "page") @Min(0) Integer page,
-                                          @RequestParam(value = "sort") SortType sort);
+                                          @RequestParam(value = "sort") QuizSortType sort);
 
     @Operation(summary = "퀴즈 검색", description = "키워드를 이용해 퀴즈를 검색하는 기능")
     @ApiResponses({
@@ -343,6 +343,6 @@ public interface QuizApi {
                     })),
     })
     ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
-                                          @RequestParam(value = "sort") SortType sort,
+                                          @RequestParam(value = "sort") QuizSortType sort,
                                           @RequestParam(value = "page") @Min(0) Integer page);
 }
