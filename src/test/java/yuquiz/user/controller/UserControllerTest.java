@@ -17,7 +17,9 @@ import yuquiz.domain.user.dto.SignUpReq;
 import yuquiz.domain.user.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -111,5 +113,93 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
                 .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
+    }
+
+    @Test
+    @DisplayName("아이디 중복 확인 - 존재 o")
+    void verifyUsernameExistsTest() throws Exception {
+        // given
+        String username = "test";
+
+        given(userService.verifyUsername(username)).willReturn(true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/users/verify-username")
+                        .param("username", username)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value(true));
+    }
+
+    @Test
+    @DisplayName("아이디 중복 확인 - 존재 x")
+    void verifyUsernameNonExistsTest() throws Exception {
+        // given
+        String username = "test";
+
+        given(userService.verifyUsername(username)).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/users/verify-username")
+                        .param("username", username)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value(false));
+    }
+
+    @Test
+    @DisplayName("닉네임 중복 확인 - 존재 o")
+    void verifyNicknameExistsTest() throws Exception {
+        // given
+        String nickname = "test";
+
+        given(userService.verifyNickname(nickname)).willReturn(true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/users/verify-nickname")
+                        .param("nickname", nickname)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value(true));
+    }
+
+    @Test
+    @DisplayName("아이디 중복 확인 - 존재 x")
+    void verifyNicknameNonExistsTest() throws Exception {
+        // given
+        String nickname = "test";
+
+        given(userService.verifyNickname(nickname)).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/users/verify-nickname")
+                        .param("nickname", nickname)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value(false));
     }
 }
