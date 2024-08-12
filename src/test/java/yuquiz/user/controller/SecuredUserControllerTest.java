@@ -152,7 +152,7 @@ public class SecuredUserControllerTest {
     }
 
     @Test
-    @DisplayName("회원 업데이트 실패 테스트 - 정보 누락")
+    @DisplayName("회원 업데이트 실패 테스트 - 패턴 불일치")
     void updateUserInfoInsufficientTest() throws Exception {
         // given
         UserUpdateReq updateReq =
@@ -258,6 +258,49 @@ public class SecuredUserControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value(UserExceptionCode.INVALID_PASSWORD.getMessage()));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 실패 테스트 - 정보 누락")
+    void updatePasswordInvalidTest() throws Exception {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq(null, null);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/users/my/password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.currentPassword").value("현재 비밀번호를 입력해주세요."))
+                .andExpect(jsonPath("$.newPassword").value("새로운 비밀번호를 입력해주세요."));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 실패 테스트 - 패턴 불일치")
+    void updatePasswordInsufficientTest() throws Exception {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "new");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/users/my/password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.newPassword").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."));
     }
 
     @Test
