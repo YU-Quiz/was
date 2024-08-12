@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.user.dto.PassWordUpdateReq;
+import yuquiz.domain.user.dto.PasswordReq;
 import yuquiz.domain.user.dto.SignUpReq;
 import yuquiz.domain.user.dto.UserDetailsRes;
 import yuquiz.domain.user.dto.UserUpdateReq;
@@ -44,11 +46,47 @@ public class UserService {
                 updateReq.email(), updateReq.agreeEmail(), updateReq.majorName());
     }
 
+    /* 비밀번호 변경 */
+    @Transactional
+    public void updatePassword(PassWordUpdateReq passwordReq, Long userId) {
+
+        User foundUser = findUserByUserId(userId);
+
+        if (!checkPassword(passwordReq.currentPassword(), foundUser.getPassword()))
+            throw new CustomException(UserExceptionCode.INVALID_PASSWORD);
+
+        String encodePassword = passwordEncoder.encode(passwordReq.newPassword());
+        foundUser.updatePassword(encodePassword);
+    }
+
+    /* 비밀번호 확인 */
+    @Transactional(readOnly = true)
+    public boolean verifyPassword(PasswordReq passwordReq, Long userId) {
+
+        String currentPassword = userRepository.findPasswordById(userId);
+
+        return checkPassword(passwordReq.password(), currentPassword);
+    }
+
     /* 사용자 정보 삭제 */
     @Transactional
     public void deleteUserInfo(Long userId) {
 
         userRepository.deleteById(userId);
+    }
+
+    /* 아이디 중복 확인 */
+    @Transactional(readOnly = true)
+    public boolean verifyUsername(String username) {
+
+        return userRepository.existsByUsername(username);
+    }
+
+    /* 비밀번호 중복 확인 */
+    @Transactional(readOnly = true)
+    public boolean verifyNickname(String nickname) {
+
+        return userRepository.existsByNickname(nickname);
     }
 
     /* 사용자 불러오기 */
@@ -58,4 +96,9 @@ public class UserService {
                 new CustomException(UserExceptionCode.INVALID_USERID));
     }
 
+    /* 비밀번호 유효성 검사 */
+    private boolean checkPassword(String actual, String expect) {
+
+        return passwordEncoder.matches(actual, expect);
+    }
 }

@@ -111,4 +111,9 @@ public class User extends BaseTimeEntity {
         this.agreeEmail = agreeEmail;
         this.majorName = majorName;
     }
+
+    /* 비밀번호 변경 편의 메서드 */
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
