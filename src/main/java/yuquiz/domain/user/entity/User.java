@@ -105,8 +105,7 @@ public class User extends BaseTimeEntity {
     }
 
     /* 사용자 업데이트 편의 메서드 */
-    public void updateUser(String password, String nickname, String email, boolean agreeEmail, String majorName) {
-        this.password = password;
+    public void updateUser(String nickname, String email, boolean agreeEmail, String majorName) {
         this.nickname = nickname;
         this.email = email;
         this.agreeEmail = agreeEmail;

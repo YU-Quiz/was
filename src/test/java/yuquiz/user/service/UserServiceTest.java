@@ -95,7 +95,7 @@ public class UserServiceTest {
     void updateUserInfoTest() {
         // given
         UserUpdateReq updateReq =
-                new UserUpdateReq("newPassword1234", "테스터1", "new@gmail.com", "컴공", false);
+                new UserUpdateReq("테스터1", "new@gmail.com", "컴공", false);
 
         given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
 

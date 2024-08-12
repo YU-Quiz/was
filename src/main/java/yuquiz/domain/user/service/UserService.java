@@ -40,9 +40,7 @@ public class UserService {
 
         User foundUser = findUserByUserId(userId);
 
-        String encodePassword = passwordEncoder.encode(updateReq.password());
-
-        foundUser.updateUser(encodePassword, updateReq.nickname(),
+        foundUser.updateUser(updateReq.nickname(),
                 updateReq.email(), updateReq.agreeEmail(), updateReq.majorName());
     }
 
