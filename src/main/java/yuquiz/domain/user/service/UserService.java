@@ -82,7 +82,7 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
-    /* 비밀번호 중복 확인 */
+    /* 닉네임 중복 확인 */
     @Transactional(readOnly = true)
     public boolean verifyNickname(String nickname) {
 
