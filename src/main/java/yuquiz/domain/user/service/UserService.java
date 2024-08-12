@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.user.dto.PassWordUpdateReq;
+import yuquiz.domain.user.dto.PasswordUpdateReq;
 import yuquiz.domain.user.dto.PasswordReq;
 import yuquiz.domain.user.dto.SignUpReq;
 import yuquiz.domain.user.dto.UserDetailsRes;
@@ -48,7 +48,7 @@ public class UserService {
 
     /* 비밀번호 변경 */
     @Transactional
-    public void updatePassword(PassWordUpdateReq passwordReq, Long userId) {
+    public void updatePassword(PasswordUpdateReq passwordReq, Long userId) {
 
         User foundUser = findUserByUserId(userId);
 
