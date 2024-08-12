@@ -35,7 +35,7 @@ public class QuizService {
     @Transactional
     public void createQuiz(QuizReq quizReq, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new CustomException(UserExceptionCode.INVALID_USERID));
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
         Subject subject = subjectRepository.findById(quizReq.subjectId())
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
@@ -82,7 +82,7 @@ public class QuizService {
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
         Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
-        Page<Quiz> quizzes =  quizRepository.findAllBySubject(subject, pageable);
+        Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
 
         return quizzes.map(QuizSummaryRes::fromEntity);
     }
@@ -107,5 +107,13 @@ public class QuizService {
         }
 
         return quiz;
+    }
+
+    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, SortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+
+        Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
+
+        return quizzes.map(QuizSummaryRes::fromEntity);
     }
 }

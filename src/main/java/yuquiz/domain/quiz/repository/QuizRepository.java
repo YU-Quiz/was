@@ -10,4 +10,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
   
     Page<Quiz> findAllByOrderByCreatedAtDesc(Pageable pageable);
     Page<Quiz> findAllBySubject(Subject subject, Pageable pageable);
+
+    Page<Quiz> findAllByTitleContainingOrQuestionContaining(String keyword1, String keyword2, Pageable pageable);
 }
