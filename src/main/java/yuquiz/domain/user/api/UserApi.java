@@ -10,6 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import yuquiz.domain.user.dto.PasswordReq;
+import yuquiz.domain.user.dto.PasswordUpdateReq;
 import yuquiz.domain.user.dto.SignUpReq;
 import yuquiz.domain.user.dto.UserUpdateReq;
 import yuquiz.security.auth.SecurityUserDetails;
@@ -121,4 +124,96 @@ public interface UserApi {
                     }))
     })
     ResponseEntity<?> deleteUserInfo(@AuthenticationPrincipal SecurityUserDetails userDetails);
+
+    @Operation(summary = "사용자 비밀번호 업데이트", description = "로그인한 사용자의 비밀번호를 업데이트 하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 비밀번호 수정 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "비밀번호 수정 성공."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "currentPassword": "현재 비밀번호를 입력해주세요.",
+                                            "newPassword": "새로운 비밀번호를 입력해주세요."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            ""newPassword": "비밀번호는 8~16자 영문과 숫자를 사용하세요."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "유저 존재하지 않음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 404,
+                                            "message": "존재하지 않는 사용자입니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> updatePassword(@Valid @RequestBody PasswordUpdateReq passwordReq,
+                                     @AuthenticationPrincipal SecurityUserDetails userDetails);
+
+    @Operation(summary = "사용자 비밀번호 확인", description = "로그인한 사용자의 비밀번호를 확인 하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 비밀번호 확인 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "Correct", value = """
+                                        {
+                                            "response": true
+                                        }
+                                    """),
+                            @ExampleObject(name = "Incorrect", value = """
+                                        {
+                                            "response": false
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> verifyPassword(@Valid @RequestBody PasswordReq passwordReq,
+                                     @AuthenticationPrincipal SecurityUserDetails userDetails);
+
+    @Operation(summary = "아이디 중복 확인", description = "아이디 중복을 확인 하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "아이디 중복 확인 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "Exist", value = """
+                                        {
+                                            "response": true
+                                        }
+                                    """),
+                            @ExampleObject(name = "unExist", value = """
+                                        {
+                                            "response": false
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> verifyUsername(@RequestParam(name = "username") String username);
+
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복을 확인 하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "닉네임 중복 확인 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "Exist", value = """
+                                        {
+                                            "response": true
+                                        }
+                                    """),
+                            @ExampleObject(name = "unExist", value = """
+                                        {
+                                            "response": false
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname);
 }

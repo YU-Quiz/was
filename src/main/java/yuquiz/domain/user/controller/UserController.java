@@ -58,6 +58,7 @@ public class UserController implements UserApi {
     }
 
     /* 비밀번호 수정 */
+    @Override
     @PatchMapping("/my/password")
     public ResponseEntity<?> updatePassword(@Valid @RequestBody PasswordUpdateReq passwordReq,
                                             @AuthenticationPrincipal SecurityUserDetails userDetails) {
@@ -67,6 +68,7 @@ public class UserController implements UserApi {
     }
 
     /* 비밀번호 확인 */
+    @Override
     @PostMapping("/my/verify-password")
     public ResponseEntity<?> verifyPassword(@Valid @RequestBody PasswordReq passwordReq,
                                             @AuthenticationPrincipal SecurityUserDetails userDetails) {
@@ -76,6 +78,7 @@ public class UserController implements UserApi {
     }
 
     /* 아이디 중복 확인 */
+    @Override
     @GetMapping("/verify-username")
     public ResponseEntity<?> verifyUsername(@RequestParam(name = "username") String username) {
 
@@ -84,6 +87,7 @@ public class UserController implements UserApi {
     }
 
     /* 닉네임 중복 확인 */
+    @Override
     @GetMapping("/verify-nickname")
     public ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname) {
 
