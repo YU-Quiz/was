@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yuquiz.domain.report.dto.ReportSortType;
 import yuquiz.domain.report.dto.ReportSummaryRes;
 import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.report.repository.ReportRepository;
@@ -15,13 +16,13 @@ public class AdminReportService {
 
     private final ReportRepository reportRepository;
 
-    private static final Integer REPORT_PER_PAGE = 10;
+    private static final Integer REPORT_PER_PAGE = 20;
 
-    public Page<ReportSummaryRes> getReportPage(Integer pageNumber) {
+    public Page<ReportSummaryRes> getAllReports(ReportSortType sort, Integer page) {
 
-        Pageable pageable = PageRequest.of(pageNumber, REPORT_PER_PAGE);
-        Page<Report> page = reportRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Pageable pageable = PageRequest.of(page, REPORT_PER_PAGE, sort.getSort());
+        Page<Report> reports = reportRepository.findAll(pageable);
 
-        return page.map(ReportSummaryRes::fromEntity);
+        return reports.map(ReportSummaryRes::fromEntity);
     }
 }
