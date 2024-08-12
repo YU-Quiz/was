@@ -91,6 +91,22 @@ public class QuizService {
         return quizzes.map(QuizSummaryRes::fromEntity);
     }
 
+    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, SortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+
+        Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
+
+        return quizzes.map(QuizSummaryRes::fromEntity);
+    }
+
+    @Transactional
+    public void reportQuiz(Long quizId, ReportReq reportReq) {
+        Quiz quiz = findQuizByQuizId(quizId);
+        Report report = reportReq.toEntity(quiz);
+
+        reportRepository.save(report);
+    }
+
     private User findUserByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
@@ -111,21 +127,5 @@ public class QuizService {
         }
 
         return quiz;
-    }
-
-    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, SortType sort, Integer page) {
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
-
-        Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
-
-        return quizzes.map(QuizSummaryRes::fromEntity);
-    }
-
-    @Transactional
-    public void reportQuiz(Long quizId, ReportReq reportReq) {
-        Quiz quiz = findQuizByQuizId(quizId);
-        Report report = reportReq.toEntity(quiz);
-
-        reportRepository.save(report);
     }
 }
