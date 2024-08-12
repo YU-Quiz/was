@@ -14,6 +14,9 @@ import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
+import yuquiz.domain.report.dto.ReportReq;
+import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
@@ -28,13 +31,14 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
+    private final ReportRepository reportRepository;
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
     @Transactional
     public void createQuiz(QuizReq quizReq, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new CustomException(UserExceptionCode.INVALID_USERID));
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
         Subject subject = subjectRepository.findById(quizReq.subjectId())
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
@@ -80,8 +84,17 @@ public class QuizService {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
+
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
-        Page<Quiz> quizzes =  quizRepository.findAllBySubject(subject, pageable);
+        Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
+
+        return quizzes.map(QuizSummaryRes::fromEntity);
+    }
+
+    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, SortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+
+        Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
 
         return quizzes.map(QuizSummaryRes::fromEntity);
     }

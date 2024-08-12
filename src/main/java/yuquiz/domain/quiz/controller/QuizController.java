@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.quiz.api.QuizApi;
@@ -15,6 +16,7 @@ import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.dto.QuizSortType;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.service.QuizService;
+import yuquiz.domain.report.dto.ReportReq;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
@@ -67,6 +69,14 @@ public class QuizController implements QuizApi {
                                                  @RequestParam(value = "page") @Min(0) Integer page,
                                                  @RequestParam(value = "sort") QuizSortType sort) {
         Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
+        return ResponseEntity.status(HttpStatus.OK).body(quizzes);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
+                                                 @RequestParam(value = "sort") SortType sort,
+                                                 @RequestParam(value = "page") @Min(0) Integer page) {
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(keyword, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 }
