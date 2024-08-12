@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
-import yuquiz.domain.quiz.dto.SortType;
+import yuquiz.domain.quiz.dto.QuizSortType;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[퀴즈 API]", description = "퀴즈 관련 API")
@@ -243,5 +243,5 @@ public interface QuizApi {
     })
     ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
                                                  @RequestParam(value = "page") @Min(0) Integer page,
-                                                 @RequestParam(value = "sort") SortType sort);
+                                                 @RequestParam(value = "sort") QuizSortType sort);
 }
