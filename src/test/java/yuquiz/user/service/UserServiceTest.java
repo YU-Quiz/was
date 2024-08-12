@@ -43,7 +43,7 @@ public class UserServiceTest {
     private Long userId;
 
     @BeforeEach
-    void SetUp() {
+    void setUp() {
         this.user = User.builder()
                 .username("test")
                 .password("password123")
@@ -85,9 +85,9 @@ public class UserServiceTest {
         // then
         verify(userRepository, times(1)).findById(userId);
         assertNotNull(userDetailsRes);
-        assertEquals(userDetailsRes.username(), user.getUsername());
-        assertEquals(userDetailsRes.email(), user.getEmail());
-        assertEquals(userDetailsRes.nickname(), user.getNickname());
+        assertEquals(user.getUsername(), userDetailsRes.username());
+        assertEquals(user.getEmail(), userDetailsRes.email());
+        assertEquals(user.getNickname(), userDetailsRes.nickname());
     }
 
     @Test
