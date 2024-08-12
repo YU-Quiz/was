@@ -15,6 +15,9 @@ import yuquiz.domain.quiz.dto.SortType;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
+import yuquiz.domain.report.dto.ReportReq;
+import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
@@ -29,6 +32,7 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
+    private final ReportRepository reportRepository;
 
     private static final Integer POST_PER_PAGE = 20;
 
@@ -115,5 +119,13 @@ public class QuizService {
         Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
 
         return quizzes.map(QuizSummaryRes::fromEntity);
+    }
+
+    @Transactional
+    public void reportQuiz(Long quizId, ReportReq reportReq) {
+        Quiz quiz = findQuizByQuizId(quizId);
+        Report report = reportReq.toEntity(quiz);
+
+        reportRepository.save(report);
     }
 }

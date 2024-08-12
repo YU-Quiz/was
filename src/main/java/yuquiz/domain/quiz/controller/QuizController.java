@@ -7,11 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.quiz.api.QuizApi;
 import yuquiz.domain.quiz.dto.*;
 import yuquiz.domain.quiz.service.QuizService;
+import yuquiz.domain.report.dto.ReportReq;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
@@ -74,4 +76,12 @@ public class QuizController implements QuizApi {
         Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(keyword, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
+
+    @PostMapping("/{quizId}/report")
+    public ResponseEntity<?> reportQuiz(@PathVariable(value = "quizId") Long quizId,
+                                        @Valid @RequestBody ReportReq reportReq) {
+        quizService.reportQuiz(quizId,reportReq);
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("퀴즈 신고 완료."));
+    }
+
 }
