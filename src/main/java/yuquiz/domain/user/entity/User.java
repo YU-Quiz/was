@@ -1,7 +1,15 @@
 package yuquiz.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -94,5 +102,14 @@ public class User extends BaseTimeEntity {
         this.majorName = majorName;
         this.agreeEmail = agreeEmail;
         this.role = role;
+    }
+
+    /* 사용자 업데이트 편의 메서드 */
+    public void updateUser(String password, String nickname, String email, boolean agreeEmail, String majorName) {
+        this.password = password;
+        this.nickname = nickname;
+        this.email = email;
+        this.agreeEmail = agreeEmail;
+        this.majorName = majorName;
     }
 }
