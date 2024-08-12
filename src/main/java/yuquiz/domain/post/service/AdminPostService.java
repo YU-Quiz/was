@@ -32,10 +32,6 @@ public class AdminPostService {
     @Transactional
     public void deletePost(Long postId) {
 
-        try{
-            postRepository.deleteById(postId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CustomException(PostExceptionCode.INVALID_ID);
-        }
+        postRepository.deleteById(postId);
     }
 }

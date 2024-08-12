@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yuquiz.domain.post.api.AdminPostApi;
 import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.domain.post.service.AdminPostService;
 
 @RestController
 @RequestMapping("/api/v1/admin/posts")
 @RequiredArgsConstructor
-public class AdminPostController {
+public class AdminPostController implements AdminPostApi {
 
     private final AdminPostService adminPostService;
 

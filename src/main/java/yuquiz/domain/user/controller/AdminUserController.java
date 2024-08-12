@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yuquiz.domain.user.api.AdminUserApi;
 import yuquiz.domain.user.dto.UserSummaryRes;
 import yuquiz.domain.user.service.AdminUserService;
 
 @RestController
 @RequestMapping("/api/v1/admin/users")
 @RequiredArgsConstructor
-public class AdminUserController {
+public class AdminUserController implements AdminUserApi {
 
     private final AdminUserService adminUserService;
 
