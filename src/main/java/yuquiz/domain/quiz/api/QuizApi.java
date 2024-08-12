@@ -347,35 +347,5 @@ public interface QuizApi {
                                           @RequestParam(value = "sort") SortType sort,
                                           @RequestParam(value = "page") @Min(0) Integer page);
 
-    @Operation(summary = "퀴즈 신고", description = "퀴즈의 오류 혹은 문제를 신고하는 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "퀴즈 신고 완료",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                        "response": "퀴즈 신고 완료."
-                                    }
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                        "status": 404,
-                                        "message": "존재하지 않는 퀴즈입니다."
-                                    }
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "400", description = "유효성 검사 실패",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                        "reason": "신고 사유는 필수 입력입니다.",
-                                        "type": "신고 유형은 필수 입력입니다."
-                                    }
-                                    """)
-                    }))
-    })
-    ResponseEntity<?> reportQuiz(@PathVariable(value = "quizId") Long quizId,
-                                 @Valid @RequestBody ReportReq reportReq);
+
 }

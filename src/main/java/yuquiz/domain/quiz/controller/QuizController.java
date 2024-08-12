@@ -76,12 +76,4 @@ public class QuizController implements QuizApi {
         Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(keyword, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
-
-    @PostMapping("/{quizId}/report")
-    public ResponseEntity<?> reportQuiz(@PathVariable(value = "quizId") Long quizId,
-                                        @Valid @RequestBody ReportReq reportReq) {
-        quizService.reportQuiz(quizId,reportReq);
-        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("퀴즈 신고 완료."));
-    }
-
 }

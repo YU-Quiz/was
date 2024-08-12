@@ -99,14 +99,6 @@ public class QuizService {
         return quizzes.map(QuizSummaryRes::fromEntity);
     }
 
-    @Transactional
-    public void reportQuiz(Long quizId, ReportReq reportReq) {
-        Quiz quiz = findQuizByQuizId(quizId);
-        Report report = reportReq.toEntity(quiz);
-
-        reportRepository.save(report);
-    }
-
     private User findUserByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
