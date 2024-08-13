@@ -17,6 +17,9 @@ import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
+import yuquiz.domain.quizLike.entity.QuizLike;
+import yuquiz.domain.quizLike.exception.QuizLikeExceptionCode;
+import yuquiz.domain.quizLike.repository.QuizLikeRepository;
 import yuquiz.domain.report.dto.ReportReq;
 import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.report.repository.ReportRepository;
@@ -38,6 +41,7 @@ public class QuizService {
     private final SubjectRepository subjectRepository;
     private final TriedQuizRepository triedQuizRepository;
     private final PinnedQuizRepository pinnedQuizRepository;
+    private final QuizLikeRepository quizLikeRepository;
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
@@ -147,6 +151,31 @@ public class QuizService {
         Quiz quiz = findQuizByQuizId(quizId);
 
         pinnedQuizRepository.deleteByUserAndQuiz(user, quiz);
+    }
+
+    @Transactional
+    public void likeQuiz(Long userId, Long quizId) {
+        User user = findUserByUserId(userId);
+        Quiz quiz = findQuizByQuizId(quizId);
+
+        if (quizLikeRepository.existsByUserAndQuiz(user, quiz)) {
+            throw new CustomException(QuizLikeExceptionCode.ALREADY_EXIST);
+        }
+
+        QuizLike quizLike = QuizLike.builder()
+                .user(user)
+                .quiz(quiz)
+                .build();
+
+        quizLikeRepository.save(quizLike);
+    }
+
+    @Transactional
+    public void deleteLikeQuiz(Long userId, Long quizId) {
+        User user = findUserByUserId(userId);
+        Quiz quiz = findQuizByQuizId(quizId);
+
+        quizLikeRepository.deleteByUserAndQuiz(user, quiz);
     }
 
     private User findUserByUserId(Long userId) {
