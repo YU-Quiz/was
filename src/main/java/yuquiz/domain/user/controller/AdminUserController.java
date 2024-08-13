@@ -30,6 +30,14 @@ public class AdminUserController implements AdminUserApi {
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+
+        adminUserService.deleteUser(userId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @Override
     @PatchMapping("/{userId}")
     public ResponseEntity<?> suspendUser(@PathVariable Long userId,

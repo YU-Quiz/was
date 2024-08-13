@@ -77,6 +77,12 @@ public interface AdminUserApi {
     ResponseEntity<?> getAllUsers(@RequestParam UserSortType sort,
                                   @RequestParam @Min(0) Integer page);
 
+    @Operation(summary = "사용자 강제 탈퇴", description = "사용자id를 기반으로 사용자를 탈퇴시키는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "사용자 탈퇴 성공")
+    })
+    ResponseEntity<?> deleteUser(@PathVariable Long userId);
+
     @Operation(summary = "사용자 정지, 사면, 취소", description = "사용자 강제 정지, 정지 사면, 정지 취소 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "사용자 정지 성공",

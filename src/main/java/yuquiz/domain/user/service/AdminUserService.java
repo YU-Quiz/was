@@ -30,6 +30,11 @@ public class AdminUserService {
         return users.map(UserSummaryRes::fromEntity);
     }
 
+    public void deleteUser(Long userId) {
+
+        userRepository.deleteById(userId);
+    }
+
     public void updateSuspendStatus(Long userId, UserStatusReq status) {
 
         User user = userRepository.findById(userId).orElseThrow(() ->
