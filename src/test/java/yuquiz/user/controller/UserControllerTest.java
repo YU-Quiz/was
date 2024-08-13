@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import yuquiz.domain.user.controller.UserController;
-import yuquiz.domain.user.dto.SignUpReq;
+import yuquiz.domain.user.dto.req.SignUpReq;
 import yuquiz.domain.user.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;

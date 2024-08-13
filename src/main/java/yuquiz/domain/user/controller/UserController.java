@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.user.api.UserApi;
-import yuquiz.domain.user.dto.PasswordUpdateReq;
-import yuquiz.domain.user.dto.PasswordReq;
-import yuquiz.domain.user.dto.SignUpReq;
-import yuquiz.domain.user.dto.UserUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.SignUpReq;
+import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.service.UserService;
 import yuquiz.security.auth.SecurityUserDetails;
 

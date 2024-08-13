@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import yuquiz.domain.user.dto.PasswordReq;
-import yuquiz.domain.user.dto.PasswordUpdateReq;
-import yuquiz.domain.user.dto.SignUpReq;
-import yuquiz.domain.user.dto.UserUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
+import yuquiz.domain.user.dto.req.SignUpReq;
+import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[사용자 API]", description = "사용자 관련 API")

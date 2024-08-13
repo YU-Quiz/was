@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.domain.user.api.AdminUserApi;
-import yuquiz.domain.user.dto.UserSummaryRes;
+import yuquiz.domain.user.dto.res.UserSummaryRes;
 import yuquiz.domain.user.service.AdminUserService;
 
 @RestController
