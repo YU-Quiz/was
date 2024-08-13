@@ -6,5 +6,5 @@ import lombok.Getter;
 public enum UserStatusReq {
     SUSPEND,
     UNSUSPEND,
-    CANCEL;
+    CANCEL
 }
