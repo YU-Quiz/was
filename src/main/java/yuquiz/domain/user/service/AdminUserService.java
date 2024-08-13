@@ -1,6 +1,5 @@
 package yuquiz.domain.user.service;
 
-import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -8,8 +7,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.user.dto.req.UserStatusReq;
 import yuquiz.domain.user.dto.res.UserSummaryRes;
 import yuquiz.domain.user.dto.UserSortType;
+import yuquiz.domain.user.entity.SuspendDay;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import yuquiz.domain.user.dto.UserSortType;
-import yuquiz.domain.user.dto.UserStatusReq;
+import yuquiz.domain.user.dto.req.UserStatusReq;
 
 @Tag(name = "[관리자용 사용자 API]", description = "관리자용 사용자 관련 API")
 public interface AdminUserApi {
