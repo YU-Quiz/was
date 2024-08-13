@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.api.UserApi;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
 import yuquiz.domain.user.dto.req.SignUpReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
+import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.service.UserService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -82,8 +84,9 @@ public class UserController implements UserApi {
     @GetMapping("/verify-username")
     public ResponseEntity<?> verifyUsername(@RequestParam(name = "username") String username) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessRes.from(userService.verifyUsername(username)));
+        if (userService.verifyUsername(username))
+            throw new CustomException(UserExceptionCode.EXIST_USERNAME);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /* 닉네임 중복 확인 */
@@ -91,8 +94,9 @@ public class UserController implements UserApi {
     @GetMapping("/verify-nickname")
     public ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessRes.from(userService.verifyNickname(nickname)));
+        if (userService.verifyNickname(nickname))
+            throw new CustomException(UserExceptionCode.EXIST_NICKNAME);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /* 사용자 삭제 */

@@ -133,8 +133,8 @@ public class UserControllerTest {
         // then
         resultActions
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value(true));
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다."));
     }
 
     @Test
@@ -155,8 +155,7 @@ public class UserControllerTest {
         // then
         resultActions
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value(false));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -177,8 +176,8 @@ public class UserControllerTest {
         // then
         resultActions
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value(true));
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("이미 존재하는 닉네임입니다."));
     }
 
     @Test
@@ -199,7 +198,6 @@ public class UserControllerTest {
         // then
         resultActions
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value(false));
+                .andExpect(status().isOk());
     }
 }

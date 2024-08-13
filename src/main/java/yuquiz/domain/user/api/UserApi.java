@@ -185,14 +185,14 @@ public interface UserApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "아이디 중복 확인 성공",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(name = "Exist", value = """
+                            @ExampleObject()
+                    })),
+            @ApiResponse(responseCode = "409", description = "아이디 중복",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
                                         {
-                                            "response": true
-                                        }
-                                    """),
-                            @ExampleObject(name = "unExist", value = """
-                                        {
-                                            "response": false
+                                            "status": 409,
+                                            "message": "이미 존재하는 아이디입니다."
                                         }
                                     """)
                     }))
@@ -203,14 +203,14 @@ public interface UserApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 중복 확인 성공",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(name = "Exist", value = """
+                            @ExampleObject()
+                    })),
+            @ApiResponse(responseCode = "409", description = "닉네임 중복",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
                                         {
-                                            "response": true
-                                        }
-                                    """),
-                            @ExampleObject(name = "unExist", value = """
-                                        {
-                                            "response": false
+                                            "status": 409,
+                                            "message": "이미 존재하는 닉네임입니다."
                                         }
                                     """)
                     }))
