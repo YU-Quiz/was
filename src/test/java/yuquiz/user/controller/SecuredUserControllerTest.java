@@ -14,8 +14,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.controller.UserController;
-import yuquiz.domain.user.dto.UserDetailsRes;
-import yuquiz.domain.user.dto.UserUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
+import yuquiz.domain.user.dto.res.UserDetailsRes;
+import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -32,6 +34,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,6 +64,7 @@ public class SecuredUserControllerTest {
                 .defaultRequest(get("/**").with(csrf()))
                 .defaultRequest(put("/**").with(csrf()))
                 .defaultRequest(delete("/**").with(csrf()))
+                .defaultRequest(patch("/**").with(csrf()))
                 .build();
 
         this.user = User.builder()
@@ -103,7 +108,7 @@ public class SecuredUserControllerTest {
     void updateUserInfoTest() throws Exception {
         // given
         UserUpdateReq updateReq =
-                new UserUpdateReq("newPassword1234", "테스터1", "new@gmail.com", "컴공", false);
+                new UserUpdateReq("테스터1", "new@gmail.com", "컴공", false);
 
         doNothing().when(userService).updateUserInfo(any(UserUpdateReq.class), eq(userDetails.getId()));
 
@@ -127,7 +132,7 @@ public class SecuredUserControllerTest {
     void updateUserInfoFailedTest() throws Exception {
         // given
         UserUpdateReq updateReq =
-                new UserUpdateReq(null, null, null, null, false);
+                new UserUpdateReq(null, null, null, false);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -141,18 +146,17 @@ public class SecuredUserControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.majorName").value("학과는 필수 선택 값입니다."));
     }
 
     @Test
-    @DisplayName("회원 업데이트 실패 테스트 - 정보 누락")
+    @DisplayName("회원 업데이트 실패 테스트 - 패턴 불일치")
     void updateUserInfoInsufficientTest() throws Exception {
         // given
         UserUpdateReq updateReq =
-                new UserUpdateReq("new", "x", "newgmail.com", "컴공", false);
+                new UserUpdateReq("x", "newgmail.com", "컴공", false);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -166,7 +170,6 @@ public class SecuredUserControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
                 .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
     }
@@ -208,5 +211,141 @@ public class SecuredUserControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(UserExceptionCode.INVALID_USERID.getMessage()));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 테스트")
+    void updatePasswordTest() throws Exception {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "newPassword123");
+
+        doNothing().when(userService).updatePassword(any(PasswordUpdateReq.class), eq(userDetails.getId()));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/users/my/password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("비밀번호 수정 성공."));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 실패 테스트 - 현재 비밀번호 일치 x")
+    void updatePasswordFailedTest() throws Exception {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "newPassword123");
+
+        doThrow(new CustomException(UserExceptionCode.INVALID_PASSWORD))
+                .when(userService).updatePassword(any(PasswordUpdateReq.class), eq(userDetails.getId()));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/users/my/password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(UserExceptionCode.INVALID_PASSWORD.getMessage()));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 실패 테스트 - 정보 누락")
+    void updatePasswordInvalidTest() throws Exception {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq(null, null);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/users/my/password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.currentPassword").value("현재 비밀번호를 입력해주세요."))
+                .andExpect(jsonPath("$.newPassword").value("새로운 비밀번호를 입력해주세요."));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 실패 테스트 - 패턴 불일치")
+    void updatePasswordInsufficientTest() throws Exception {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "new");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/users/my/password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.newPassword").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."));
+    }
+
+    @Test
+    @DisplayName("비밀번호 확인 테스트 - 일치")
+    void verifyPasswordTest() throws Exception {
+        // given
+        PasswordReq passwordReq = new PasswordReq("password123");
+
+        given(userService.verifyPassword(any(PasswordReq.class), eq(userDetails.getId()))).willReturn(true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/users/my/verify-password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value(true));
+    }
+
+    @Test
+    @DisplayName("비밀번호 확인 테스트 - 불일치")
+    void verifyPasswordInconsistentTest() throws Exception {
+        // given
+        PasswordReq passwordReq = new PasswordReq("password123");
+
+        given(userService.verifyPassword(any(PasswordReq.class), eq(userDetails.getId()))).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/users/my/verify-password")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value(false));
     }
 }

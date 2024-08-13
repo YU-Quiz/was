@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yuquiz.domain.user.dto.res.UserSummaryRes;
 import yuquiz.domain.user.dto.UserSortType;
-import yuquiz.domain.user.dto.UserSummaryRes;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.repository.UserRepository;
 

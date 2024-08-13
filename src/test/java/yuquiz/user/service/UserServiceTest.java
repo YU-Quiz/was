@@ -9,9 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.user.dto.SignUpReq;
-import yuquiz.domain.user.dto.UserDetailsRes;
-import yuquiz.domain.user.dto.UserUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
+import yuquiz.domain.user.dto.req.SignUpReq;
+import yuquiz.domain.user.dto.res.UserDetailsRes;
+import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
@@ -20,12 +22,15 @@ import yuquiz.domain.user.service.UserService;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -95,7 +100,7 @@ public class UserServiceTest {
     void updateUserInfoTest() {
         // given
         UserUpdateReq updateReq =
-                new UserUpdateReq("newPassword1234", "테스터1", "new@gmail.com", "컴공", false);
+                new UserUpdateReq("테스터1", "new@gmail.com", "컴공", false);
 
         given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
 
@@ -136,5 +141,120 @@ public class UserServiceTest {
         // then
         assertEquals(UserExceptionCode.INVALID_USERID, exception.getExceptionCode());
         verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트")
+    void updatePasswordTest() {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "newPassword123");
+
+        given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+
+        when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
+        when(passwordEncoder.matches("password123", user.getPassword())).thenReturn(true);
+
+        // when
+        userService.updatePassword(passwordReq, userId);
+
+        // then
+        assertEquals(passwordEncoder.encode("newPassword123"), "encodedNewPassword");
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 실패 테스트 - 현재 비밀번호 틀림")
+    void updatePasswordFailedTest() {
+        // given
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "newPassword123");
+
+        given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+
+        when(passwordEncoder.matches("password123", user.getPassword())).thenReturn(false);
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            userService.updatePassword(passwordReq, userId);
+        });
+
+        // then
+        assertEquals(UserExceptionCode.INVALID_PASSWORD, exception.getExceptionCode());
+    }
+
+    @Test
+    @DisplayName("비밀번호 확인 테스트")
+    void verifyPasswordTest() {
+        // given
+        PasswordReq passwordReq = new PasswordReq("password123");
+
+        String encodedPassword = "encodedPassword123";
+        given(userRepository.findPasswordById(userId)).willReturn(encodedPassword);
+
+        when(passwordEncoder.matches(passwordReq.password(), encodedPassword)).thenReturn(true);
+
+        // when
+        boolean result = userService.verifyPassword(passwordReq, userId);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("아이디 중복 확인 - 존재 o")
+    void verifyUsernameExistsTest() {
+        // given
+        String username = "test";
+
+        given(userRepository.existsByUsername(username)).willReturn(true);
+
+        // when
+        boolean result = userService.verifyUsername(username);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("아이디 중복 확인 - 존재 x")
+    void verifyUsernameNonExistsTest() {
+        // given
+        String username = "test";
+
+        given(userRepository.existsByUsername(username)).willReturn(false);
+
+        // when
+        boolean result = userService.verifyUsername(username);
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("닉네임 중복 확인 - 존재 o")
+    void verifyNicknameExistsTest() {
+        // given
+        String nickname = "테스터";
+
+        given(userRepository.existsByNickname(nickname)).willReturn(true);
+
+        // when
+        boolean result = userService.verifyNickname(nickname);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("닉네임 중복 확인 - 존재 x")
+    void verifyNicknameNonExistsTest() {
+        // given
+        String nickname = "테스터";
+
+        given(userRepository.existsByNickname(nickname)).willReturn(false);
+
+        // when
+        boolean result = userService.verifyNickname(nickname);
+
+        // then
+        assertFalse(result);
     }
 }

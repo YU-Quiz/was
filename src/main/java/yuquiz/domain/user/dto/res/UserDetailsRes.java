@@ -1,4 +1,4 @@
-package yuquiz.domain.user.dto;
+package yuquiz.domain.user.dto.res;
 
 import yuquiz.domain.user.entity.User;
 

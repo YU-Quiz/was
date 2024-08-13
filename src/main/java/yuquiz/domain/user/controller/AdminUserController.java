@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.domain.user.api.AdminUserApi;
+import yuquiz.domain.user.dto.res.UserSummaryRes;
 import yuquiz.domain.user.dto.UserSortType;
-import yuquiz.domain.user.dto.UserSummaryRes;
 import yuquiz.domain.user.service.AdminUserService;
 
 @RestController

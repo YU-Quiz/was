@@ -7,15 +7,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.api.UserApi;
-import yuquiz.domain.user.dto.SignUpReq;
-import yuquiz.domain.user.dto.UserUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
+import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.SignUpReq;
+import yuquiz.domain.user.dto.req.UserUpdateReq;
+import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.service.UserService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -51,6 +57,46 @@ public class UserController implements UserApi {
 
         userService.updateUserInfo(updateReq, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("회원 정보 수정 성공."));
+    }
+
+    /* 비밀번호 수정 */
+    @Override
+    @PatchMapping("/my/password")
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody PasswordUpdateReq passwordReq,
+                                            @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        userService.updatePassword(passwordReq, userDetails.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("비밀번호 수정 성공."));
+    }
+
+    /* 비밀번호 확인 */
+    @Override
+    @PostMapping("/my/verify-password")
+    public ResponseEntity<?> verifyPassword(@Valid @RequestBody PasswordReq passwordReq,
+                                            @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(SuccessRes.from(userService.verifyPassword(passwordReq, userDetails.getId())));
+    }
+
+    /* 아이디 중복 확인 */
+    @Override
+    @GetMapping("/verify-username")
+    public ResponseEntity<?> verifyUsername(@RequestParam(name = "username") String username) {
+
+        if (userService.verifyUsername(username))
+            throw new CustomException(UserExceptionCode.EXIST_USERNAME);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /* 닉네임 중복 확인 */
+    @Override
+    @GetMapping("/verify-nickname")
+    public ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname) {
+
+        if (userService.verifyNickname(nickname))
+            throw new CustomException(UserExceptionCode.EXIST_NICKNAME);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /* 사용자 삭제 */

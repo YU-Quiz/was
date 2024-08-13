@@ -1,4 +1,4 @@
-package yuquiz.domain.user.dto;
+package yuquiz.domain.user.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
