@@ -92,23 +92,32 @@ public class QuizService {
         return findQuizByQuizId(quizId).getAnswer();
     }
 
-    public Page<QuizSummaryRes> getQuizzesBySubject(Long subjectId, QuizSortType sort, Integer page) {
+    public Page<QuizSummaryRes> getQuizzesBySubject(Long userId, Long subjectId, QuizSortType sort, Integer page) {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-
+        User user = findUserByUserId(userId);
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
         Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
 
-        return quizzes.map(QuizSummaryRes::fromEntity);
+        return quizzes.map(quiz-> {
+            TriedQuiz triedQuiz = triedQuizRepository.findByUserAndQuiz(user, quiz)
+                    .orElse(null);
+            return QuizSummaryRes.fromEntity(quiz, triedQuiz);
+        });
     }
 
-    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, QuizSortType sort, Integer page) {
+    public Page<QuizSummaryRes> getQuizzesByKeyword(Long userId, String keyword, QuizSortType sort, Integer page) {
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
+        User user = findUserByUserId(userId);
         Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
 
-        return quizzes.map(QuizSummaryRes::fromEntity);
+        return quizzes.map(quiz -> {
+            TriedQuiz triedQuiz = triedQuizRepository.findByUserAndQuiz(user, quiz)
+                    .orElse(null);
+            return QuizSummaryRes.fromEntity(quiz, triedQuiz);
+        });
     }
 
     private User findUserByUserId(Long userId) {

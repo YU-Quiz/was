@@ -242,7 +242,8 @@ public interface QuizApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
+    ResponseEntity<?> getQuizzesBySubject(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                          @PathVariable(value = "subjectId") Long subjectId,
                                           @RequestParam(value = "page") @Min(0) Integer page,
                                           @RequestParam(value = "sort") QuizSortType sort);
 
@@ -343,7 +344,8 @@ public interface QuizApi {
                                     """)
                     })),
     })
-    ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
+    ResponseEntity<?> getQuizzesByKeyword(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                          @RequestParam(value = "keyword") String keyword,
                                           @RequestParam(value = "sort") QuizSortType sort,
                                           @RequestParam(value = "page") @Min(0) Integer page);
 }

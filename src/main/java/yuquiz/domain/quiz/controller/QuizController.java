@@ -66,18 +66,22 @@ public class QuizController implements QuizApi {
     }
 
     @GetMapping("/subject/{subjectId}")
-    public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
-                                                 @RequestParam(value = "page") @Min(0) Integer page,
-                                                 @RequestParam(value = "sort") QuizSortType sort) {
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
+    public ResponseEntity<?> getQuizzesBySubject(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "subjectId") Long subjectId,
+            @RequestParam(value = "page") @Min(0) Integer page,
+            @RequestParam(value = "sort") QuizSortType sort) {
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(userDetails.getId(), subjectId, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 
     @GetMapping
-    public ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
-                                                 @RequestParam(value = "sort") QuizSortType sort,
-                                                 @RequestParam(value = "page") @Min(0) Integer page) {
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(keyword, sort, page);
+    public ResponseEntity<?> getQuizzesByKeyword(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(value = "sort") QuizSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page) {
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(userDetails.getId(), keyword, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 }
