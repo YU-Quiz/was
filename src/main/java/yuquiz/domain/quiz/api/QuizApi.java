@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import yuquiz.domain.quiz.dto.AnswerReq;
 import yuquiz.domain.quiz.dto.QuizReq;
-import yuquiz.domain.quiz.dto.SortType;
-import yuquiz.domain.report.dto.ReportReq;
+import yuquiz.domain.quiz.dto.QuizSortType;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[퀴즈 API]", description = "퀴즈 관련 API")
@@ -244,7 +243,7 @@ public interface QuizApi {
     })
     ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
                                           @RequestParam(value = "page") @Min(0) Integer page,
-                                          @RequestParam(value = "sort") SortType sort);
+                                          @RequestParam(value = "sort") QuizSortType sort);
 
     @Operation(summary = "퀴즈 검색", description = "키워드를 이용해 퀴즈를 검색하는 기능")
     @ApiResponses({
@@ -344,8 +343,6 @@ public interface QuizApi {
                     })),
     })
     ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
-                                          @RequestParam(value = "sort") SortType sort,
+                                          @RequestParam(value = "sort") QuizSortType sort,
                                           @RequestParam(value = "page") @Min(0) Integer page);
-
-
 }

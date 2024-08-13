@@ -10,11 +10,12 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import yuquiz.domain.post.dto.PostSortType;
 
 @Tag(name = "[관리자용 게시글 API]", description = "관리자용 게시글 관련 API")
 public interface AdminPostApi {
 
-    @Operation(summary = "전체 게시글 페이지별 최신순 조회", description = "전체 게시글을 페이지별로 조회하는 API입니다. 게시글은 최신순으로 조회됩니다.")
+    @Operation(summary = "전체 게시글 페이지별 조회", description = "전체 게시글을 정렬 기준에 따라 페이지별로 조회하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공",
                 content = @Content(mediaType = "application/json", examples = {
@@ -24,7 +25,7 @@ public interface AdminPostApi {
                             "totalElements": 1,
                             "first": true,
                             "last": true,
-                            "size": 10,
+                            "size": 20,
                             "content": [
                                 {
                                     "postId": 2,
@@ -35,17 +36,17 @@ public interface AdminPostApi {
                             ],
                             "number": 0,
                             "sort": {
-                                "empty": true,
-                                "unsorted": true,
-                                "sorted": false
+                                "empty": false,
+                                "unsorted": false,
+                                "sorted": true
                             },
                             "pageable": {
                                 "pageNumber": 0,
-                                "pageSize": 10,
+                                "pageSize": 20,
                                 "sort": {
-                                    "empty": true,
-                                    "unsorted": true,
-                                    "sorted": false
+                                    "empty": false,
+                                    "unsorted": false,
+                                    "sorted": true
                                 },
                                 "offset": 0,
                                 "unpaged": false,
@@ -57,9 +58,10 @@ public interface AdminPostApi {
                     """)
             }))
     })
-    ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer page);
+    ResponseEntity<?> getAllPosts(@RequestParam PostSortType sort,
+                                  @RequestParam @Min(0) Integer page);
 
-    @Operation(summary = "특정 게시글 삭제", description = "게시글id를 기반으로 게시글을 삭제하는 API입니다.")
+    @Operation(summary = "특정 게시글 삭제", description = "게시글id를 기반으로 게시글을 삭제하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "게시글 삭제 성공")
     })
