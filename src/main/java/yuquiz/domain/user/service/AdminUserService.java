@@ -1,5 +1,7 @@
 package yuquiz.domain.user.service;
 
+import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,19 +37,21 @@ public class AdminUserService {
         userRepository.deleteById(userId);
     }
 
+    @Transactional
     public void updateSuspendStatus(Long userId, UserStatusReq status) {
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(UserExceptionCode.INVALID_USERID));
-
         switch (status) {
-            case SUSPEND -> suspendUser(user);
-            case UNSUSPEND -> unsuspendUser(user);
-            case CANCEL -> cancelSuspendUser(user);
+            case SUSPEND -> suspendUser(userId);
+            case UNSUSPEND -> unsuspendUser(userId);
+            case CANCEL -> cancelSuspendUser(userId);
         }
     }
 
-    private void suspendUser(User user) {
+    private void suspendUser(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new CustomException(UserExceptionCode.INVALID_USERID));
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime unlockedAt = user.getUnlockedAt();
         int bannedCnt = user.getBannedCnt();
@@ -57,22 +61,30 @@ public class AdminUserService {
         }
     }
 
-    private void unsuspendUser(User user) {
+    private void unsuspendUser(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new CustomException(UserExceptionCode.INVALID_USERID));
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime unlockedAt = user.getUnlockedAt();
         int bannedCnt = user.getBannedCnt();
 
-        if(unlockedAt.isAfter(now)) {
+        if(unlockedAt != null && unlockedAt.isAfter(now)) {
             user.updateSuspendStatus(now, bannedCnt);
         }
     }
 
-    private void cancelSuspendUser(User user) {
+    private void cancelSuspendUser(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new CustomException(UserExceptionCode.INVALID_USERID));
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime unlockedAt = user.getUnlockedAt();
         int bannedCnt = user.getBannedCnt();
 
-        if(unlockedAt.isAfter(now)) {
+        if(unlockedAt != null && unlockedAt.isAfter(now)) {
             user.updateSuspendStatus(now, bannedCnt - 1);
         }
     }
