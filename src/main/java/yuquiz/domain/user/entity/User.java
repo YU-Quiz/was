@@ -24,6 +24,7 @@ import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quizLike.entity.QuizLike;
 import yuquiz.domain.triedQuiz.entity.TriedQuiz;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,9 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "banned_cnt")
     private int bannedCnt;
+
+    @Column(name = "unlocked_at")
+    private LocalDateTime unlockedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -115,5 +119,11 @@ public class User extends BaseTimeEntity {
     /* 비밀번호 변경 편의 메서드 */
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    /* 사용자 정지 상태 조작 메서드 */
+    public void updateSuspendStatus(LocalDateTime unlockedAt, int bannedCnt){
+        this.unlockedAt = unlockedAt;
+        this.bannedCnt = bannedCnt;
     }
 }
