@@ -14,7 +14,7 @@ public record QuizSummaryRes(
         Integer viewCount,
         Boolean isSolved
 ) {
-    public static QuizSummaryRes fromEntity(Quiz quiz, TriedQuiz triedQuiz) {
+    public static QuizSummaryRes fromEntity(Quiz quiz, Boolean isSolved) {
         return new QuizSummaryRes(
                 quiz.getId(),
                 quiz.getTitle(),
@@ -22,7 +22,7 @@ public record QuizSummaryRes(
                 quiz.getCreatedAt(),
                 quiz.getLikeCount(),
                 quiz.getViewCount(),
-                triedQuiz != null ? triedQuiz.getIsSolved() : null
+                isSolved
         );
     }
 }

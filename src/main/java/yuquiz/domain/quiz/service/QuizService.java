@@ -109,9 +109,8 @@ public class QuizService {
         Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
 
         return quizzes.map(quiz-> {
-            TriedQuiz triedQuiz = triedQuizRepository.findByUserAndQuiz(user, quiz)
-                    .orElse(null);
-            return QuizSummaryRes.fromEntity(quiz, triedQuiz);
+            Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
+            return QuizSummaryRes.fromEntity(quiz, isSolved);
         });
     }
 
@@ -122,9 +121,8 @@ public class QuizService {
         Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
 
         return quizzes.map(quiz -> {
-            TriedQuiz triedQuiz = triedQuizRepository.findByUserAndQuiz(user, quiz)
-                    .orElse(null);
-            return QuizSummaryRes.fromEntity(quiz, triedQuiz);
+            Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
+            return QuizSummaryRes.fromEntity(quiz, isSolved);
         });
     }
 
