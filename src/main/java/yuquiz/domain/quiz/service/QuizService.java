@@ -20,6 +20,8 @@ import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
+import yuquiz.domain.triedQuiz.entity.TriedQuiz;
+import yuquiz.domain.triedQuiz.repository.TriedQuizRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
@@ -31,7 +33,7 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
-    private final ReportRepository reportRepository;
+    private final TriedQuizRepository triedQuizRepository;
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
@@ -70,10 +72,20 @@ public class QuizService {
         return QuizRes.fromEntity(quiz);
     }
 
-    public boolean gradeQuiz(Long quizId, String answer) {
+    @Transactional
+    public boolean gradeQuiz(Long userId, Long quizId, String answer) {
         Quiz quiz = findQuizByQuizId(quizId);
+        User user = findUserByUserId(userId);
 
-        return quiz.getAnswer().equals(answer);
+        boolean isSolved = quiz.getAnswer().equals(answer);
+
+        TriedQuiz triedQuiz = triedQuizRepository.findByUserAndQuiz(user, quiz)
+                .orElse(new TriedQuiz(isSolved, user, quiz));
+
+        triedQuiz.updateIsSolved(isSolved);
+        triedQuizRepository.save(triedQuiz);
+
+        return isSolved;
     }
 
     public String getAnswer(Long quizId) {

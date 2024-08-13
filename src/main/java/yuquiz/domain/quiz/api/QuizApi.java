@@ -153,6 +153,7 @@ public interface QuizApi {
                     }))
     })
     ResponseEntity<?> gradeQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody AnswerReq answerReq);
 

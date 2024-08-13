@@ -54,9 +54,10 @@ public class QuizController implements QuizApi {
 
     @PostMapping("/{quizId}/grade")
     public ResponseEntity<?> gradeQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody AnswerReq answerReq) {
-        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from(quizService.gradeQuiz(quizId, answerReq.answer())));
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from(quizService.gradeQuiz(userDetails.getId(), quizId, answerReq.answer())));
     }
 
     @GetMapping("/{quizId}/answer")
