@@ -84,4 +84,24 @@ public class QuizController implements QuizApi {
         Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(userDetails.getId(), keyword, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
+
+    @PostMapping("/{quizId}/pin")
+    public ResponseEntity<?> pinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        quizService.pinQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 추가되었습니다."));
+    }
+
+    @DeleteMapping("/{quizId}/pin")
+    public ResponseEntity<?> deletePinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        quizService.deletePinQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

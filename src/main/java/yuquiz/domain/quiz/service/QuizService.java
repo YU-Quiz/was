@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
+import yuquiz.domain.pinnedQuiz.exception.PinnedQuizExceptionCode;
+import yuquiz.domain.pinnedQuiz.repository.PinnedQuizRepository;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.dto.QuizRes;
 import yuquiz.domain.quiz.dto.QuizSortType;
@@ -34,6 +37,7 @@ public class QuizService {
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
     private final TriedQuizRepository triedQuizRepository;
+    private final PinnedQuizRepository pinnedQuizRepository;
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
@@ -118,6 +122,31 @@ public class QuizService {
                     .orElse(null);
             return QuizSummaryRes.fromEntity(quiz, triedQuiz);
         });
+    }
+
+    @Transactional
+    public void pinQuiz(Long userId, Long quizId) {
+        User user = findUserByUserId(userId);
+        Quiz quiz = findQuizByQuizId(quizId);
+
+        if (pinnedQuizRepository.existsByUserAndQuiz(user, quiz)) {
+            throw new CustomException(PinnedQuizExceptionCode.ALREADY_PINNED);
+        }
+
+        PinnedQuiz pinnedQuiz = PinnedQuiz.builder()
+                .user(user)
+                .quiz(quiz)
+                .build();
+
+        pinnedQuizRepository.save(pinnedQuiz);
+    }
+
+    @Transactional
+    public void deletePinQuiz(Long userId, Long quizId) {
+        User user = findUserByUserId(userId);
+        Quiz quiz = findQuizByQuizId(quizId);
+
+        pinnedQuizRepository.deleteByUserAndQuiz(user, quiz);
     }
 
     private User findUserByUserId(Long userId) {
