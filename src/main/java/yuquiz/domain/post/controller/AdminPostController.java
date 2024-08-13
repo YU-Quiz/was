@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.domain.post.api.AdminPostApi;
+import yuquiz.domain.post.dto.PostSortType;
 import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.domain.post.service.AdminPostService;
 
@@ -18,9 +19,10 @@ public class AdminPostController implements AdminPostApi {
     private final AdminPostService adminPostService;
 
     @GetMapping
-    public ResponseEntity<?> getLatestPostsByPage(@RequestParam @Min(0) Integer page) {
+    public ResponseEntity<?> getAllPosts(@RequestParam PostSortType sort,
+                                                  @RequestParam @Min(0) Integer page) {
 
-        Page<PostSummaryRes> posts = adminPostService.getLatestPostsByPage(page);
+        Page<PostSummaryRes> posts = adminPostService.getAllPosts(sort, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }

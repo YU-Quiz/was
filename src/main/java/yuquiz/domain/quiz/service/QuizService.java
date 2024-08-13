@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.dto.QuizRes;
+import yuquiz.domain.quiz.dto.QuizSortType;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
-import yuquiz.domain.quiz.dto.SortType;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
@@ -34,7 +33,7 @@ public class QuizService {
     private final SubjectRepository subjectRepository;
     private final ReportRepository reportRepository;
 
-    private static final Integer POST_PER_PAGE = 20;
+    private static final Integer QUIZ_PER_PAGE = 20;
 
     @Transactional
     public void createQuiz(QuizReq quizReq, Long userId) {
@@ -81,18 +80,19 @@ public class QuizService {
         return findQuizByQuizId(quizId).getAnswer();
     }
 
-    public Page<QuizSummaryRes> getQuizzesBySubject(Long subjectId, SortType sort, Integer page) {
+    public Page<QuizSummaryRes> getQuizzesBySubject(Long subjectId, QuizSortType sort, Integer page) {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
         Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
 
         return quizzes.map(QuizSummaryRes::fromEntity);
     }
 
-    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, SortType sort, Integer page) {
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+    public Page<QuizSummaryRes> getQuizzesByKeyword(String keyword, QuizSortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
         Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
 
