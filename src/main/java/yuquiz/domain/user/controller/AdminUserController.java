@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.user.api.AdminUserApi;
-import yuquiz.domain.user.dto.res.UserSummaryRes;
 import yuquiz.domain.user.dto.UserSortType;
 import yuquiz.domain.user.dto.req.UserStatusReq;
+import yuquiz.domain.user.dto.res.UserSummaryRes;
 import yuquiz.domain.user.service.AdminUserService;
 
 @RestController
@@ -47,8 +47,7 @@ public class AdminUserController implements AdminUserApi {
 
         return switch (status) {
             case SUSPEND -> ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("회원 정지 성공"));
-            case UNSUSPEND -> ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("회원 사면 성공"));
-            case CANCEL -> ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("회원 정지 취소 성공"));
+            case UNSUSPEND -> ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("회원 정지 해제 성공"));
         };
     }
 }
