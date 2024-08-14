@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+    User findByOauth_Email(String email);
+
     Page<User> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     boolean existsByUsername(String username);

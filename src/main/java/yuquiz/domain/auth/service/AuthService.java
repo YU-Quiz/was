@@ -6,17 +6,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.common.utils.cookie.CookieUtil;
-import yuquiz.common.utils.jwt.JwtProvider;
+import yuquiz.domain.auth.dto.OAuthTokenDto;
+import yuquiz.domain.auth.dto.OauthCodeDto;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.TokenDto;
+import yuquiz.domain.auth.dto.UserInfoDto;
+import yuquiz.domain.user.entity.OAuthPlatform;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
-import yuquiz.security.token.blacklist.BlackListTokenService;
-import yuquiz.security.token.refresh.RefreshTokenService;
+import yuquiz.domain.user.service.OauthService;
+import yuquiz.domain.user.service.UserService;
 
-import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 import static yuquiz.common.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
 @Service
@@ -25,12 +26,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenService refreshTokenService;
-    private final BlackListTokenService blackListTokenService;
-    private final CookieUtil cookieUtil;
-    private final JwtProvider jwtProvider;
+    private final UserService userService;
+    private final OAuthPlatformService oAuthPlatformService;
+    private final OauthService oauthService;
+    private final JwtService jwtService;
 
-    /* 로그인 */
+    /* 일반 로그인 */
     @Transactional(readOnly = true)
     public TokenDto signIn(SignInReq signInReq) {
 
@@ -41,17 +42,30 @@ public class AuthService {
             throw new CustomException(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD);
         }
 
-        String role = String.valueOf(foundUser.getRole());
-        Long userId = foundUser.getId();
-        String username = foundUser.getUsername();
+        return jwtService.generateToken(foundUser);
+    }
 
-        // Jwt Token 생성
-        String accessToken = TOKEN_PREFIX + jwtProvider.generateAccessToken(role, userId, username);
-        String refreshToken = jwtProvider.generateRefreshToken(role, userId, username);
+    /* 소셜 로그인 */
+    @Transactional
+    public OAuthTokenDto signInByOauth(OauthCodeDto codeDto, OAuthPlatform platform) {
 
-        refreshTokenService.saveRefreshToken(username, refreshToken);
+        String token = oAuthPlatformService.getAccessToken(codeDto, platform);
+        UserInfoDto userInfoDto = oAuthPlatformService.getUserInfo(token, platform);
+        User user;
 
-        return TokenDto.of(accessToken, refreshToken);
+        boolean isRegistered = true;
+
+        // 최초 로그인 확인.
+        if (!oAuthPlatformService.isExists(userInfoDto.email(), platform)) {
+            user = userService.saveOAuthLoginUser(userInfoDto, platform);
+
+            oauthService.saveOAuthInfo(userInfoDto, platform, user);
+            isRegistered = false;
+        } else {
+            user = userRepository.findByOauth_Email(userInfoDto.email());
+        }
+
+        return OAuthTokenDto.of(isRegistered, jwtService.generateToken(user));
     }
 
     /* 비밀번호 확인 */
@@ -60,26 +74,10 @@ public class AuthService {
         return passwordEncoder.matches(actual, expect);
     }
 
-    /* AccessToken 재발급 */
-    public TokenDto reissueAccessToken(String refreshTokenInCookie) {
-
-        String refreshToken = refreshTokenService.findRefreshToken(refreshTokenInCookie);
-        String reIssueAccessToken = TOKEN_PREFIX + refreshTokenService.accessTokenReIssue(refreshToken);
-
-        // Refresh token rotation(RTR) 사용
-        String reIssueRefreshToken = refreshTokenService.refreshTokenReIssue(refreshToken);
-
-        return TokenDto.of(reIssueAccessToken, reIssueRefreshToken);
-    }
-
     /* 로그아웃 */
     public void signOut(String accessTokenInHeader, String refreshToken, HttpServletResponse response) {
 
-        cookieUtil.deleteCookie(REFRESH_COOKIE_VALUE, response);    // 쿠키값 삭제
-
-        refreshTokenService.deleteRefreshToken(refreshToken);       // 로그아웃 시 redis에서 refreshToken 삭제
-
         String accessToken = accessTokenInHeader.substring(TOKEN_PREFIX.length()).trim();
-        blackListTokenService.saveBlackList(accessToken);           // accessToken blackList에 저장
+        jwtService.deleteAndBlackListToken(accessToken, refreshToken, response);
     }
 }
