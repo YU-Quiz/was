@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -50,7 +51,6 @@ public class User extends BaseTimeEntity {
     @Column(unique = true)
     private String email;
 
-    @NotNull
     @Column(name = "major_name")
     private String majorName;
 
@@ -62,6 +62,10 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private OAuth oauth;
 
     @JsonIgnore
     @OneToMany(mappedBy = "writer", cascade = CascadeType.REMOVE)
