@@ -62,6 +62,7 @@ public class User extends BaseTimeEntity {
     private int bannedCnt;
 
     @Column(name = "unlocked_at")
+    @JsonIgnore
     private LocalDateTime unlockedAt;
 
     @Enumerated(EnumType.STRING)
