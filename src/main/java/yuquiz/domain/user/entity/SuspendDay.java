@@ -12,13 +12,13 @@ public enum SuspendDay {
         this.day = day;
     }
 
-    public static int getDay(int bannedCnt) {
+    public static int getDayPerCount(int bannedCnt) {
         return switch (bannedCnt){
-            case 1 -> SuspendDay.FIRST.getDay();
-            case 2 -> SuspendDay.SECOND.getDay();
-            case 3 -> SuspendDay.THIRD.getDay();
-            case 4 -> SuspendDay.FOURTH.getDay();
-            case 5 -> SuspendDay.FIFTH.getDay();
+            case 0 -> SuspendDay.FIRST.getDay();
+            case 1 -> SuspendDay.SECOND.getDay();
+            case 2 -> SuspendDay.THIRD.getDay();
+            case 3 -> SuspendDay.FOURTH.getDay();
+            case 4 -> SuspendDay.FIFTH.getDay();
             default -> SuspendDay.MORE.getDay();
         };
     }

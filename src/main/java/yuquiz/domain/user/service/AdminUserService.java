@@ -33,6 +33,7 @@ public class AdminUserService {
         return users.map(UserSummaryRes::fromEntity);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
 
         userRepository.deleteById(userId);
@@ -58,7 +59,7 @@ public class AdminUserService {
         int bannedCnt = user.getBannedCnt();
 
         if(unlockedAt == null || unlockedAt.isBefore(now)) {
-            user.updateSuspendStatus(now.plusDays(SuspendDay.getDay(bannedCnt)), bannedCnt + 1);
+            user.updateSuspendStatus(now.plusDays(SuspendDay.getDayPerCount(bannedCnt)), bannedCnt + 1);
         }
     }
 
