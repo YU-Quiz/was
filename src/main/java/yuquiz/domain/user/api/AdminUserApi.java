@@ -83,7 +83,7 @@ public interface AdminUserApi {
     })
     ResponseEntity<?> deleteUser(@PathVariable Long userId);
 
-    @Operation(summary = "사용자 정지, 사면, 취소", description = "사용자 강제 정지, 정지 사면, 정지 취소 API")
+    @Operation(summary = "사용자 강제 정지 및 정지 해제", description = "사용자 강제 정지 및 정지 해제 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "사용자 정지 성공",
                 content = @Content(mediaType = "application/json", examples = {
@@ -93,19 +93,11 @@ public interface AdminUserApi {
                         }
                     """)
             })),
-            @ApiResponse(responseCode = "200", description = "사용자 사면 성공",
+            @ApiResponse(responseCode = "200", description = "사용자 정지 해제 성공",
                 content = @Content(mediaType = "application/json", examples = {
                     @ExampleObject(value = """
                         {
-                            "response": "회원 사면 성공"
-                        }
-                    """)
-            })),
-            @ApiResponse(responseCode = "200", description = "사용자 정지 취소 성공",
-                content = @Content(mediaType = "application/json", examples = {
-                    @ExampleObject(value = """
-                        {
-                            "response": "회원 정지 취소 성공"
+                            "response": "회원 정지 해제 성공"
                         }
                     """)
             })),
