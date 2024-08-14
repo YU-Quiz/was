@@ -6,6 +6,8 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.OauthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.auth.exception.AuthExceptionCode;
+import yuquiz.domain.auth.service.oauth.KakaoService;
+import yuquiz.domain.auth.service.oauth.OAuthClient;
 import yuquiz.domain.user.entity.OAuthPlatform;
 
 @Service

@@ -1,4 +1,4 @@
-package yuquiz.domain.auth.service;
+package yuquiz.domain.auth.service.oauth;
 
 import yuquiz.domain.auth.dto.OauthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
