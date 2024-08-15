@@ -23,9 +23,13 @@ public record QuizRes(
 
         String writer,
 
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        boolean isLiked,
+
+        boolean isPinned
 ) {
-    public static QuizRes fromEntity(Quiz quiz) {
+    public static QuizRes fromEntity(Quiz quiz, boolean isLiked, boolean isPinned) {
         return new QuizRes(
                 quiz.getTitle(),
                 quiz.getQuestion(),
@@ -35,7 +39,9 @@ public record QuizRes(
                 quiz.getChoices(),
                 quiz.getSubject().getSubjectName(),
                 quiz.getWriter().getNickname(),
-                quiz.getCreatedAt()
+                quiz.getCreatedAt(),
+                isLiked,
+                isPinned
         );
     }
 }

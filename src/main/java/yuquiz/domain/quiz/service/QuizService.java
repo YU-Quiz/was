@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
-import yuquiz.domain.pinnedQuiz.exception.PinnedQuizExceptionCode;
 import yuquiz.domain.pinnedQuiz.repository.PinnedQuizRepository;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.dto.QuizRes;
@@ -18,11 +17,7 @@ import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
 import yuquiz.domain.quizLike.entity.QuizLike;
-import yuquiz.domain.quizLike.exception.QuizLikeExceptionCode;
 import yuquiz.domain.quizLike.repository.QuizLikeRepository;
-import yuquiz.domain.report.dto.ReportReq;
-import yuquiz.domain.report.entity.Report;
-import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
@@ -74,10 +69,16 @@ public class QuizService {
         quiz.update(quizReq, subject);
     }
 
-    public QuizRes getQuizById(Long quizId) {
+    @Transactional(readOnly = true)
+    public QuizRes getQuizById(Long userId, Long quizId) {
+        User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
 
-        return QuizRes.fromEntity(quiz);
+        boolean isLiked = quizLikeRepository.existsByUserAndQuiz(user, quiz);
+        boolean isPinned = pinnedQuizRepository.existsByUserAndQuiz(user, quiz);
+
+
+        return QuizRes.fromEntity(quiz, isLiked, isPinned);
     }
 
     @Transactional
@@ -100,6 +101,7 @@ public class QuizService {
         return findQuizByQuizId(quizId).getAnswer();
     }
 
+    @Transactional(readOnly = true)
     public Page<QuizSummaryRes> getQuizzesBySubject(Long userId, Long subjectId, QuizSortType sort, Integer page) {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
@@ -114,6 +116,7 @@ public class QuizService {
         });
     }
 
+    @Transactional(readOnly = true)
     public Page<QuizSummaryRes> getQuizzesByKeyword(Long userId, String keyword, QuizSortType sort, Integer page) {
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
@@ -132,7 +135,7 @@ public class QuizService {
         Quiz quiz = findQuizByQuizId(quizId);
 
         if (pinnedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            throw new CustomException(PinnedQuizExceptionCode.ALREADY_PINNED);
+            return;
         }
 
         PinnedQuiz pinnedQuiz = PinnedQuiz.builder()
@@ -157,7 +160,7 @@ public class QuizService {
         Quiz quiz = findQuizByQuizId(quizId);
 
         if (quizLikeRepository.existsByUserAndQuiz(user, quiz)) {
-            throw new CustomException(QuizLikeExceptionCode.ALREADY_EXIST);
+            return;
         }
 
         QuizLike quizLike = QuizLike.builder()

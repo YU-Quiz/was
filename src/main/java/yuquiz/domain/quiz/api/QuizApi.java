@@ -130,7 +130,9 @@ public interface QuizApi {
                     })),
 
     })
-    ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId);
+    ResponseEntity<?> getQuizById(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId);
 
     @Operation(summary = "퀴즈 채점", description = "퀴즈를 풀고 채점하는 API")
     @ApiResponses({
