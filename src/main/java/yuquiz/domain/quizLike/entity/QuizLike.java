@@ -2,6 +2,7 @@ package yuquiz.domain.quizLike.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.domain.quiz.entity.Quiz;
@@ -23,4 +24,10 @@ public class QuizLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+
+    @Builder
+    public QuizLike(User user, Quiz quiz) {
+        this.user = user;
+        this.quiz = quiz;
+    }
 }

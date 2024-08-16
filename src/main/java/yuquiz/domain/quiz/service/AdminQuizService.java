@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yuquiz.domain.quiz.dto.AdminQuizSummaryRes;
 import yuquiz.domain.quiz.dto.QuizSortType;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
@@ -19,12 +20,12 @@ public class AdminQuizService {
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
-    public Page<QuizSummaryRes> getAllQuizzes(QuizSortType sort, Integer page) {
+    public Page<AdminQuizSummaryRes> getAllQuizzes(QuizSortType sort, Integer page) {
 
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
         Page<Quiz> quizzes = quizRepository.findAll(pageable);
 
-        return quizzes.map(QuizSummaryRes::fromEntity);
+        return quizzes.map(AdminQuizSummaryRes::fromEntity);
     }
 
     @Transactional

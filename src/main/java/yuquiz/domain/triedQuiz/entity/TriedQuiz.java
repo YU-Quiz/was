@@ -29,7 +29,13 @@ public class TriedQuiz {
     private Quiz quiz;
 
     @Builder
-    public TriedQuiz(Boolean isSolved) {
+    public TriedQuiz(Boolean isSolved, User user, Quiz quiz) {
+        this.isSolved = isSolved;
+        this.user = user;
+        this.quiz = quiz;
+    }
+
+    public void updateIsSolved(boolean isSolved) {
         this.isSolved = isSolved;
     }
 }

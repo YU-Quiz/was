@@ -48,15 +48,18 @@ public class QuizController implements QuizApi {
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId) {
-        return ResponseEntity.status(HttpStatus.OK).body(quizService.getQuizById(quizId));
+    public ResponseEntity<?> getQuizById(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+        return ResponseEntity.status(HttpStatus.OK).body(quizService.getQuizById(userDetails.getId(), quizId));
     }
 
     @PostMapping("/{quizId}/grade")
     public ResponseEntity<?> gradeQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody AnswerReq answerReq) {
-        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from(quizService.gradeQuiz(quizId, answerReq.answer())));
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from(quizService.gradeQuiz(userDetails.getId(), quizId, answerReq.answer())));
     }
 
     @GetMapping("/{quizId}/answer")
@@ -65,18 +68,62 @@ public class QuizController implements QuizApi {
     }
 
     @GetMapping("/subject/{subjectId}")
-    public ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
-                                                 @RequestParam(value = "page") @Min(0) Integer page,
-                                                 @RequestParam(value = "sort") QuizSortType sort) {
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(subjectId, sort, page);
+    public ResponseEntity<?> getQuizzesBySubject(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "subjectId") Long subjectId,
+            @RequestParam(value = "page") @Min(0) Integer page,
+            @RequestParam(value = "sort") QuizSortType sort) {
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(userDetails.getId(), subjectId, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 
     @GetMapping
-    public ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
-                                                 @RequestParam(value = "sort") QuizSortType sort,
-                                                 @RequestParam(value = "page") @Min(0) Integer page) {
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(keyword, sort, page);
+    public ResponseEntity<?> getQuizzesByKeyword(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(value = "sort") QuizSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page) {
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(userDetails.getId(), keyword, sort, page);
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
+    }
+
+    @PostMapping("/{quizId}/pin")
+    public ResponseEntity<?> pinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        quizService.pinQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 추가되었습니다."));
+    }
+
+    @DeleteMapping("/{quizId}/pin")
+    public ResponseEntity<?> deletePinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        quizService.deletePinQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/{quizId}/likes")
+    public ResponseEntity<?> likeQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        quizService.likeQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 추가되었습니다."));
+    }
+
+    @DeleteMapping("/{quizId}/likes")
+    public ResponseEntity<?> deleteLikeQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        quizService.deleteLikeQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

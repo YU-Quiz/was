@@ -130,7 +130,9 @@ public interface QuizApi {
                     })),
 
     })
-    ResponseEntity<?> getQuizById(@PathVariable(value = "quizId") Long quizId);
+    ResponseEntity<?> getQuizById(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId);
 
     @Operation(summary = "퀴즈 채점", description = "퀴즈를 풀고 채점하는 API")
     @ApiResponses({
@@ -153,6 +155,7 @@ public interface QuizApi {
                     }))
     })
     ResponseEntity<?> gradeQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
             @PathVariable(value = "quizId") Long quizId,
             @Valid @RequestBody AnswerReq answerReq);
 
@@ -241,7 +244,8 @@ public interface QuizApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> getQuizzesBySubject(@PathVariable(value = "subjectId") Long subjectId,
+    ResponseEntity<?> getQuizzesBySubject(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                          @PathVariable(value = "subjectId") Long subjectId,
                                           @RequestParam(value = "page") @Min(0) Integer page,
                                           @RequestParam(value = "sort") QuizSortType sort);
 
@@ -342,7 +346,8 @@ public interface QuizApi {
                                     """)
                     })),
     })
-    ResponseEntity<?> getQuizzesByKeyword(@RequestParam(value = "keyword") String keyword,
+    ResponseEntity<?> getQuizzesByKeyword(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                          @RequestParam(value = "keyword") String keyword,
                                           @RequestParam(value = "sort") QuizSortType sort,
                                           @RequestParam(value = "page") @Min(0) Integer page);
 }
