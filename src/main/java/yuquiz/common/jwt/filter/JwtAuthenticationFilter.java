@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String resolveAccessToken(HttpServletResponse response, String accessTokenGetHeader) throws IOException {
         String accessToken = accessTokenGetHeader.substring(TOKEN_PREFIX.length()).trim();
 
-        accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");   // 토큰 끝 특수문자 제거
+        accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");
 
         try {
             jwtProvider.isExpired(accessToken);      // 만료되었는지
