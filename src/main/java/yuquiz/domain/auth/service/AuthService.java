@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
-import yuquiz.domain.auth.dto.OauthCodeDto;
+import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
@@ -47,7 +47,7 @@ public class AuthService {
 
     /* 소셜 로그인 */
     @Transactional
-    public OAuthTokenDto signInByOauth(OauthCodeDto codeDto, OAuthPlatform platform) {
+    public OAuthTokenDto signInByOauth(OAuthCodeDto codeDto, OAuthPlatform platform) {
 
         String token = oAuthPlatformService.getAccessToken(codeDto, platform);
         UserInfoDto userInfoDto = oAuthPlatformService.getUserInfo(token, platform);

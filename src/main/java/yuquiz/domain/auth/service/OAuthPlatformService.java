@@ -3,7 +3,7 @@ package yuquiz.domain.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.auth.dto.OauthCodeDto;
+import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.auth.exception.AuthExceptionCode;
 import yuquiz.domain.auth.service.oauth.KakaoService;
@@ -16,7 +16,7 @@ public class OAuthPlatformService {
 
     private final KakaoService kakaoService;
 
-    public String getAccessToken(OauthCodeDto codeDto, OAuthPlatform platform) {
+    public String getAccessToken(OAuthCodeDto codeDto, OAuthPlatform platform) {
         return getPlatformService(platform).getAccessToken(codeDto);
     }
 

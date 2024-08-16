@@ -10,7 +10,7 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
-import yuquiz.domain.auth.dto.OauthCodeDto;
+import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.service.AuthService;
@@ -56,7 +56,7 @@ public class AuthController {
 
     /* Oauth 로그인 (kakao) */
     @PostMapping("/callback/kakao")
-    public ResponseEntity<?> kakaoSignIn(@RequestBody OauthCodeDto oauthCodeDto) {
+    public ResponseEntity<?> kakaoSignIn(@RequestBody OAuthCodeDto oauthCodeDto) {
 
         OAuthTokenDto oAuthTokenDto = authService.signInByOauth(oauthCodeDto, OAuthPlatform.KAKAO);
 

@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.GlobalExceptionCode;
 import yuquiz.domain.auth.config.KakaoConfig;
-import yuquiz.domain.auth.dto.OauthCodeDto;
+import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.auth.exception.AuthExceptionCode;
 import yuquiz.domain.user.entity.OAuthPlatform;
@@ -31,7 +31,7 @@ public class KakaoService implements OAuthClient {
     private final ObjectMapper objectMapper;
 
     @Override
-    public String getAccessToken(OauthCodeDto codeDto) {
+    public String getAccessToken(OAuthCodeDto codeDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 

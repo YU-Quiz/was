@@ -1,6 +1,6 @@
 package yuquiz.domain.auth.dto;
 
-public record OauthCodeDto(
+public record OAuthCodeDto(
         String code
 ) {
 }
