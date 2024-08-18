@@ -5,14 +5,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.auth.dto.UserInfoDto;
-import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.SignUpReq;
-import yuquiz.domain.user.dto.res.UserDetailsRes;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
-import yuquiz.domain.user.entity.OAuthPlatform;
-import yuquiz.domain.user.entity.Role;
+import yuquiz.domain.user.dto.res.UserDetailsRes;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
@@ -30,20 +27,6 @@ public class UserService {
 
         String encodePassword = passwordEncoder.encode(signUpReq.password());
         userRepository.save(signUpReq.toEntity(encodePassword));
-    }
-
-    /* OAuth 로그인을 위한 회원 저장 */
-    @Transactional
-    public User saveOAuthLoginUser(UserInfoDto userInfoDto, OAuthPlatform platform) {
-
-        return userRepository.save(
-                User.builder()
-                        .username(platform + "_" + userInfoDto.id())
-                        .email(userInfoDto.email())
-                        .nickname(userInfoDto.nickname())
-                        .role(Role.USER)
-                        .build()
-        );
     }
 
     /* 사용자 정보 불러오기 */

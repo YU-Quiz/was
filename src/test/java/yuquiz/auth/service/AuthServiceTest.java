@@ -19,7 +19,6 @@ import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
-import yuquiz.domain.user.service.OauthService;
 
 import java.util.Optional;
 
@@ -43,9 +42,6 @@ public class AuthServiceTest {
 
     @Mock
     private OAuthPlatformService oAuthPlatformService;
-
-    @Mock
-    private OauthService oauthService;
 
     @Mock
     private JwtService jwtService;
