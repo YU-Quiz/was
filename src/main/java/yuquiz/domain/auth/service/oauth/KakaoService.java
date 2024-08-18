@@ -81,10 +81,8 @@ public class KakaoService implements OAuthClient {
 
             // 필요한 정보 추출
             String id = rootNode.path("id").asText();
-            String email = rootNode.path("kakao_account").path("email").asText();
-            String nickname = rootNode.path("properties").path("nickname").asText();
 
-            return UserInfoDto.of(id, email, nickname);
+            return UserInfoDto.of(id);
         } catch (JsonProcessingException e) {
             throw new CustomException(AuthExceptionCode.JSON_PROCESSING_ERROR);
         } catch (Exception e) {
