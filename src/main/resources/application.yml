@@ -37,3 +37,10 @@ token:
 
 cache:
   ttl: ${CACHE_TTL:60}
+
+oauth2:
+  kakao:
+    tokenUri: https://kauth.kakao.com/oauth/token
+    clientId: ${CLIENT_ID}
+    redirectUri: ${REDIRECT_URL}
+    getUserInfoUri: https://kapi.kakao.com/v2/user/me

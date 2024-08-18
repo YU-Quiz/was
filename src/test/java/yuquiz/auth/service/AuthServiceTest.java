@@ -10,26 +10,25 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import yuquiz.common.exception.CustomException;
-import yuquiz.common.utils.cookie.CookieUtil;
-import yuquiz.common.utils.jwt.JwtProvider;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.service.AuthService;
+import yuquiz.domain.auth.service.JwtService;
+import yuquiz.domain.auth.service.OAuthPlatformService;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
-import yuquiz.security.token.blacklist.BlackListTokenService;
-import yuquiz.security.token.refresh.RefreshTokenService;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static yuquiz.common.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,16 +41,10 @@ public class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private RefreshTokenService refreshTokenService;
+    private OAuthPlatformService oAuthPlatformService;
 
     @Mock
-    private BlackListTokenService blackListTokenService;
-
-    @Mock
-    private CookieUtil cookieUtil;
-
-    @Mock
-    private JwtProvider jwtProvider;
+    private JwtService jwtService;
 
     @InjectMocks
     private AuthService authService;
@@ -71,20 +64,6 @@ public class AuthServiceTest {
                 .password(passwordEncoder.encode(signInReq.password()))
                 .role(Role.USER)
                 .build();
-        Long userId = 1L;
-        setUserId(user, userId);
-
-    }
-
-    /* User의 id를 임의로 설정 */
-    private void setUserId(User user, Long id) {
-        try {
-            Field idField = User.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(user, id);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
@@ -93,25 +72,21 @@ public class AuthServiceTest {
         // given
         String accessToken = "accessToken";
         String refreshToken = "refreshToken";
-
+        TokenDto tokenDto = TokenDto.of("Bearer " + accessToken, refreshToken);
         when(userRepository.findByUsername(signInReq.username())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(signInReq.password(), user.getPassword())).thenReturn(true);
-        when(jwtProvider.generateAccessToken(String.valueOf(user.getRole()), user.getId(), user.getUsername())).thenReturn(accessToken);
-        when(jwtProvider.generateRefreshToken(String.valueOf(user.getRole()), user.getId(), user.getUsername())).thenReturn(refreshToken);
+        when(jwtService.generateToken(user)).thenReturn(tokenDto);
 
         // When
-        TokenDto tokenDto = authService.signIn(signInReq);
+        TokenDto token = authService.signIn(signInReq);
 
         // Then
-        assertNotNull(tokenDto);
-        assertEquals(TOKEN_PREFIX + accessToken, tokenDto.accessToken());
-        assertEquals(refreshToken, tokenDto.refreshToken());
+        assertNotNull(token);
+        assertEquals(TOKEN_PREFIX + accessToken, token.accessToken());
+        assertEquals(refreshToken, token.refreshToken());
 
         verify(userRepository, times(1)).findByUsername(signInReq.username());
         verify(passwordEncoder, times(1)).matches(signInReq.password(), user.getPassword());
-        verify(jwtProvider, times(1)).generateAccessToken(String.valueOf(user.getRole()), user.getId(), user.getUsername());
-        verify(jwtProvider, times(1)).generateRefreshToken(String.valueOf(user.getRole()), user.getId(), user.getUsername());
-        verify(refreshTokenService, times(1)).saveRefreshToken(user.getUsername(), refreshToken);
     }
 
     @Test
@@ -150,31 +125,6 @@ public class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("토큰 재발급 테스트")
-    void reissueAccessTokenTest() {
-        // given
-        String refreshToken = "refreshToken";
-        String reIssueAccessToken = "reIssueAccessToken";
-        String reIssueRefreshToken = "reIssueRefreshToken";
-
-        when(refreshTokenService.findRefreshToken(refreshToken)).thenReturn(refreshToken);
-        when(refreshTokenService.accessTokenReIssue(refreshToken)).thenReturn(reIssueAccessToken);
-        when(refreshTokenService.refreshTokenReIssue(refreshToken)).thenReturn(reIssueRefreshToken);
-
-        // when
-        TokenDto tokenDto = authService.reissueAccessToken(refreshToken);
-
-        // then
-        assertNotNull(tokenDto);
-        assertEquals(TOKEN_PREFIX + reIssueAccessToken, tokenDto.accessToken());
-        assertEquals(reIssueRefreshToken, tokenDto.refreshToken());
-
-        verify(refreshTokenService, times(1)).findRefreshToken(refreshToken);
-        verify(refreshTokenService, times(1)).accessTokenReIssue(refreshToken);
-        verify(refreshTokenService, times(1)).refreshTokenReIssue(refreshToken);
-    }
-
-    @Test
     @DisplayName("로그아웃 테스트")
     void signOutTest() {
         // given
@@ -182,16 +132,12 @@ public class AuthServiceTest {
         String accessToken = "Bearer accessToken";
         String trimAccessToken = "accessToken";
 
-        doNothing().when(cookieUtil).deleteCookie(REFRESH_COOKIE_VALUE, response);
-        doNothing().when(refreshTokenService).deleteRefreshToken(refreshToken);
-        doNothing().when(blackListTokenService).saveBlackList(trimAccessToken);
+        doNothing().when(jwtService).deleteAndBlackListToken(trimAccessToken, refreshToken, response);
 
         // when
         authService.signOut(accessToken, refreshToken, response);
 
         // then
-        verify(cookieUtil, times(1)).deleteCookie(REFRESH_COOKIE_VALUE, response);
-        verify(refreshTokenService, times(1)).deleteRefreshToken(refreshToken);
-        verify(blackListTokenService, times(1)).saveBlackList(trimAccessToken);
+        verify(jwtService, times(1)).deleteAndBlackListToken(trimAccessToken, refreshToken, response);
     }
 }
