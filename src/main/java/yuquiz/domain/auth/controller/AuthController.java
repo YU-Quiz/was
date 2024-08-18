@@ -55,7 +55,7 @@ public class AuthController {
     }
 
     /* Oauth 로그인 (kakao) */
-    @PostMapping("/callback/kakao")
+    @PostMapping("/sign-in/kakao")
     public ResponseEntity<?> kakaoSignIn(@RequestBody OAuthCodeDto oauthCodeDto) {
 
         OAuthTokenDto oAuthTokenDto = authService.signInByOauth(oauthCodeDto, OAuthPlatform.KAKAO);
