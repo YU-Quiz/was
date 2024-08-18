@@ -6,8 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
+import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
@@ -15,8 +15,6 @@ import yuquiz.domain.user.entity.OAuthPlatform;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
-import yuquiz.domain.user.service.OauthService;
-import yuquiz.domain.user.service.UserService;
 
 import static yuquiz.common.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
@@ -26,9 +24,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
     private final OAuthPlatformService oAuthPlatformService;
-    private final OauthService oauthService;
     private final JwtService jwtService;
 
     /* 일반 로그인 */
@@ -51,21 +47,12 @@ public class AuthService {
 
         String token = oAuthPlatformService.getAccessToken(codeDto, platform);
         UserInfoDto userInfoDto = oAuthPlatformService.getUserInfo(token, platform);
-        User user;
 
-        boolean isRegistered = true;
+        User foundUser = oAuthPlatformService.readOAuthUser(userInfoDto.id(), platform);
 
-        // 최초 로그인 확인.
-        if (!oAuthPlatformService.isExists(userInfoDto.email(), platform)) {
-            user = userService.saveOAuthLoginUser(userInfoDto, platform);
+        boolean isRegistered = foundUser.getEmail() != null;
 
-            oauthService.saveOAuthInfo(userInfoDto, platform, user);
-            isRegistered = false;
-        } else {
-            user = userRepository.findByOauth_Email(userInfoDto.email());
-        }
-
-        return OAuthTokenDto.of(isRegistered, jwtService.generateToken(user));
+        return OAuthTokenDto.of(isRegistered, jwtService.generateToken(foundUser));
     }
 
     /* 비밀번호 확인 */

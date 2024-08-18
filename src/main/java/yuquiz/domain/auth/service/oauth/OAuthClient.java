@@ -2,6 +2,7 @@ package yuquiz.domain.auth.service.oauth;
 
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
+import yuquiz.domain.user.entity.User;
 
 public interface OAuthClient {
 
@@ -9,5 +10,5 @@ public interface OAuthClient {
 
     UserInfoDto getUserInfo(String accessToken);
 
-    boolean isExists(String email);
+    User getOAuthUser(String platformId);
 }

@@ -20,13 +20,15 @@ import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.auth.exception.AuthExceptionCode;
 import yuquiz.domain.user.entity.OAuthPlatform;
-import yuquiz.domain.user.repository.OAuthRepository;
+import yuquiz.domain.user.entity.Role;
+import yuquiz.domain.user.entity.User;
+import yuquiz.domain.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoService implements OAuthClient {
 
-    private final OAuthRepository oAuthRepository;
+    private final UserRepository userRepository;
     private final KakaoConfig kakaoConfig;
     private final ObjectMapper objectMapper;
 
@@ -90,7 +92,20 @@ public class KakaoService implements OAuthClient {
         }
     }
 
-    public boolean isExists(String email) {
-        return oAuthRepository.existsByPlatformAndEmail(OAuthPlatform.KAKAO, email);
+    @Override
+    public User getOAuthUser(String platformId) {
+
+        return userRepository.findByUsername(OAuthPlatform.KAKAO + "_" + platformId)
+                .orElseGet(() -> createOAuthUser(platformId));
+
+    }
+
+    private User createOAuthUser(String platformId) {
+
+        return userRepository.save(User.builder()
+                .username(OAuthPlatform.KAKAO + "_" + platformId)
+                .role(Role.USER)
+                .build()
+        );
     }
 }

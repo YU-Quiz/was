@@ -9,6 +9,7 @@ import yuquiz.domain.auth.exception.AuthExceptionCode;
 import yuquiz.domain.auth.service.oauth.KakaoService;
 import yuquiz.domain.auth.service.oauth.OAuthClient;
 import yuquiz.domain.user.entity.OAuthPlatform;
+import yuquiz.domain.user.entity.User;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,8 @@ public class OAuthPlatformService {
         return getPlatformService(platform).getUserInfo(accessToken);
     }
 
-    public boolean isExists(String email, OAuthPlatform platform) {
-        return getPlatformService(platform).isExists(email);
+    public User readOAuthUser(String platformId, OAuthPlatform platform) {
+        return getPlatformService(platform).getOAuthUser(platformId);
     }
 
     private OAuthClient getPlatformService(OAuthPlatform platform) {
