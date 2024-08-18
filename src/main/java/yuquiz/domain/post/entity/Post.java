@@ -29,8 +29,6 @@ public class Post extends BaseTimeEntity {
     @NotNull
     private String content;
 
-    private boolean modified;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
