@@ -63,6 +63,15 @@ public class AuthController {
         return createTokenRes(oAuthTokenDto);
     }
 
+    /* Oauth 로그인 (naver) */
+    @PostMapping("/sign-in/naver")
+    public ResponseEntity<?> naverSignIn(@RequestBody OAuthCodeDto oauthCodeDto) {
+
+        OAuthTokenDto oAuthTokenDto = authService.signInByOauth(oauthCodeDto, OAuthPlatform.NAVER);
+
+        return createTokenRes(oAuthTokenDto);
+    }
+
     /* 로그아웃 */
     @GetMapping("/sign-out")
     public ResponseEntity<?> signOut(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
