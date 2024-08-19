@@ -41,6 +41,14 @@ cache:
 oauth2:
   kakao:
     tokenUri: https://kauth.kakao.com/oauth/token
-    clientId: ${CLIENT_ID}
-    redirectUri: ${REDIRECT_URL}
+    clientId: ${KAKAO_CLIENT_ID}
+    clientSecret: ${KAKAO_CLIENT_SECRET}
+    redirectUri: ${KAKAO_REDIRECT_URL}
     getUserInfoUri: https://kapi.kakao.com/v2/user/me
+
+  naver:
+    tokenUri: https://nid.naver.com/oauth2.0/token
+    clientId: ${NAVER_CLIENT_ID}
+    clientSecret: ${NAVER_CLIENT_SECRET}
+    redirectUri: ${NAVER_REDIRECT_URL}
+    getUserInfoUri: https://openapi.naver.com/v1/nid/me
