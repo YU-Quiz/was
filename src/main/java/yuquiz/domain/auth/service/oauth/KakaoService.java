@@ -34,12 +34,14 @@ public class KakaoService implements OAuthClient {
 
     @Override
     public String getAccessToken(OAuthCodeDto codeDto) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
         param.add("grant_type", "authorization_code");
         param.add("client_id", kakaoConfig.getClientId());
+        param.add("client_secret", kakaoConfig.getClientSecret());
         param.add("redirect_uri", kakaoConfig.getRedirectUri());
         param.add("code", codeDto.code());
 
@@ -64,6 +66,7 @@ public class KakaoService implements OAuthClient {
 
     @Override
     public UserInfoDto getUserInfo(String accessToken) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 

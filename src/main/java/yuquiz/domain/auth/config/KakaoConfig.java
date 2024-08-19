@@ -12,6 +12,7 @@ public class KakaoConfig {
 
     private String tokenUri;
     private String clientId;
+    private String clientSecret;
     private String redirectUri;
     private String getUserInfoUri;
 }
