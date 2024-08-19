@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import yuquiz.domain.pinnedQuiz.dto.PinnedQuizSummaryRes;
 import yuquiz.domain.pinnedQuiz.service.PinnedQuizService;
-import yuquiz.domain.quiz.dto.QuizSortType;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.security.auth.SecurityUserDetails;
 

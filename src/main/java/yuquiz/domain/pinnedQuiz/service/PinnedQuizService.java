@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.pinnedQuiz.dto.PinnedQuizSummaryRes;
 import yuquiz.domain.pinnedQuiz.repository.PinnedQuizRepository;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.triedQuiz.repository.TriedQuizRepository;
