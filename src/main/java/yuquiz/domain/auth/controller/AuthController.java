@@ -43,7 +43,7 @@ public class AuthController {
 
     /* AccessToken 재발급 */
     @GetMapping("/token-reissue")
-    public ResponseEntity<?> reIssueToken(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<?> reIssueToken(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken) {
 
         if (refreshToken == null) {     // 쿠키에 Refresh Token이 없다면
             throw new CustomException(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND);
