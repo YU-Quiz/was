@@ -1,5 +1,7 @@
 package yuquiz.domain.pinnedQuiz.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.entity.Quiz;
@@ -9,4 +11,6 @@ public interface PinnedQuizRepository extends JpaRepository<PinnedQuiz, Long> {
     void deleteByUserAndQuiz(User user, Quiz quiz);
 
     boolean existsByUserAndQuiz(User user, Quiz quiz);
+
+    Page<PinnedQuiz> findAllByUser(User user, Pageable pageable);
 }
