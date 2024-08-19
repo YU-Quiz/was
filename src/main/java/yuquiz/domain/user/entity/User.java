@@ -43,15 +43,12 @@ public class User extends BaseTimeEntity {
 
     private String password;
 
-    @NotNull
     @Column(unique = true)
     private String nickname;
 
-    @NotNull
     @Column(unique = true)
     private String email;
 
-    @NotNull
     @Column(name = "major_name")
     private String majorName;
 

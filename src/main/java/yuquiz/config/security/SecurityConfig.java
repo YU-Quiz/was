@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 import yuquiz.common.jwt.filter.JwtAuthenticationFilter;
 import yuquiz.common.jwt.filter.JwtExceptionFilter;
 import yuquiz.domain.user.entity.Role;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/auth/**", "/swagger-resources/**", "/swagger-ui/**",
@@ -42,6 +44,8 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
+
+                .cors((cors) -> cors.configurationSource(corsConfigurationSource))
 
                 .formLogin(AbstractHttpConfigurer::disable)
 
