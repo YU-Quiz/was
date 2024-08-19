@@ -39,10 +39,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostRes getPostById(Long userId, Long postId) {
+    public PostRes getPostById(Long postId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
 

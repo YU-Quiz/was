@@ -14,7 +14,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping("api/v1/posts")
 public class PostController {
 
     private final PostService postService;
@@ -28,10 +28,9 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getPostById(@AuthenticationPrincipal SecurityUserDetails userDetails,
-                                         @PathVariable(value = "postId") Long postId){
+    public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId){
 
-        PostRes postRes = postService.getPostById(userDetails.getId(), postId);
+        PostRes postRes = postService.getPostById(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(postRes);
     }
