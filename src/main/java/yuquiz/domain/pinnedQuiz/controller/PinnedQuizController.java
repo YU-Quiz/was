@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import yuquiz.domain.pinnedQuiz.dto.PinnedQuizSummaryRes;
 import yuquiz.domain.pinnedQuiz.service.PinnedQuizService;
 import yuquiz.domain.quiz.dto.QuizSortType;
+import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
@@ -26,7 +27,7 @@ public class PinnedQuizController {
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {
 
-        Page<PinnedQuizSummaryRes> pinnedQuizzes = pinnedQuizService.getPinnedQuizzes(userDetails.getId(), page);
+        Page<QuizSummaryRes> pinnedQuizzes = pinnedQuizService.getPinnedQuizzes(userDetails.getId(), page);
         return ResponseEntity.status(HttpStatus.OK).body(pinnedQuizzes);
     }
 }
