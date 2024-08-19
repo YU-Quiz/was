@@ -29,4 +29,14 @@ public class TriedQuizController {
 
         return ResponseEntity.status(HttpStatus.OK).body(failedQuizzes);
     }
+
+    @GetMapping("/users/my/quizzes-solved")
+    public ResponseEntity<?> getSucceedQuizzes(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @RequestParam(value = "page") @Min(0) Integer page) {
+
+        Page<QuizSummaryRes> succeedQuizzes = triedQuizService.getSucceedQuizzes(userDetails.getId(), page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(succeedQuizzes);
+    }
 }

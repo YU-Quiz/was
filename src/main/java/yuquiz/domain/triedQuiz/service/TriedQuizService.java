@@ -29,4 +29,14 @@ public class TriedQuizService {
         return triedQuizRepository.findAllByUserAndIsSolvedFalse(user, pageable)
                 .map(quiz -> QuizSummaryRes.fromEntity(quiz, false));
     }
+
+    public Page<QuizSummaryRes> getSucceedQuizzes(Long userId, Integer page) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
+
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE);
+
+        return triedQuizRepository.findAllByUserAndIsSolvedTrue(user, pageable)
+                .map(quiz -> QuizSummaryRes.fromEntity(quiz, true));
+    }
 }

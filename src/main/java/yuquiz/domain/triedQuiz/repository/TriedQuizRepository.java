@@ -21,4 +21,7 @@ public interface TriedQuizRepository extends JpaRepository<TriedQuiz, Long> {
 
     @Query("SELECT tq.quiz FROM TriedQuiz tq WHERE tq.user =:user AND tq.isSolved = false")
     Page<Quiz> findAllByUserAndIsSolvedFalse(@Param("user") User user, Pageable pageable);
+
+    @Query("SELECT tq.quiz FROM TriedQuiz tq WHERE tq.user =:user AND tq.isSolved = true")
+    Page<Quiz> findAllByUserAndIsSolvedTrue(@Param("user") User user, Pageable pageable);
 }
