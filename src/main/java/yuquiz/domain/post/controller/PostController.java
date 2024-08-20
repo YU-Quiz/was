@@ -1,7 +1,9 @@
 package yuquiz.domain.post.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
+import yuquiz.domain.post.dto.PostSortType;
+import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.domain.post.service.PostService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -33,5 +37,16 @@ public class PostController {
         PostRes postRes = postService.getPostById(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(postRes);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getPostsByKeyword(
+            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(value = "sort") PostSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page){
+
+        Page<PostSummaryRes> posts = postService.getPostsByKeyword(keyword, sort, page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 }

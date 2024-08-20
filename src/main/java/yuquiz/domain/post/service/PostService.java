@@ -2,6 +2,9 @@ package yuquiz.domain.post.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
@@ -10,6 +13,8 @@ import yuquiz.domain.category.exception.CategoryExceptionCode;
 import yuquiz.domain.category.repository.CategoryRepository;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
+import yuquiz.domain.post.dto.PostSortType;
+import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.post.exception.PostExceptionCode;
 import yuquiz.domain.post.repository.PostRepository;
@@ -24,6 +29,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+
+    private final Integer POST_PER_PAGE = 20;
 
     @Transactional
     public void createPost(PostReq postReq, Long userId){
@@ -45,5 +52,15 @@ public class PostService {
                 .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
 
         return PostRes.fromEntity(post);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostSummaryRes> getPostsByKeyword(String keyword, PostSortType sortType, Integer page) {
+
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sortType.getSort());
+
+        Page<Post> posts =  postRepository.findAllByTitleContainingOrContentContaining(keyword, keyword, pageable);
+
+        return posts.map(PostSummaryRes::fromEntity);
     }
 }
