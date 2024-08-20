@@ -49,4 +49,15 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<?> getPostsByCategory(
+            @PathVariable(value = "categoryId") Long categoryId,
+            @RequestParam(value = "sort") PostSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page){
+
+        Page<PostSummaryRes> posts = postService.getPostsByCategory(categoryId, sort, page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
 }
