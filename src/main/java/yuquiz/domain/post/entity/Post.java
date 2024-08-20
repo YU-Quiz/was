@@ -29,6 +29,12 @@ public class Post extends BaseTimeEntity {
     @NotNull
     private String content;
 
+    @Column(name = "like_count")
+    private int likeCount;
+
+    @Column(name = "view_count")
+    private int viewCount;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
@@ -46,5 +52,7 @@ public class Post extends BaseTimeEntity {
         this.content = content;
         this.category = category;
         this.writer = writer;
+        this.likeCount = 0;
+        this.viewCount = 0;
     }
 }

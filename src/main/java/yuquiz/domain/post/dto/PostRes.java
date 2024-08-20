@@ -8,6 +8,8 @@ public record PostRes(String title,
                       String content,
                       String category,
                       String nickname,
+                      int likeCount,
+                      int viewCount,
                       LocalDateTime createdAt,
                       boolean modified
 ) {
@@ -18,6 +20,8 @@ public record PostRes(String title,
                 post.getContent(),
                 post.getCategory().getCategoryName(),
                 post.getWriter().getNickname(),
+                post.getLikeCount(),
+                post.getViewCount(),
                 post.getCreatedAt(),
                 !post.getModifiedAt().equals(post.getCreatedAt()));
     }
