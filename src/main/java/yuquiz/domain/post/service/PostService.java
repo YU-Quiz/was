@@ -54,6 +54,30 @@ public class PostService {
         return PostRes.fromEntity(post);
     }
 
+    @Transactional
+    public void updatePost(Long postId, PostReq postReq, Long userId){
+
+        Post post = findByPostIdAndValidateUser(postId, userId);
+
+        Category category;
+        if(!post.getCategory().getId().equals(postReq.categoryId())){
+            category = categoryRepository.findById(postReq.categoryId())
+                    .orElseThrow(() -> new CustomException(CategoryExceptionCode.INVALID_ID));
+        }else{
+            category = post.getCategory();
+        }
+
+        post.update(postReq.title(), postReq.content(), category);
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Long userId){
+
+        Post post = findByPostIdAndValidateUser(postId, userId);
+
+        postRepository.delete(post);
+    }
+
     @Transactional(readOnly = true)
     public Page<PostSummaryRes> getPostsByKeyword(String keyword, PostSortType sortType, Integer page) {
 
@@ -73,5 +97,16 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByCategory(category, pageable);
 
         return posts.map(PostSummaryRes::fromEntity);
+    }
+
+    private Post findByPostIdAndValidateUser(Long postId, Long userId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
+
+        if(!post.getWriter().getId().equals(userId)){
+            throw new CustomException(PostExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        return post;
     }
 }

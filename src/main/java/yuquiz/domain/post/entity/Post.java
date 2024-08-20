@@ -46,6 +46,12 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "writer_id")
     private User writer;
 
+    public void update(String title, String content, Category category) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
+    }
+
     @Builder
     public Post(String title, String content, Category category, User writer) {
         this.title = title;

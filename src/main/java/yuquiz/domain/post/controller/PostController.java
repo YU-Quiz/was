@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.post.api.PostApi;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
 import yuquiz.domain.post.dto.PostSortType;
@@ -19,7 +20,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/posts")
-public class PostController {
+public class PostController implements PostApi {
 
     private final PostService postService;
 
@@ -38,6 +39,25 @@ public class PostController {
         PostRes postRes = postService.getPostById(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(postRes);
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
+                                        @Valid @RequestBody PostReq postReq,
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+
+        postService.updatePost(postId, postReq, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("게시글 수정 성공"));
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+
+        postService.deletePost(postId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("게시글 삭제 성공"));
     }
 
     @GetMapping
