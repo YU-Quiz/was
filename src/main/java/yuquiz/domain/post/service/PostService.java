@@ -64,13 +64,10 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostSummaryRes> getPostsByCategory(Long categoryId, PostSortType sortType, Integer page){
-
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CustomException(CategoryExceptionCode.INVALID_ID));
+    public Page<PostSummaryRes> getPostsByCategory(String categoryName, PostSortType sortType, Integer page){
 
         Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sortType.getSort());
-        Page<Post> posts = postRepository.findAllByCategory(category, pageable);
+        Page<Post> posts = postRepository.findAllByCategory_CategoryName(categoryName, pageable);
 
         return posts.map(PostSummaryRes::fromEntity);
     }
