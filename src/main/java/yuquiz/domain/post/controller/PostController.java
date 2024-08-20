@@ -19,7 +19,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/posts")
+@RequestMapping("/api/v1/posts")
 public class PostController implements PostApi {
 
     private final PostService postService;
