@@ -9,6 +9,7 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.SignInReq;
+import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.user.entity.OAuthPlatform;
@@ -29,6 +30,16 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final OAuthPlatformService oAuthPlatformService;
     private final JwtService jwtService;
+
+    /* 회원 생성 */
+    @Transactional
+    public TokenDto createUser(SignUpReq signUpReq) {
+
+        String encodePassword = passwordEncoder.encode(signUpReq.password());
+        User createdUser = userRepository.save(signUpReq.toEntity(encodePassword));
+
+        return jwtService.generateToken(createdUser);
+    }
 
     /* 일반 로그인 */
     @Transactional(readOnly = true)

@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.dto.req.PasswordReq;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
-import yuquiz.domain.user.dto.req.SignUpReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.dto.res.UserDetailsRes;
 import yuquiz.domain.user.entity.User;
@@ -20,14 +19,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    /* 회원 생성 */
-    @Transactional
-    public void createUser(SignUpReq signUpReq) {
-
-        String encodePassword = passwordEncoder.encode(signUpReq.password());
-        userRepository.save(signUpReq.toEntity(encodePassword));
-    }
 
     /* 사용자 정보 불러오기 */
     @Transactional(readOnly = true)
