@@ -6,7 +6,8 @@ import yuquiz.common.exception.exceptionCode.ExceptionCode;
 @AllArgsConstructor
 public enum CategoryExceptionCode implements ExceptionCode {
 
-    INVALID_ID(404, "존재하지 않는 카테고리입니다.");
+    INVALID_ID(404, "존재하지 않는 카테고리입니다."),
+    INVALID_NAME(404, "존재하지 않는 카테고리입니다.");
 
     private final int status;
     private final String message;
