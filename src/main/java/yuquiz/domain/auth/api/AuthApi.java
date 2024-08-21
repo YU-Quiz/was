@@ -122,6 +122,15 @@ public interface AuthApi {
                                             "isRegistered": false
                                         }
                                     """)
+                    })),
+            @ApiResponse(responseCode = "423", description = "계정 정지",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 423,
+                                            "message": "정지되어 있는 계정입니다. - 잠금 해제 시간: 2024-08-23 02시 19분"
+                                        }
+                                    """)
                     }))
     })
     ResponseEntity<?> kakaoSignIn(@RequestBody OAuthCodeDto oauthCodeDto);
@@ -140,6 +149,15 @@ public interface AuthApi {
                                         {
                                             "accessToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0NiIsInJvbGUiOiJPV05FUihdGVnb3J5IjoiYWNjZXNzIiwidXNlcklkIjo2LCJpYXQiOjE3MjI2Njc1MzYsImV4cCI6MTcyMjY2OTMzNn0.9eY_1aSfKLfDhKN5X4f85N2hv_I65QOPFtq_2YXEhoA",
                                             "isRegistered": false
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "423", description = "계정 정지",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 423,
+                                            "message": "정지되어 있는 계정입니다. - 잠금 해제 시간: 2024-08-23 02시 19분"
                                         }
                                     """)
                     }))
