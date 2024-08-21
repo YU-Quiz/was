@@ -33,7 +33,7 @@ public class AuthService {
 
     /* 회원 생성 */
     @Transactional
-    public TokenDto createUser(SignUpReq signUpReq) {
+    public TokenDto signUp(SignUpReq signUpReq) {
 
         String encodePassword = passwordEncoder.encode(signUpReq.password());
         User createdUser = userRepository.save(signUpReq.toEntity(encodePassword));

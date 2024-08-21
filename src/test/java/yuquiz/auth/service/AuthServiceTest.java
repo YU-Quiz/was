@@ -83,7 +83,7 @@ public class AuthServiceTest {
         given(userRepository.save(any(User.class))).willReturn(user);
 
         // when
-        authService.createUser(signUpReq);
+        authService.signUp(signUpReq);
 
         // then
         verify(userRepository, times(1)).save(any(User.class));

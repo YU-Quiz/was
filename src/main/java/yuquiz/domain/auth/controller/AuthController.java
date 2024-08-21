@@ -45,7 +45,7 @@ public class AuthController implements AuthApi {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq) {
 
-        TokenDto tokenDto = authService.createUser(signUpReq);
+        TokenDto tokenDto = authService.signUp(signUpReq);
 
         return createTokenRes(tokenDto);
     }

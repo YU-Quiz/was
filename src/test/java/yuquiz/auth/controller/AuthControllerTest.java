@@ -96,7 +96,7 @@ public class AuthControllerTest {
                 .sameSite("None")
                 .build();
 
-        given(authService.createUser(any(SignUpReq.class))).willReturn(tokenDto);
+        given(authService.signUp(any(SignUpReq.class))).willReturn(tokenDto);
         given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())).willReturn(responseCookie);
 
         // when
