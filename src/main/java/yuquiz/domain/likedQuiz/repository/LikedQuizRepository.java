@@ -1,16 +1,16 @@
-package yuquiz.domain.pinnedQuiz.repository;
+package yuquiz.domain.likedQuiz.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.entity.Quiz;
+import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.user.entity.User;
 
-public interface PinnedQuizRepository extends JpaRepository<PinnedQuiz, Long> {
+public interface LikedQuizRepository extends JpaRepository<LikedQuiz, Long> {
     void deleteByUserAndQuiz(User user, Quiz quiz);
 
     boolean existsByUserAndQuiz(User user, Quiz quiz);
 
-    Page<PinnedQuiz> findAllByUser(User user, Pageable pageable);
+    Page<LikedQuiz> findAllByUser(User user, Pageable pageable);
 }

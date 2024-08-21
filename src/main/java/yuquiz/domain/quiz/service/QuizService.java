@@ -16,8 +16,8 @@ import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
-import yuquiz.domain.quizLike.entity.QuizLike;
-import yuquiz.domain.quizLike.repository.QuizLikeRepository;
+import yuquiz.domain.likedQuiz.entity.LikedQuiz;
+import yuquiz.domain.likedQuiz.repository.LikedQuizRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
@@ -36,7 +36,7 @@ public class QuizService {
     private final SubjectRepository subjectRepository;
     private final TriedQuizRepository triedQuizRepository;
     private final PinnedQuizRepository pinnedQuizRepository;
-    private final QuizLikeRepository quizLikeRepository;
+    private final LikedQuizRepository likedQuizRepository;
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
@@ -74,7 +74,7 @@ public class QuizService {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
 
-        boolean isLiked = quizLikeRepository.existsByUserAndQuiz(user, quiz);
+        boolean isLiked = likedQuizRepository.existsByUserAndQuiz(user, quiz);
         boolean isPinned = pinnedQuizRepository.existsByUserAndQuiz(user, quiz);
 
 
@@ -159,16 +159,16 @@ public class QuizService {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
 
-        if (quizLikeRepository.existsByUserAndQuiz(user, quiz)) {
+        if (likedQuizRepository.existsByUserAndQuiz(user, quiz)) {
             return;
         }
 
-        QuizLike quizLike = QuizLike.builder()
+        LikedQuiz likedQuiz = LikedQuiz.builder()
                 .user(user)
                 .quiz(quiz)
                 .build();
 
-        quizLikeRepository.save(quizLike);
+        likedQuizRepository.save(likedQuiz);
     }
 
     @Transactional
@@ -176,7 +176,7 @@ public class QuizService {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
 
-        quizLikeRepository.deleteByUserAndQuiz(user, quiz);
+        likedQuizRepository.deleteByUserAndQuiz(user, quiz);
     }
 
     private User findUserByUserId(Long userId) {

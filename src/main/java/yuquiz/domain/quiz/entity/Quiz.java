@@ -11,7 +11,7 @@ import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.converter.StringListConverter;
-import yuquiz.domain.quizLike.entity.QuizLike;
+import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.triedQuiz.entity.TriedQuiz;
 import yuquiz.domain.user.entity.User;
@@ -66,7 +66,7 @@ public class Quiz extends BaseTimeEntity {
     private List<PinnedQuiz> pinnedQuizzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
-    private List<QuizLike> quizLikes = new ArrayList<>();
+    private List<LikedQuiz> likedQuizs = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<Report> reports = new ArrayList<>();
