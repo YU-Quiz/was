@@ -3,7 +3,6 @@ package yuquiz.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,7 +30,6 @@ public class SecurityConfig {
             "/v3/api-docs/**", "/webjars/**", "/error", "/api/v1/users/verify-username",
             "/api/v1/users/verify-nickname"
     };
-    private static final String[] SIGNUP_ENDPOINTS = {"/api/v1/users"};
     private static final String[] ADMIN_ENDPOINTS = {"/api/v1/admin/**"};
 
     @Bean
@@ -57,7 +55,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.POST, SIGNUP_ENDPOINTS).permitAll()
                                 .requestMatchers(ADMIN_ENDPOINTS).hasAnyRole(String.valueOf(Role.ADMIN))
                                 .anyRequest().authenticated())
 
