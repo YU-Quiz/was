@@ -20,7 +20,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 public class TriedQuizController {
     private final TriedQuizService triedQuizService;
 
-    @GetMapping("/users/my/quizzes-incorrect")
+    @GetMapping("/users/incorrect-quizzes")
     public ResponseEntity<?> getFailedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {
@@ -30,7 +30,7 @@ public class TriedQuizController {
         return ResponseEntity.status(HttpStatus.OK).body(failedQuizzes);
     }
 
-    @GetMapping("/users/my/quizzes-solved")
+    @GetMapping("/users/correct-quizzes")
     public ResponseEntity<?> getSucceedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {

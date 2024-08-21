@@ -20,7 +20,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 public class PinnedQuizController {
     private final PinnedQuizService pinnedQuizService;
 
-    @GetMapping("/users/quizzes-pinned")
+    @GetMapping("/users/pinned-quizzes")
     public ResponseEntity<?> getPinnedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {

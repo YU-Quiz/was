@@ -1,4 +1,4 @@
-package yuquiz.domain.quizLike.service;
+package yuquiz.domain.likedQuiz.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
-import yuquiz.domain.quizLike.repository.QuizLikeRepository;
+import yuquiz.domain.likedQuiz.repository.LikedQuizRepository;
 import yuquiz.domain.triedQuiz.repository.TriedQuizRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -15,9 +15,9 @@ import yuquiz.domain.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-public class QuizLikeService {
+public class LikedQuizService {
 
-    private final QuizLikeRepository quizLikeRepository;
+    private final LikedQuizRepository likedQuizRepository;
     private final UserRepository userRepository;
     private final TriedQuizRepository triedQuizRepository;
 
@@ -29,8 +29,8 @@ public class QuizLikeService {
 
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE);
 
-        return quizLikeRepository.findAllByUser(user, pageable)
-                .map(quizLike -> QuizSummaryRes.fromEntity(quizLike.getQuiz(), triedQuizRepository.findIsSolvedByUserAndQuiz(user, quizLike.getQuiz())));
+        return likedQuizRepository.findAllByUser(user, pageable)
+                .map(likedQuiz -> QuizSummaryRes.fromEntity(likedQuiz.getQuiz(), triedQuizRepository.findIsSolvedByUserAndQuiz(user, likedQuiz.getQuiz())));
     }
 
 }

@@ -1,4 +1,4 @@
-package yuquiz.domain.quizLike.entity;
+package yuquiz.domain.likedQuiz.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +11,7 @@ import yuquiz.domain.user.entity.User;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class QuizLike {
+public class LikedQuiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class QuizLike {
     private Quiz quiz;
 
     @Builder
-    public QuizLike(User user, Quiz quiz) {
+    public LikedQuiz(User user, Quiz quiz) {
         this.user = user;
         this.quiz = quiz;
     }
