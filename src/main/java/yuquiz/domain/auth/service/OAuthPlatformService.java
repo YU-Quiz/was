@@ -7,6 +7,7 @@ import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.auth.exception.AuthExceptionCode;
 import yuquiz.domain.auth.service.oauth.KakaoService;
+import yuquiz.domain.auth.service.oauth.NaverService;
 import yuquiz.domain.auth.service.oauth.OAuthClient;
 import yuquiz.domain.user.entity.OAuthPlatform;
 import yuquiz.domain.user.entity.User;
@@ -15,6 +16,7 @@ import yuquiz.domain.user.entity.User;
 @RequiredArgsConstructor
 public class OAuthPlatformService {
 
+    private final NaverService naverService;
     private final KakaoService kakaoService;
 
     public String getAccessToken(OAuthCodeDto codeDto, OAuthPlatform platform) {
@@ -31,6 +33,7 @@ public class OAuthPlatformService {
 
     private OAuthClient getPlatformService(OAuthPlatform platform) {
         return switch (platform) {
+            case NAVER -> naverService;
             case KAKAO -> kakaoService;
             default -> throw new CustomException(AuthExceptionCode.UNSUPPORTED_SOCIAL_LOGIN_ERROR);
         };

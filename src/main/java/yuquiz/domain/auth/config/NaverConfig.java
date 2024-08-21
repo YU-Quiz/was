@@ -6,9 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "oauth2.kakao")
-@Getter @Setter
-public class KakaoConfig {
+@ConfigurationProperties(prefix = "oauth2.naver")
+@Getter
+@Setter
+public class NaverConfig {
 
     private String tokenUri;
     private String clientId;

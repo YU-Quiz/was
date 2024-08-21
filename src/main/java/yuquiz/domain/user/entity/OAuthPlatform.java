@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum OAuthPlatform {
-    KAKAO("KAKAO");
+    KAKAO("KAKAO"),
+    NAVER("NAVER");
 
     private String name;
 

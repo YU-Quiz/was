@@ -9,6 +9,7 @@ import yuquiz.common.api.SuccessRes;
 import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
+import yuquiz.domain.auth.api.AuthApi;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.SignInReq;
@@ -26,13 +27,14 @@ import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthApi {
 
     private final AuthService authService;
     private final CookieUtil cookieUtil;
     private final JwtService jwtService;
 
     /* 일반 로그인 */
+    @Override
     @PostMapping("/sign-in")
     public ResponseEntity<?> signIn(@Valid @RequestBody SignInReq signInReq) {
 
@@ -42,8 +44,9 @@ public class AuthController {
     }
 
     /* AccessToken 재발급 */
+    @Override
     @GetMapping("/token-reissue")
-    public ResponseEntity<?> reIssueToken(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<?> reIssueToken(@CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken) {
 
         if (refreshToken == null) {     // 쿠키에 Refresh Token이 없다면
             throw new CustomException(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND);
@@ -55,6 +58,7 @@ public class AuthController {
     }
 
     /* Oauth 로그인 (kakao) */
+    @Override
     @PostMapping("/sign-in/kakao")
     public ResponseEntity<?> kakaoSignIn(@RequestBody OAuthCodeDto oauthCodeDto) {
 
@@ -63,7 +67,18 @@ public class AuthController {
         return createTokenRes(oAuthTokenDto);
     }
 
+    /* Oauth 로그인 (naver) */
+    @Override
+    @PostMapping("/sign-in/naver")
+    public ResponseEntity<?> naverSignIn(@RequestBody OAuthCodeDto oauthCodeDto) {
+
+        OAuthTokenDto oAuthTokenDto = authService.signInByOauth(oauthCodeDto, OAuthPlatform.NAVER);
+
+        return createTokenRes(oAuthTokenDto);
+    }
+
     /* 로그아웃 */
+    @Override
     @GetMapping("/sign-out")
     public ResponseEntity<?> signOut(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
                                      @CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,

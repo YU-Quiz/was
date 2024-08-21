@@ -15,7 +15,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.GlobalExceptionCode;
-import yuquiz.domain.auth.config.KakaoConfig;
+import yuquiz.domain.auth.config.NaverConfig;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.UserInfoDto;
 import yuquiz.domain.auth.exception.AuthExceptionCode;
@@ -26,10 +26,10 @@ import yuquiz.domain.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-public class KakaoService implements OAuthClient {
+public class NaverService implements OAuthClient{
 
     private final UserRepository userRepository;
-    private final KakaoConfig kakaoConfig;
+    private final NaverConfig naverConfig;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -40,9 +40,9 @@ public class KakaoService implements OAuthClient {
 
         MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
         param.add("grant_type", "authorization_code");
-        param.add("client_id", kakaoConfig.getClientId());
-        param.add("client_secret", kakaoConfig.getClientSecret());
-        param.add("redirect_uri", kakaoConfig.getRedirectUri());
+        param.add("client_id", naverConfig.getClientId());
+        param.add("client_secret", naverConfig.getClientSecret());
+        param.add("redirect_uri", naverConfig.getRedirectUri());
         param.add("code", codeDto.code());
 
         HttpEntity<MultiValueMap<String, String>> requestInfo = new HttpEntity<>(param, headers);
@@ -50,7 +50,7 @@ public class KakaoService implements OAuthClient {
         RestTemplate req = new RestTemplate();
         try {
             ResponseEntity<String> response = req.exchange(
-                    kakaoConfig.getTokenUri(),
+                    naverConfig.getTokenUri(),
                     HttpMethod.POST,
                     requestInfo,
                     String.class);
@@ -75,7 +75,7 @@ public class KakaoService implements OAuthClient {
         RestTemplate req = new RestTemplate();
         try {
             ResponseEntity<String> response = req.exchange(
-                    kakaoConfig.getGetUserInfoUri(),
+                    naverConfig.getGetUserInfoUri(),
                     HttpMethod.GET,
                     requestInfo,
                     String.class);
@@ -83,7 +83,7 @@ public class KakaoService implements OAuthClient {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
             // 필요한 정보 추출
-            String id = rootNode.path("id").asText();
+            String id = rootNode.path("response").get("id").asText();
 
             return UserInfoDto.of(id);
         } catch (JsonProcessingException e) {
@@ -96,7 +96,7 @@ public class KakaoService implements OAuthClient {
     @Override
     public User getOAuthUser(String platformId) {
 
-        return userRepository.findByUsername(OAuthPlatform.KAKAO + "_" + platformId)
+        return userRepository.findByUsername(OAuthPlatform.NAVER + "_" + platformId)
                 .orElseGet(() -> createOAuthUser(platformId));
 
     }
@@ -104,7 +104,7 @@ public class KakaoService implements OAuthClient {
     private User createOAuthUser(String platformId) {
 
         return userRepository.save(User.builder()
-                .username(OAuthPlatform.KAKAO + "_" + platformId)
+                .username(OAuthPlatform.NAVER + "_" + platformId)
                 .role(Role.USER)
                 .build()
         );
