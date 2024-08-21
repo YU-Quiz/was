@@ -8,14 +8,18 @@ public record PostSummaryRes(
         Long postId,
         String postTitle,
         String nickname,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        int likeCount,
+        int viewCount
 ) {
     public static PostSummaryRes fromEntity(Post post) {
         return new PostSummaryRes(
                 post.getId(),
                 post.getTitle(),
                 post.getWriter().getNickname(),
-                post.getCreatedAt()
+                post.getCreatedAt(),
+                post.getLikeCount(),
+                post.getViewCount()
         );
     }
 }
