@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.SignInReq;
+import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.auth.service.JwtService;
@@ -20,11 +21,15 @@ import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,9 +66,27 @@ public class AuthServiceTest {
 
         this.user = User.builder()
                 .username("test")
-                .password(passwordEncoder.encode(signInReq.password()))
+                .password("password1234")
                 .role(Role.USER)
                 .build();
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트")
+    void signUpTest() {
+        // given
+        SignUpReq signUpReq = new SignUpReq("test", "password",
+                "테스터", "test@naver.com", "컴퓨터공학과", true);
+
+        String encodePassword = passwordEncoder.encode(signUpReq.password());
+        User user = signUpReq.toEntity(encodePassword);
+        given(userRepository.save(any(User.class))).willReturn(user);
+
+        // when
+        authService.createUser(signUpReq);
+
+        // then
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
@@ -102,7 +125,8 @@ public class AuthServiceTest {
         });
 
         // then
-        assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD, exception.getExceptionCode());
+        assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD.getStatus(), exception.getStatus());
+        assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD.getMessage(), exception.getMessage());
         verify(userRepository, times(1)).findByUsername(signInReq.username());
     }
 
@@ -119,9 +143,37 @@ public class AuthServiceTest {
         });
 
         // then
-        assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD, exception.getExceptionCode());
+        assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD.getStatus(), exception.getStatus());
+        assertEquals(UserExceptionCode.INVALID_USERNAME_AND_PASSWORD.getMessage(), exception.getMessage());
         verify(userRepository, times(1)).findByUsername(signInReq.username());
         verify(passwordEncoder, times(1)).matches(signInReq.password(), user.getPassword());
+    }
+
+    @Test
+    @DisplayName("로그인 테스트 - 계정 잠김")
+    void signInFailedByLockedTest() {
+        // given
+        User lockedUser = User.builder()
+                .username(signInReq.username())
+                .password("password1234")
+                .build();
+        lockedUser.updateSuspendStatus(LocalDateTime.now().plusHours(1), 1);
+
+        when(userRepository.findByUsername(signInReq.username())).thenReturn(Optional.of(lockedUser));
+        when(passwordEncoder.matches(signInReq.password(), lockedUser.getPassword())).thenReturn(true);
+
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            authService.signIn(signInReq);
+        });
+
+        // then
+        assertEquals(UserExceptionCode.USER_LOCKED.getStatus(), exception.getStatus());
+        assertTrue(exception.getMessage().contains("잠금 해제 시간"));
+        verify(userRepository, times(1)).findByUsername(signInReq.username());
+        verify(passwordEncoder, times(1)).matches(signInReq.password(), user.getPassword());
+
     }
 
     @Test

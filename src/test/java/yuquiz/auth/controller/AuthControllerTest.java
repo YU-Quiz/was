@@ -15,22 +15,34 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.controller.AuthController;
 import yuquiz.domain.auth.dto.SignInReq;
+import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.auth.service.JwtService;
+import yuquiz.domain.user.entity.User;
+import yuquiz.domain.user.exception.UserExceptionCode;
 
-import static org.mockito.ArgumentMatchers.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static yuquiz.common.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
 import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 
@@ -70,6 +82,87 @@ public class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("회원가입 테스트")
+    void signUpTest() throws Exception {
+        // given
+        SignUpReq signUpReq = new SignUpReq("test", "password1234",
+                "테스터", "test@naver.com", "컴퓨터공학과", true);
+
+        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())
+                .path("/")
+                .httpOnly(true)
+                .maxAge(60)
+                .secure(true)
+                .sameSite("None")
+                .build();
+
+        given(authService.createUser(any(SignUpReq.class))).willReturn(tokenDto);
+        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())).willReturn(responseCookie);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-up")
+                        .content(objectMapper.writeValueAsBytes(signUpReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value(tokenDto.accessToken()))
+                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()));
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트 - 유효성 검사 실패")
+    void signUpInvalidFailedTest() throws Exception {
+        // given
+        SignUpReq signUpReq = new SignUpReq(null, null, null, null, null, true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-up")
+                        .content(objectMapper.writeValueAsBytes(signUpReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.username").value("아이디는 필수 입력입니다."))
+                .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."))
+                .andExpect(jsonPath("$.nickname").value("닉네임은 필수 입력 값입니다."))
+                .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."))
+                .andExpect(jsonPath("$.majorName").value("학과는 필수 선택 값입니다."));
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트 - 조건 불충족")
+    void signUpInsufficientTest() throws Exception {
+        // given
+        SignUpReq signUpReq = new SignUpReq("te", "password", "x",
+                "testnaver.com", "컴퓨터공학과", true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-up")
+                        .content(objectMapper.writeValueAsBytes(signUpReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.username").value("아이디는 특수문자를 제외한 4~20자리여야 합니다."))
+                .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."))
+                .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
+                .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
+    }
+
+    @Test
     @DisplayName("로그인 테스트")
     void signInTest() throws Exception {
         // given
@@ -99,6 +192,40 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value(tokenDto.accessToken()))
                 .andExpect(cookie().value(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()));
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 계정 잠김")
+    void signInUserLockedTest() throws Exception {
+        // given
+        SignInReq signInReq = new SignInReq("test", "password1234");
+
+        User lockedUser = User.builder()
+                .username(signInReq.username())
+                .password("encodedPassword")
+                .build();
+
+        lockedUser.updateSuspendStatus(LocalDateTime.now().plusHours(1), 1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+        String formattedUnlockedAt = lockedUser.getUnlockedAt().format(formatter);
+        String additionalMessage = "잠금 해제 시간: " + formattedUnlockedAt;
+
+        when(authService.signIn(any(SignInReq.class)))
+                .thenThrow(new CustomException(UserExceptionCode.USER_LOCKED, additionalMessage));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-in")
+                        .content(objectMapper.writeValueAsBytes(signInReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isLocked())
+                .andExpect(jsonPath("$.message").value("정지되어 있는 계정입니다. - " + additionalMessage));
     }
 
     @Test
