@@ -41,7 +41,7 @@ public interface PostApi {
                                     """)
                     }))
     })
-    public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq,
+    ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails);
 
     @Operation(summary = "게시글 조회", description = "게시글 ID로 게시글을 조회하는 API")
@@ -72,7 +72,7 @@ public interface PostApi {
                     })),
 
     })
-    public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId);
+    ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId);
 
     @Operation(summary = "게시글 수정", description = "게시글을 수정하는 API")
     @ApiResponses({
@@ -104,7 +104,7 @@ public interface PostApi {
                                     """)
                     }))
     })
-    public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
+    ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
                                         @Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails);
 
@@ -121,7 +121,7 @@ public interface PostApi {
                                     """)
                     }))
     })
-    public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
+    ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails);
 
     @Operation(summary = "게시글 검색", description = "키워드를 이용해 게시글을 조회하는 기능")
@@ -201,7 +201,7 @@ public interface PostApi {
                                     """)
                     })),
     })
-    public ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
+    ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
                                                @RequestParam(value = "sort") PostSortType sort,
                                                @RequestParam(value = "page") @Min(0) Integer page);
 
@@ -292,7 +292,7 @@ public interface PostApi {
                                     """)
                     }))
     })
-    public ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
+    ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
                                                 @RequestParam(value = "sort") PostSortType sort,
                                                 @RequestParam(value = "page") @Min(0) Integer page);
 }

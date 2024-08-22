@@ -25,6 +25,7 @@ public class PostController implements PostApi {
     private final PostService postService;
 
     @PostMapping
+    @Override
     public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
@@ -34,6 +35,7 @@ public class PostController implements PostApi {
     }
 
     @GetMapping("/{postId}")
+    @Override
     public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId){
 
         PostRes postRes = postService.getPostById(postId);
@@ -42,6 +44,7 @@ public class PostController implements PostApi {
     }
 
     @PutMapping("/{postId}")
+    @Override
     public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
                                         @Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
@@ -52,6 +55,7 @@ public class PostController implements PostApi {
     }
 
     @DeleteMapping("/{postId}")
+    @Override
     public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
@@ -61,6 +65,7 @@ public class PostController implements PostApi {
     }
 
     @GetMapping
+    @Override
     public ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
                                                @RequestParam(value = "sort") PostSortType sort,
                                                @RequestParam(value = "page") @Min(0) Integer page){
@@ -71,6 +76,7 @@ public class PostController implements PostApi {
     }
 
     @GetMapping("/category/{categoryName}")
+    @Override
     public ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
                                                 @RequestParam(value = "sort") PostSortType sort,
                                                 @RequestParam(value = "page") @Min(0) Integer page){
