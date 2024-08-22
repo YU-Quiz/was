@@ -73,9 +73,14 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, Long userId){
 
-        Post post = findByPostIdAndValidateUser(postId, userId);
-
-        postRepository.delete(post);
+        try{
+            Post post = findByPostIdAndValidateUser(postId, userId);
+            postRepository.delete(post);
+        }catch(CustomException e){
+            if(!e.getExceptionCode().equals(PostExceptionCode.INVALID_ID)){
+                throw e;
+            }
+        }
     }
 
     @Transactional(readOnly = true)
