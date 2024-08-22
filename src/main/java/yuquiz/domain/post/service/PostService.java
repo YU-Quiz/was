@@ -55,9 +55,9 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostReq postReq, Long userId){
+    public void updatePostById(Long postId, PostReq postReq, Long userId){
 
-        Post post = findByPostIdAndValidateUser(postId, userId);
+        Post post = findPostByIdAndValidateUser(postId, userId);
 
         Category category;
         if(!post.getCategory().getId().equals(postReq.categoryId())){
@@ -71,10 +71,10 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, Long userId){
+    public void deletePostById(Long postId, Long userId){
 
         try{
-            Post post = findByPostIdAndValidateUser(postId, userId);
+            Post post = findPostByIdAndValidateUser(postId, userId);
             postRepository.delete(post);
         }catch(CustomException e){
             if(!e.getExceptionCode().equals(PostExceptionCode.INVALID_ID)){
@@ -104,7 +104,7 @@ public class PostService {
         return posts.map(PostSummaryRes::fromEntity);
     }
 
-    private Post findByPostIdAndValidateUser(Long postId, Long userId){
+    private Post findPostByIdAndValidateUser(Long postId, Long userId){
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
 

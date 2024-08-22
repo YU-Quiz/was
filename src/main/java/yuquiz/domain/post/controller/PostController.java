@@ -49,7 +49,7 @@ public class PostController implements PostApi {
                                         @Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
-        postService.updatePost(postId, postReq, userDetails.getId());
+        postService.updatePostById(postId, postReq, userDetails.getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("게시글 수정 성공"));
     }
@@ -59,7 +59,7 @@ public class PostController implements PostApi {
     public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
-        postService.deletePost(postId, userDetails.getId());
+        postService.deletePostById(postId, userDetails.getId());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
