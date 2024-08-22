@@ -61,7 +61,7 @@ public class PostController implements PostApi {
 
         postService.deletePost(postId, userDetails.getId());
 
-        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("게시글 삭제 성공"));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping
