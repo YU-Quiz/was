@@ -13,7 +13,9 @@ public enum UserExceptionCode implements ExceptionCode {
     INVALID_USERID(404,"존재하지 않는 사용자입니다."),
 
     EXIST_USERNAME(409, "이미 존재하는 아이디입니다."),
-    EXIST_NICKNAME(409, "이미 존재하는 닉네임입니다.");
+    EXIST_NICKNAME(409, "이미 존재하는 닉네임입니다."),
+
+    USER_LOCKED(423, "정지되어 있는 계정입니다.");
 
     private final int status;
     private final String message;

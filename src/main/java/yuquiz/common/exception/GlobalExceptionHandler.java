@@ -22,8 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<?> customExceptionHandler(CustomException ex) {
 
-        ExceptionCode exceptionCode = ex.getExceptionCode();
-        ExceptionsRes exceptionsRes = ExceptionsRes.of(exceptionCode.getStatus(), exceptionCode.getMessage());
+        ExceptionsRes exceptionsRes = ExceptionsRes.of(ex.getStatus(), ex.getMessage());
         log.error("Error occurred : {}, Stack trace: {}", ex.getMessage(), getCustomStackTrace(ex));
         return ResponseEntity.status(exceptionsRes.status()).body(exceptionsRes);
     }

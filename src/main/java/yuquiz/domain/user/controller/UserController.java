@@ -19,7 +19,6 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.api.UserApi;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
-import yuquiz.domain.user.dto.req.SignUpReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.service.UserService;
@@ -31,15 +30,6 @@ import yuquiz.security.auth.SecurityUserDetails;
 public class UserController implements UserApi {
 
     private final UserService userService;
-
-    /* 회원가입 */
-    @Override
-    @PostMapping
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq) {
-
-        userService.createUser(signUpReq);
-        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("회원가입 성공."));
-    }
 
     /* 사용자 정보 불러오기 */
     @Override

@@ -11,9 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.dto.req.PasswordReq;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
-import yuquiz.domain.user.dto.req.SignUpReq;
-import yuquiz.domain.user.dto.res.UserDetailsRes;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
+import yuquiz.domain.user.dto.res.UserDetailsRes;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
@@ -26,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,24 +56,6 @@ public class UserServiceTest {
                 .majorName("컴퓨터공학과")
                 .build();
         this.userId = 1L;
-    }
-
-    @Test
-    @DisplayName("회원가입 테스트")
-    void signUpTest() {
-        // given
-        SignUpReq signUpReq = new SignUpReq("test", "password",
-                        "테스터", "test@naver.com", "컴퓨터공학과", true);
-
-        String encodePassword = passwordEncoder.encode(signUpReq.password());
-        User user = signUpReq.toEntity(encodePassword);
-        given(userRepository.save(any(User.class))).willReturn(user);
-
-        // when
-        userService.createUser(signUpReq);
-
-        // then
-        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
@@ -139,7 +119,8 @@ public class UserServiceTest {
         });
 
         // then
-        assertEquals(UserExceptionCode.INVALID_USERID, exception.getExceptionCode());
+        assertEquals(UserExceptionCode.INVALID_USERID.getStatus(), exception.getStatus());
+        assertEquals(UserExceptionCode.INVALID_USERID.getMessage(), exception.getMessage());
         verify(userRepository, times(1)).findById(userId);
     }
 
@@ -177,7 +158,8 @@ public class UserServiceTest {
         });
 
         // then
-        assertEquals(UserExceptionCode.INVALID_PASSWORD, exception.getExceptionCode());
+        assertEquals(UserExceptionCode.INVALID_PASSWORD.getStatus(), exception.getStatus());
+        assertEquals(UserExceptionCode.INVALID_PASSWORD.getMessage(), exception.getMessage());
     }
 
     @Test

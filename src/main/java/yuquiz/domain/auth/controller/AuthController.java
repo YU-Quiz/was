@@ -4,15 +4,22 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.api.AuthApi;
-import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
+import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.SignInReq;
+import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.auth.service.JwtService;
@@ -32,6 +39,16 @@ public class AuthController implements AuthApi {
     private final AuthService authService;
     private final CookieUtil cookieUtil;
     private final JwtService jwtService;
+
+    /* 회원가입 */
+    @Override
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq) {
+
+        TokenDto tokenDto = authService.signUp(signUpReq);
+
+        return createTokenRes(tokenDto);
+    }
 
     /* 일반 로그인 */
     @Override
