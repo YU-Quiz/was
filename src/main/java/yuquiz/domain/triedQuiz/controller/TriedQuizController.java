@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
+import yuquiz.domain.triedQuiz.api.TriedQuizApi;
 import yuquiz.domain.triedQuiz.service.TriedQuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/quizzes")
-public class TriedQuizController {
+public class TriedQuizController implements TriedQuizApi {
     private final TriedQuizService triedQuizService;
 
     @GetMapping("/incorrect")
