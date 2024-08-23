@@ -204,7 +204,6 @@ public class QuizService {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
 
-
         if (!quiz.getWriter().equals(user)) {
             throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
         }
