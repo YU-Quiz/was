@@ -16,11 +16,11 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/quizzes")
 public class LikedQuizController {
     private final LikedQuizService likedQuizService;
 
-    @GetMapping("/users/liked-quizzes")
+    @GetMapping("/liked")
     public ResponseEntity<?> getLikedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {

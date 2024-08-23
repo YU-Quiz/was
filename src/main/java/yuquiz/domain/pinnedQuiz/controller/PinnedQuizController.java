@@ -16,11 +16,11 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/quizzes")
 public class PinnedQuizController {
     private final PinnedQuizService pinnedQuizService;
 
-    @GetMapping("/users/pinned-quizzes")
+    @GetMapping("/pinned")
     public ResponseEntity<?> getPinnedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {

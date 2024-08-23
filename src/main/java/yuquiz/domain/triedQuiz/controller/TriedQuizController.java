@@ -16,11 +16,11 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/quizzes")
 public class TriedQuizController {
     private final TriedQuizService triedQuizService;
 
-    @GetMapping("/users/incorrect-quizzes")
+    @GetMapping("/incorrect")
     public ResponseEntity<?> getFailedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {
@@ -30,7 +30,7 @@ public class TriedQuizController {
         return ResponseEntity.status(HttpStatus.OK).body(failedQuizzes);
     }
 
-    @GetMapping("/users/correct-quizzes")
+    @GetMapping("/correct")
     public ResponseEntity<?> getSucceedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {
