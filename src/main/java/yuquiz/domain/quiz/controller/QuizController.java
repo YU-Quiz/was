@@ -126,4 +126,15 @@ public class QuizController implements QuizApi {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<?> getQuizzesByWriter(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @RequestParam(value = "sort") QuizSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page) {
+
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByWriter(userDetails.getId(), sort, page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(quizzes);
+    }
 }
