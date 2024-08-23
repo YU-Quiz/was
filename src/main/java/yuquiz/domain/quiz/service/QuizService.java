@@ -69,7 +69,7 @@ public class QuizService {
         quiz.update(quizReq, subject);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public QuizRes getQuizById(Long userId, Long quizId) {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
@@ -77,6 +77,7 @@ public class QuizService {
         boolean isLiked = likedQuizRepository.existsByUserAndQuiz(user, quiz);
         boolean isPinned = pinnedQuizRepository.existsByUserAndQuiz(user, quiz);
 
+        quiz.increaseViewCount();
 
         return QuizRes.fromEntity(quiz, isLiked, isPinned);
     }

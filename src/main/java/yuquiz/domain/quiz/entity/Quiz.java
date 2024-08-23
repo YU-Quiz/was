@@ -104,4 +104,8 @@ public class Quiz extends BaseTimeEntity {
         this.quizType = quizReq.quizType();
         this.subject = subject;
     }
+
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
 }
