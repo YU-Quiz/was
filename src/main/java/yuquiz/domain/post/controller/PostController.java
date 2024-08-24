@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.post.api.PostApi;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
 import yuquiz.domain.post.dto.PostSortType;
@@ -19,11 +20,12 @@ import yuquiz.security.auth.SecurityUserDetails;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
-public class PostController {
+public class PostController implements PostApi {
 
     private final PostService postService;
 
     @PostMapping
+    @Override
     public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
@@ -33,6 +35,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
+    @Override
     public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId){
 
         PostRes postRes = postService.getPostById(postId);
@@ -41,6 +44,7 @@ public class PostController {
     }
 
     @GetMapping
+    @Override
     public ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
                                                @RequestParam(value = "sort") PostSortType sort,
                                                @RequestParam(value = "page") @Min(0) Integer page){
@@ -51,6 +55,7 @@ public class PostController {
     }
 
     @GetMapping("/category/{categoryName}")
+    @Override
     public ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
                                                 @RequestParam(value = "sort") PostSortType sort,
                                                 @RequestParam(value = "page") @Min(0) Integer page){
@@ -61,6 +66,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
+    @Override
     public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
                                         @Valid @RequestBody PostReq postReq,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
@@ -71,6 +77,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
+    @Override
     public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
