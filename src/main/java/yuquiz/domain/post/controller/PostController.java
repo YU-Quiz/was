@@ -18,13 +18,14 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/posts")
+@RequestMapping("/api/v1/posts")
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq, @AuthenticationPrincipal SecurityUserDetails userDetails){
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq,
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
 
         postService.createPost(postReq, userDetails.getId());
 
@@ -40,10 +41,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getPostsByKeyword(
-            @RequestParam(value = "keyword") String keyword,
-            @RequestParam(value = "sort") PostSortType sort,
-            @RequestParam(value = "page") @Min(0) Integer page){
+    public ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
+                                               @RequestParam(value = "sort") PostSortType sort,
+                                               @RequestParam(value = "page") @Min(0) Integer page){
 
         Page<PostSummaryRes> posts = postService.getPostsByKeyword(keyword, sort, page);
 
@@ -51,13 +51,31 @@ public class PostController {
     }
 
     @GetMapping("/category/{categoryName}")
-    public ResponseEntity<?> getPostsByCategory(
-            @PathVariable(value = "categoryName") String categoryName,
-            @RequestParam(value = "sort") PostSortType sort,
-            @RequestParam(value = "page") @Min(0) Integer page){
+    public ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
+                                                @RequestParam(value = "sort") PostSortType sort,
+                                                @RequestParam(value = "page") @Min(0) Integer page){
 
         Page<PostSummaryRes> posts = postService.getPostsByCategory(categoryName, sort, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
+                                        @Valid @RequestBody PostReq postReq,
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+
+        postService.updatePostById(postId, postReq, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("게시글 수정 성공"));
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+
+        postService.deletePostById(postId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
