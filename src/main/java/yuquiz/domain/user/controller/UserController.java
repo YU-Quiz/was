@@ -103,6 +103,7 @@ public class UserController implements UserApi {
     }
 
     /* 인증번호 전송 */
+    @Override
     @PostMapping("/email/verification-request")
     public ResponseEntity<?> sendCodeToMail(@RequestBody EmailReq emailReq) {
 
@@ -111,6 +112,7 @@ public class UserController implements UserApi {
     }
 
     /* 인증 번호 확인 */
+    @Override
     @PostMapping("/email/code-verification")
     public ResponseEntity<?> verifyCode(@RequestBody CodeVerificationReq codeReq) {
 

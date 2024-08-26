@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import yuquiz.domain.user.dto.req.CodeVerificationReq;
+import yuquiz.domain.user.dto.req.EmailReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
@@ -183,4 +185,66 @@ public interface UserApi {
                     }))
     })
     ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname);
+
+    @Operation(summary = "인증 번호 전송", description = "회원가입 중, 인증번호를 전송하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증번호 전송 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "인증메일 보내기 성공."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "429", description = "1분 이내에 전송한 이력 존재",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 429,
+                                            "message": "1분 후 재전송 해주세요."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> sendCodeToMail(@RequestBody EmailReq emailReq);
+
+    @Operation(summary = "인증 번호 확인", description = "회원가입 중, 인증번호를 확인하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증번호 확인 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "true"
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "인증번호 불일치",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 400,
+                                            "message": "인증번호가 일치하지 않습니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "409", description = "이미 존재하는 이메일",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 409,
+                                            "message": "이미 존재하는 이메일입니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404109", description = "유효시간 만료",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 410,
+                                            "message": "유효시간이 지났습니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> verifyCode(@RequestBody CodeVerificationReq codeReq);
 }
