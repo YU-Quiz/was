@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.api.UserApi;
-import yuquiz.domain.user.dto.req.PasswordUpdateReq;
+import yuquiz.domain.user.dto.req.CodeVerificationReq;
+import yuquiz.domain.user.dto.req.EmailReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
+import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.exception.UserExceptionCode;
+import yuquiz.domain.user.service.MailCodeService;
 import yuquiz.domain.user.service.UserService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -30,6 +33,7 @@ import yuquiz.security.auth.SecurityUserDetails;
 public class UserController implements UserApi {
 
     private final UserService userService;
+    private final MailCodeService mailCodeService;
 
     /* 사용자 정보 불러오기 */
     @Override
@@ -96,5 +100,20 @@ public class UserController implements UserApi {
 
         userService.deleteUserInfo(userDetails.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /* 인증번호 전송 */
+    @PostMapping("/email/verification-request")
+    public ResponseEntity<?> sendCodeToMail(@RequestBody EmailReq emailReq) {
+
+        mailCodeService.sendCodeToMail(emailReq.email());
+        return ResponseEntity.ok(SuccessRes.from("인증메일 보내기 성공."));
+    }
+
+    /* 인증 번호 확인 */
+    @PostMapping("/email/code-verification")
+    public ResponseEntity<?> verifyCode(@RequestBody CodeVerificationReq codeReq) {
+
+        return ResponseEntity.ok(SuccessRes.from(mailCodeService.verifiedCode(codeReq)));
     }
 }
