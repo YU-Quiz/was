@@ -32,9 +32,6 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String emailUsername;
 
-    @Value("${web.post-url}")
-    private String postURL;
-
     /* 메일 보내기 */
     @Async
     public void sendMail(String email, String content, MailType type) {
