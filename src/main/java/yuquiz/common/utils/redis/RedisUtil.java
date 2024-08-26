@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Component
@@ -35,5 +36,10 @@ public class RedisUtil {
     /* Redis 만료시간 설정. */
     public void expire(String key, long seconds) {
         redisTemplate.expire(key, Duration.ofSeconds(seconds));
+    }
+
+    /* 남은 expired 시간 가져오기 */
+    public Long getExpire(String key, TimeUnit timeUnit) {
+        return redisTemplate.getExpire(key, timeUnit);
     }
 }
