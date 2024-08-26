@@ -15,7 +15,13 @@ public enum UserExceptionCode implements ExceptionCode {
     EXIST_USERNAME(409, "이미 존재하는 아이디입니다."),
     EXIST_NICKNAME(409, "이미 존재하는 닉네임입니다."),
 
-    USER_LOCKED(423, "정지되어 있는 계정입니다.");
+    USER_LOCKED(423, "정지되어 있는 계정입니다."),
+
+    // 인증 메일 관련 오류
+    INVALID_CODE(400, "인증번호가 일치하지 않습니다."),
+    EXIST_EMAIL(409, "이미 존재하는 이메일입니다."),
+    CODE_EXPIRED(410, "유효시간이 지났습니다."),
+    ALREADY_MAIL_REQUEST(429, "1분 후 재전송 해주세요.");
 
     private final int status;
     private final String message;
