@@ -13,6 +13,7 @@ import yuquiz.domain.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -78,9 +79,9 @@ public class MailCodeService {
         }
 
         String key = CODE_KEY_PREFIX + codeReq.email();
-        String storedCode = (String) redisUtil.get(key);
+        Optional<String> storedCode = Optional.ofNullable((String) redisUtil.get(key));
 
-        if (storedCode == null) {            // 유효시간 지나서 redis에 없음
+        if (storedCode.isEmpty()) {            // 유효시간 지나서 redis에 없음
             throw new CustomException(UserExceptionCode.CODE_EXPIRED);
         }
         if (!storedCode.equals(codeReq.code())) {      // 코드 일치하지 않음

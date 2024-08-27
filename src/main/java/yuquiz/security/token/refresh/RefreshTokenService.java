@@ -8,6 +8,8 @@ import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.jwt.JwtProvider;
 import yuquiz.common.utils.redis.RedisUtil;
 
+import java.util.Optional;
+
 import static yuquiz.common.utils.redis.RedisProperties.REFRESH_TOKEN_KEY_PREFIX;
 
 @Service
@@ -33,11 +35,12 @@ public class RefreshTokenService {
 
         String username = jwtProvider.getUsername(refreshToken);
         String key = REFRESH_TOKEN_KEY_PREFIX + username;
-        String findRefreshToken = (String) redisUtil.get(key);
-        if(findRefreshToken == null)
+        Optional<String> foundRefreshToken = Optional.ofNullable((String) redisUtil.get(key));
+
+        if(foundRefreshToken.isEmpty())
             throw new CustomException(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND);
 
-        return findRefreshToken;
+        return foundRefreshToken.get();
     }
 
     /* redis에서 삭제 */
