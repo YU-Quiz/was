@@ -21,6 +21,7 @@ import yuquiz.domain.user.dto.req.UserUpdateReq;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
+import yuquiz.domain.user.service.MailCodeService;
 import yuquiz.domain.user.service.UserService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -52,6 +53,9 @@ public class SecuredUserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private MailCodeService mailCodeService;
 
     private SecurityUserDetails userDetails;
     private User user;

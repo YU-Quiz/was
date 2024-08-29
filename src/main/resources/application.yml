@@ -22,6 +22,24 @@ spring:
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASS:}
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+
 jwt:
   secret: ${JWT_KEY:exampleSecretKeyForYUQuizSystemAccessSecretKeyTestForPadding}
   access-expiration: ${JWT_ACCESS_EXPIRATION:1800000}
