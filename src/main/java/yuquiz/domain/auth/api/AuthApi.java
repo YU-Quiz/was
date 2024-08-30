@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
+import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 
@@ -52,6 +53,34 @@ public interface AuthApi {
                     }))
     })
     ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq);
+
+    @Operation(summary = "OAuth 회원가입", description = "OAuth 로그인 중 서비스 최초 이용시 회원가입을 하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원가입 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "accessToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MTExMTExIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjQ5LCJpc3MiOiJ5dS1xdWloxNzI0MjYyMjAyLCJleHAiOjE3MjQyNjQwMDJ9.p0zUTytV5heng6zwhrTgJVT0t4z-08tC6r272d0WVMs"
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "nickname": "닉네임은 필수 입력 값입니다.",
+                                            "email": "이메일은 필수 입력 값입니다.",
+                                            "majorName": "학과는 필수 선택 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "nickname": "닉네임은 특수문자를 제외한 2~10자리여야 합니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> oauthSignUp(@Valid @RequestBody OAuthSignUpReq oAuthSignUpReq);
 
     @Operation(summary = "일반 로그인", description = "서비스를 이용하기 위해 로그인하는 API입니다.")
     @ApiResponses({
