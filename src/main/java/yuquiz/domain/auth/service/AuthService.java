@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
+import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
@@ -57,6 +58,15 @@ public class AuthService {
         }
 
         return jwtService.generateToken(foundUser);
+    }
+
+    /* OAuth 회원 생성 */
+    @Transactional
+    public TokenDto oAuthSignUp(OAuthSignUpReq oAuthSignUpReq) {
+
+        User createdUser = userRepository.save(oAuthSignUpReq.toEntity());
+
+        return jwtService.generateToken(createdUser);
     }
 
     /* 소셜 로그인 */
