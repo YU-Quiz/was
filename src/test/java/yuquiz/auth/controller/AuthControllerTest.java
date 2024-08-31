@@ -136,7 +136,7 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."))
-                .andExpect(jsonPath("$.majorName").value("학과는 필수 선택 값입니다."));
+                .andExpect(jsonPath("$.majorName").value("학과는 필수 입력 값입니다."));
     }
 
     @Test
@@ -216,7 +216,7 @@ public class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.nickname").value("닉네임은 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."))
-                .andExpect(jsonPath("$.majorName").value("학과는 필수 선택 값입니다."));
+                .andExpect(jsonPath("$.majorName").value("학과는 필수 입력 값입니다."));
     }
 
     @Test

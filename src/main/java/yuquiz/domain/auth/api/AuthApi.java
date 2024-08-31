@@ -40,7 +40,7 @@ public interface AuthApi {
                                             "password": "비밀번호는 필수 입력 값입니다.",
                                             "nickname": "닉네임은 필수 입력 값입니다.",
                                             "email": "이메일은 필수 입력 값입니다.",
-                                            "majorName": "학과는 필수 선택 값입니다."
+                                            "majorName": "학과는 필수 입력 값입니다."
                                         }
                                     """),
                             @ExampleObject(name = "patternError", value = """
@@ -70,7 +70,7 @@ public interface AuthApi {
                                         {
                                             "nickname": "닉네임은 필수 입력 값입니다.",
                                             "email": "이메일은 필수 입력 값입니다.",
-                                            "majorName": "학과는 필수 선택 값입니다."
+                                            "majorName": "학과는 필수 입력 값입니다."
                                         }
                                     """),
                             @ExampleObject(name = "patternError", value = """

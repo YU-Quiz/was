@@ -20,7 +20,7 @@ public record OAuthSignUpReq(
         String email,
 
         @Schema(description = "학과", example = "컴퓨터공학과")
-        @NotBlank(message = "학과는 필수 선택 값입니다.")
+        @NotBlank(message = "학과는 필수 입력 값입니다.")
         String majorName,
 
         @Schema(description = "이메일 수신 동의", example = "true")
