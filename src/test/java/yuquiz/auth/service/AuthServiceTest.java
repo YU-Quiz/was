@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
@@ -84,6 +85,23 @@ public class AuthServiceTest {
 
         // when
         authService.signUp(signUpReq);
+
+        // then
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("OAuth 회원가입 테스트")
+    void oAuthSignUpTest() {
+        // given
+        OAuthSignUpReq oAuthSignUpReq =
+                new OAuthSignUpReq("테스터", "test@naver.com", "컴퓨터공학과", true);
+
+        User user = oAuthSignUpReq.toEntity();
+        given(userRepository.save(any(User.class))).willReturn(user);
+
+        // when
+        authService.oAuthSignUp(oAuthSignUpReq);
 
         // then
         verify(userRepository, times(1)).save(any(User.class));

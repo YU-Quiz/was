@@ -17,6 +17,7 @@ import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.api.AuthApi;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
+import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
@@ -46,6 +47,16 @@ public class AuthController implements AuthApi {
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq) {
 
         TokenDto tokenDto = authService.signUp(signUpReq);
+
+        return createTokenRes(tokenDto);
+    }
+
+    /* OAuth 회원가입 */
+    @Override
+    @PostMapping("/sign-up/oauth")
+    public ResponseEntity<?> oauthSignUp(@Valid @RequestBody OAuthSignUpReq oAuthSignUpReq) {
+
+        TokenDto tokenDto = authService.oAuthSignUp(oAuthSignUpReq);
 
         return createTokenRes(tokenDto);
     }

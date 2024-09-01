@@ -19,6 +19,7 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.controller.AuthController;
+import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
@@ -135,7 +136,7 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."))
-                .andExpect(jsonPath("$.majorName").value("학과는 필수 선택 값입니다."));
+                .andExpect(jsonPath("$.majorName").value("학과는 필수 입력 값입니다."));
     }
 
     @Test
@@ -158,6 +159,84 @@ public class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.username").value("아이디는 특수문자를 제외한 4~20자리여야 합니다."))
                 .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."))
+                .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
+                .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트")
+    void oAuthSignUpTest() throws Exception {
+        // given
+        OAuthSignUpReq oAuthSignUpReq =
+                new OAuthSignUpReq("테스터", "test@naver.com", "컴퓨터공학과", true);
+
+        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())
+                .path("/")
+                .httpOnly(true)
+                .maxAge(60)
+                .secure(true)
+                .sameSite("None")
+                .build();
+
+        given(authService.oAuthSignUp(any(OAuthSignUpReq.class))).willReturn(tokenDto);
+        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())).willReturn(responseCookie);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-up/oauth")
+                        .content(objectMapper.writeValueAsBytes(oAuthSignUpReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value(tokenDto.accessToken()))
+                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()));
+    }
+
+    @Test
+    @DisplayName("OAuth 회원가입 테스트 - 유효성 검사 실패")
+    void oAuthSignUpInvalidFailedTest() throws Exception {
+        // given
+        OAuthSignUpReq oAuthSignUpReq =
+                new OAuthSignUpReq(null, null, null, true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-up/oauth")
+                        .content(objectMapper.writeValueAsBytes(oAuthSignUpReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.nickname").value("닉네임은 필수 입력 값입니다."))
+                .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."))
+                .andExpect(jsonPath("$.majorName").value("학과는 필수 입력 값입니다."));
+    }
+
+    @Test
+    @DisplayName("OAuth 회원가입 테스트 - 조건 불충족")
+    void oAuthSignUpInsufficientTest() throws Exception {
+        // given
+        OAuthSignUpReq oAuthSignUpReq =
+                new OAuthSignUpReq("x", "testnaver.com", "컴퓨터공학과", true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/sign-up/oauth")
+                        .content(objectMapper.writeValueAsBytes(oAuthSignUpReq))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
                 .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
     }
