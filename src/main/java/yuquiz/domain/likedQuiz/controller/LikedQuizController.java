@@ -10,17 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yuquiz.domain.likedQuiz.api.LikedQuizApi;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.likedQuiz.service.LikedQuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
-public class LikedQuizController {
+@RequestMapping("/api/v1/quizzes")
+public class LikedQuizController implements LikedQuizApi {
     private final LikedQuizService likedQuizService;
 
-    @GetMapping("/users/liked-quizzes")
+    @GetMapping("/liked")
     public ResponseEntity<?> getLikedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {

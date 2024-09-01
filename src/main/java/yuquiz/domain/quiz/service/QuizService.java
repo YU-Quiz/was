@@ -69,7 +69,7 @@ public class QuizService {
         quiz.update(quizReq, subject);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public QuizRes getQuizById(Long userId, Long quizId) {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
@@ -77,6 +77,7 @@ public class QuizService {
         boolean isLiked = likedQuizRepository.existsByUserAndQuiz(user, quiz);
         boolean isPinned = pinnedQuizRepository.existsByUserAndQuiz(user, quiz);
 
+        quiz.increaseViewCount();
 
         return QuizRes.fromEntity(quiz, isLiked, isPinned);
     }
@@ -179,6 +180,16 @@ public class QuizService {
         likedQuizRepository.deleteByUserAndQuiz(user, quiz);
     }
 
+    @Transactional(readOnly = true)
+    public Page<QuizSummaryRes> getQuizzesByWriter(Long userId, QuizSortType sort, Integer page) {
+        User user = findUserByUserId(userId);
+
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
+        Page<Quiz> quizzes = quizRepository.findAllByWriter(user, pageable);
+
+        return quizzes.map(quiz -> QuizSummaryRes.fromEntity(quiz, true));
+    }
+
     private User findUserByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
@@ -192,7 +203,6 @@ public class QuizService {
     private Quiz findQuizByIdAndValidateUser(Long quizId, Long userId) {
         User user = findUserByUserId(userId);
         Quiz quiz = findQuizByQuizId(quizId);
-
 
         if (!quiz.getWriter().equals(user)) {
             throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);

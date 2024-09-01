@@ -17,6 +17,8 @@ public record QuizRes(
 
         Integer likeCount,
 
+        Integer viewCount,
+
         List<String> choices,
 
         String subject,
@@ -36,6 +38,7 @@ public record QuizRes(
                 quiz.getQuizImgs(),
                 quiz.getQuizType(),
                 quiz.getLikeCount(),
+                quiz.getViewCount(),
                 quiz.getChoices(),
                 quiz.getSubject().getSubjectName(),
                 quiz.getWriter().getNickname(),

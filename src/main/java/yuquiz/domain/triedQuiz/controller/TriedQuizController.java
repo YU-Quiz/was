@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
+import yuquiz.domain.triedQuiz.api.TriedQuizApi;
 import yuquiz.domain.triedQuiz.service.TriedQuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
-public class TriedQuizController {
+@RequestMapping("/api/v1/quizzes")
+public class TriedQuizController implements TriedQuizApi {
     private final TriedQuizService triedQuizService;
 
-    @GetMapping("/users/incorrect-quizzes")
+    @GetMapping("/incorrect")
     public ResponseEntity<?> getFailedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {
@@ -30,7 +31,7 @@ public class TriedQuizController {
         return ResponseEntity.status(HttpStatus.OK).body(failedQuizzes);
     }
 
-    @GetMapping("/users/correct-quizzes")
+    @GetMapping("/correct")
     public ResponseEntity<?> getSucceedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page) {

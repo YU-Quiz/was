@@ -350,4 +350,55 @@ public interface QuizApi {
                                           @RequestParam(value = "keyword") String keyword,
                                           @RequestParam(value = "sort") QuizSortType sort,
                                           @RequestParam(value = "page") @Min(0) Integer page);
+
+    @Operation(summary = "작성한 퀴즈 목록", description = "사용자가 작성한 퀴즈 목록을 불러오는 api")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퀴즈 목록 조회 성공",
+            content = @Content(mediaType = "application/json",examples = {
+                    @ExampleObject(value = """
+                            {
+                                "totalPages": 1,
+                                "totalElements": 1,
+                                "first": true,
+                                "last": true,
+                                "size": 20,
+                                "content": [
+                                    {
+                                        "quizId": 8,
+                                        "quizTitle": "hello",
+                                        "nickname": "테스터",
+                                        "createdAt": "2024-08-12T13:32:55",
+                                        "likeCount": 2,
+                                        "viewCount": 20,
+                                        "isSolved": true
+                                    }
+                                ],
+                                "number": 0,
+                                "sort": {
+                                    "empty": false,
+                                    "unsorted": false,
+                                    "sorted": true
+                                },
+                                "pageable": {
+                                    "pageNumber": 0,
+                                    "pageSize": 20,
+                                    "sort": {
+                                        "empty": false,
+                                        "unsorted": false,
+                                        "sorted": true
+                                    },
+                                    "offset": 0,
+                                    "unpaged": false,
+                                    "paged": true
+                                },
+                                "numberOfElements": 1,
+                                "empty": false
+                            }
+                            """)
+            }))
+    })
+    ResponseEntity<?> getQuizzesByWriter(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @RequestParam(value = "sort") QuizSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page);
 }

@@ -54,8 +54,6 @@ public class Quiz extends BaseTimeEntity {
     @Column(name = "view_count")
     private int viewCount;
 
-    private boolean modified;
-
     @Column(columnDefinition = "boolean default true")
     private boolean visibility = true;
 
@@ -103,5 +101,9 @@ public class Quiz extends BaseTimeEntity {
         this.answer = quizReq.answer();
         this.quizType = quizReq.quizType();
         this.subject = subject;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount += 1;
     }
 }
