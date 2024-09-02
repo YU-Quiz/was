@@ -3,6 +3,7 @@ package yuquiz.domain.notification.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
@@ -32,4 +33,13 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public Notification(String title, String message, String redirectUrl, User user) {
+        this.title = title;
+        this.message = message;
+        this.isChecked = false;
+        this.redirectUrl = redirectUrl;
+        this.user = user;
+    }
 }
