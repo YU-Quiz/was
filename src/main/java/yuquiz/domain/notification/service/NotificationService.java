@@ -24,9 +24,11 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
 
+    private static final Integer NOTIFICATION_PER_PAGE = 20;
+
     @Transactional(readOnly = true)
     public Page<NotificationRes> getAllNotification(Long userId, Integer page, NotificationSortType sort, Optional<Boolean> isChecked) {
-        Pageable pageable = PageRequest.of(page, 20, sort.getSort());
+        Pageable pageable = PageRequest.of(page, NOTIFICATION_PER_PAGE, sort.getSort());
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
