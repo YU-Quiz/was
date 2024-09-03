@@ -157,7 +157,7 @@ public class AuthControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.username").value("아이디는 특수문자를 제외한 4~20자리여야 합니다."))
+                .andExpect(jsonPath("$.username").value("아이디는 특수문자와 한글을 제외한 4~20자리여야 합니다."))
                 .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
                 .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
