@@ -10,12 +10,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import yuquiz.domain.user.dto.req.CodeVerificationReq;
 import yuquiz.domain.user.dto.req.EmailReq;
+import yuquiz.domain.user.dto.req.NicknameReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
+import yuquiz.domain.user.dto.req.UsernameReq;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[사용자 API]", description = "사용자 관련 API")
@@ -156,6 +157,19 @@ public interface UserApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject()
                     })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "username": "아이디는 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "username": "아이디는 특수문자와 한글을 제외한 4~20자리여야 합니다."
+                                        }
+                                    """)
+                    })),
             @ApiResponse(responseCode = "409", description = "아이디 중복",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
@@ -166,13 +180,26 @@ public interface UserApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> verifyUsername(@RequestParam(name = "username") String username);
+    ResponseEntity<?> verifyUsername(@Valid @RequestBody UsernameReq usernameReq);
 
     @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복을 확인 하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 중복 확인 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject()
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "nickname": "닉네임은 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "nickname": "닉네임은 특수문자를 제외한 2~10자리여야 합니다."
+                                        }
+                                    """)
                     })),
             @ApiResponse(responseCode = "409", description = "닉네임 중복",
                     content = @Content(mediaType = "application/json", examples = {
@@ -184,7 +211,7 @@ public interface UserApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname);
+    ResponseEntity<?> verifyNickname(@Valid @RequestBody NicknameReq nicknameReq);
 
     @Operation(summary = "인증 번호 전송", description = "회원가입 중, 인증번호를 전송하는 API입니다.")
     @ApiResponses({
