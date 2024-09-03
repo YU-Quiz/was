@@ -56,7 +56,7 @@ public class UserControllerTest {
     @DisplayName("아이디 중복 확인 - 존재 o")
     void verifyUsernameExistsTest() throws Exception {
         // given
-        UsernameReq usernameReq = new UsernameReq("test");
+        UsernameReq usernameReq = new UsernameReq("test123");
 
         given(userService.verifyUsername(usernameReq.username())).willReturn(true);
 
@@ -78,7 +78,7 @@ public class UserControllerTest {
     @DisplayName("아이디 중복 확인 - 존재 x")
     void verifyUsernameNonExistsTest() throws Exception {
         // given
-        UsernameReq usernameReq = new UsernameReq("test");
+        UsernameReq usernameReq = new UsernameReq("test123");
 
         given(userService.verifyUsername(usernameReq.username())).willReturn(false);
 

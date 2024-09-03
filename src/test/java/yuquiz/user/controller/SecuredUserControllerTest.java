@@ -221,7 +221,7 @@ public class SecuredUserControllerTest {
     @DisplayName("사용자 비밀번호 수정 테스트")
     void updatePasswordTest() throws Exception {
         // given
-        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "newPassword123");
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123@", "newPassword123@");
 
         doNothing().when(userService).updatePassword(any(PasswordUpdateReq.class), eq(userDetails.getId()));
 
@@ -244,7 +244,7 @@ public class SecuredUserControllerTest {
     @DisplayName("사용자 비밀번호 수정 실패 테스트 - 현재 비밀번호 일치 x")
     void updatePasswordFailedTest() throws Exception {
         // given
-        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123", "newPassword123");
+        PasswordUpdateReq passwordReq = new PasswordUpdateReq("password123@", "newPassword123@");
 
         doThrow(new CustomException(UserExceptionCode.INVALID_PASSWORD))
                 .when(userService).updatePassword(any(PasswordUpdateReq.class), eq(userDetails.getId()));
@@ -304,7 +304,7 @@ public class SecuredUserControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.newPassword").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."));
+                .andExpect(jsonPath("$.newPassword").value("비밀번호는 영문, 숫자, 특수문자를 포함하여 8~16자여야 합니다."));
     }
 
     @Test
