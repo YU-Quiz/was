@@ -48,7 +48,7 @@ public interface QuizApi {
     @Operation(summary = "퀴즈 삭제", description = "퀴즈 삭제 관련 API")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "퀴즈 삭제 성공"),
-            @ApiResponse(responseCode = "401", description = "작성자 불일치",
+            @ApiResponse(responseCode = "403", description = "작성자 불일치",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
@@ -70,7 +70,7 @@ public interface QuizApi {
                                     }
                                     """)
                     })),
-            @ApiResponse(responseCode = "401", description = "작성자 불일치",
+            @ApiResponse(responseCode = "403", description = "작성자 불일치",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
