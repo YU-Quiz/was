@@ -22,7 +22,7 @@ public record NotificationRes(
 
         LocalDateTime createdAt
 ) {
-    public static NotificationRes fromEntity(Notification notification) {
+    public static NotificationRes fromEntity (Notification notification) {
         return new NotificationRes(
                 notification.getTitle(),
                 notification.getMessage(),
