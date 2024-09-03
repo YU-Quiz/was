@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.notification.dto.DisplayType;
 import yuquiz.domain.notification.dto.NotificationReq;
 import yuquiz.domain.notification.dto.NotificationRes;
 import yuquiz.domain.notification.dto.NotificationSortType;
@@ -15,8 +16,6 @@ import yuquiz.domain.notification.repository.NotificationRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,17 +26,20 @@ public class NotificationService {
     private static final Integer NOTIFICATION_PER_PAGE = 20;
 
     @Transactional(readOnly = true)
-    public Page<NotificationRes> getAllNotification(Long userId, Integer page, NotificationSortType sort, Optional<Boolean> isChecked) {
+    public Page<NotificationRes> getAllNotification(Long userId, Integer page, NotificationSortType sort, DisplayType displayType) {
         Pageable pageable = PageRequest.of(page, NOTIFICATION_PER_PAGE, sort.getSort());
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
         Page<Notification> notifications;
 
-        if (isChecked.isPresent()) {
-            notifications = notificationRepository.findAllByUserAndIsChecked(user, isChecked.get(), pageable);
-        } else {
+        if (displayType == DisplayType.ALL) {
             notifications = notificationRepository.findAllByUser(user, pageable);
+        } else {
+            if(displayType == DisplayType.CHECKED)
+                notifications = notificationRepository.findAllByUserAndIsChecked(user, true, pageable);
+            else
+                notifications = notificationRepository.findAllByUserAndIsChecked(user, false, pageable);
         }
 
         return notifications.map(NotificationRes::fromEntity);

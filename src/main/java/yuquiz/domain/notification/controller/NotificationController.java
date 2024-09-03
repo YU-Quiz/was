@@ -6,12 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import yuquiz.domain.notification.dto.DisplayType;
 import yuquiz.domain.notification.dto.NotificationRes;
 import yuquiz.domain.notification.dto.NotificationSortType;
 import yuquiz.domain.notification.service.NotificationService;
 import yuquiz.security.auth.SecurityUserDetails;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,9 +22,9 @@ public class NotificationController {
     public ResponseEntity<?> getAllMyAlert(@AuthenticationPrincipal SecurityUserDetails userDetails,
                                            @RequestParam(value = "page") Integer page,
                                            @RequestParam(value = "sort") NotificationSortType sort,
-                                           @RequestParam(value = "isChecked") Optional<Boolean> isChecked) {
+                                           @RequestParam(value = "view")DisplayType displayType) {
 
-        Page<NotificationRes> notifications = notificationService.getAllNotification(userDetails.getId(), page, sort, isChecked);
+        Page<NotificationRes> notifications = notificationService.getAllNotification(userDetails.getId(), page, sort, displayType);
 
         return ResponseEntity.status(HttpStatus.OK).body(notifications);
     }
