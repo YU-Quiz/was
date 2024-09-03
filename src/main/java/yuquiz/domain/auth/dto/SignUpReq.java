@@ -11,17 +11,17 @@ import yuquiz.domain.user.entity.User;
 public record SignUpReq(
         @Schema(description = "아이디", example = "test")
         @NotBlank(message = "아이디는 필수 입력입니다.")
-        @Pattern(regexp = "^[a-zA-Z0-9-_]{4,20}$", message = "아이디는 특수문자와 한글을 제외한 4~20자리여야 합니다.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,20}$", message = "아이디는 영문자와 숫자를 포함하여 6~20자여야 합니다.")
         String username,
 
         @Schema(description = "비밀번호", example = "password123")
         @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
-        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z]).{8,16}", message = "비밀번호는 8~16자 영문과 숫자를 사용하세요.")
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,16}$", message = "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~16자여야 합니다.")
         String password,
 
         @Schema(description = "닉네임", example = "테스터")
         @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
+        @Pattern(regexp = "^(?![-_])[가-힣a-zA-Z0-9-_]{2,10}(?<![-_])$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
         String nickname,
 
         @Schema(description = "아이디", example = "test@gmail.com")

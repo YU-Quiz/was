@@ -11,7 +11,7 @@ import yuquiz.domain.user.entity.User;
 public record OAuthSignUpReq(
         @Schema(description = "닉네임", example = "테스터")
         @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
+        @Pattern(regexp = "^(?![-_])[가-힣a-zA-Z0-9-_]{2,10}(?<![-_])$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
         String nickname,
 
         @Schema(description = "아이디", example = "test@gmail.com")

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
 public record UsernameReq(
         @Schema(description = "아이디", example = "test")
         @NotBlank(message = "아이디는 필수 입력입니다.")
-        @Pattern(regexp = "^[a-zA-Z0-9-_]{4,20}$", message = "아이디는 특수문자와 한글을 제외한 4~20자리여야 합니다.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,20}$", message = "아이디는 영문자와 숫자를 포함하여 6~20자여야 합니다.")
         String username
 ) {
 }
