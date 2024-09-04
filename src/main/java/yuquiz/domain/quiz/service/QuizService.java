@@ -136,7 +136,7 @@ public class QuizService {
         Quiz quiz = findQuizByQuizId(quizId);
 
         if (pinnedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            return;
+            throw new CustomException(QuizExceptionCode.ALREADY_PINNED);
         }
 
         PinnedQuiz pinnedQuiz = PinnedQuiz.builder()
