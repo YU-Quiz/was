@@ -52,7 +52,7 @@ public interface QuizApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
-                                        "status": 401,
+                                        "status": 403,
                                         "message": "권한이 없습니다."
                                     }
                                     """)
@@ -74,7 +74,7 @@ public interface QuizApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
-                                        "status": 401,
+                                        "status": 403,
                                         "message": "권한이 없습니다."
                                     }
                                     """)

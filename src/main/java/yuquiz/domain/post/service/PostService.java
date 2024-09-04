@@ -22,6 +22,8 @@ import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -74,4 +76,35 @@ public class PostService {
 
         return posts.map(PostSummaryRes::fromEntity);
     }
+
+    @Transactional
+    public void updatePostById(Long postId, PostReq postReq, Long userId){
+
+        if(!isOwner(postId, userId)){
+            throw new CustomException(PostExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        Category category = categoryRepository.findById(postReq.categoryId())
+                .orElseThrow(() -> new CustomException(CategoryExceptionCode.INVALID_ID));
+
+        postRepository.updateById(postId, postReq.title(), postReq.content(), category);
+    }
+
+    @Transactional
+    public void deletePostById(Long postId, Long userId){
+
+        if(!isOwner(postId, userId)){
+            throw new CustomException(PostExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        postRepository.deleteById(postId);
+    }
+
+    private boolean isOwner(Long postId, Long userId) {
+        Optional<Long> writerId = postRepository.findWriterIdById(postId);
+
+        return writerId.isPresent() && writerId.get().equals(userId);
+    }
+
+
 }

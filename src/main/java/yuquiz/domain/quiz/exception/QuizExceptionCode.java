@@ -7,7 +7,7 @@ import yuquiz.common.exception.exceptionCode.ExceptionCode;
 public enum QuizExceptionCode implements ExceptionCode {
 
     INVALID_ID(404, "존재하지 않는 퀴즈입니다."),
-    UNAUTHORIZED_ACTION(401, "권한이 없습니다.");
+    UNAUTHORIZED_ACTION(403, "권한이 없습니다.");
 
     private final int status;
     private final String message;

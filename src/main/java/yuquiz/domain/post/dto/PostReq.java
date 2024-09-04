@@ -9,7 +9,7 @@ import yuquiz.domain.user.entity.User;
 
 public record PostReq(
         @Min(value = 1, message = "카테고리id는 최소 1입니다.")
-        @NotNull
+        @NotNull(message = "카테고리는 필수 입력입니다.")
         Long categoryId,
 
         @NotBlank(message = "제목은 필수 입력입니다.")
