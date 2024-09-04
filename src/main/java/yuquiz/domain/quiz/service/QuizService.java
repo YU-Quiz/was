@@ -161,7 +161,7 @@ public class QuizService {
         Quiz quiz = findQuizByQuizId(quizId);
 
         if (likedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            return;
+            throw new CustomException(QuizExceptionCode.ALREADY_LIKED);
         }
 
         LikedQuiz likedQuiz = LikedQuiz.builder()
