@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import yuquiz.domain.category.entity.Category;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.entity.QuizType;
 import yuquiz.domain.subject.entity.Subject;

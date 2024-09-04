@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
-import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.converter.StringListConverter;
