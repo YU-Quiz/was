@@ -93,16 +93,6 @@ public class Quiz extends BaseTimeEntity {
         this.viewCount = 0;
     }
 
-    public void update(QuizReq quizReq, Subject subject) {
-        this.title = quizReq.title();
-        this.question = quizReq.question();
-        this.choices = quizReq.choices();
-        this.quizImgs = quizReq.quizImg();
-        this.answer = quizReq.answer();
-        this.quizType = quizReq.quizType();
-        this.subject = subject;
-    }
-
     public void increaseViewCount() {
         this.viewCount += 1;
     }
