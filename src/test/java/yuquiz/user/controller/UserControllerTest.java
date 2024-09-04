@@ -16,6 +16,8 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.controller.UserController;
 import yuquiz.domain.user.dto.req.CodeVerificationReq;
 import yuquiz.domain.user.dto.req.EmailReq;
+import yuquiz.domain.user.dto.req.NicknameReq;
+import yuquiz.domain.user.dto.req.UsernameReq;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.service.MailCodeService;
 import yuquiz.domain.user.service.UserService;
@@ -23,7 +25,6 @@ import yuquiz.domain.user.service.UserService;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,15 +56,15 @@ public class UserControllerTest {
     @DisplayName("아이디 중복 확인 - 존재 o")
     void verifyUsernameExistsTest() throws Exception {
         // given
-        String username = "test";
+        UsernameReq usernameReq = new UsernameReq("test123");
 
-        given(userService.verifyUsername(username)).willReturn(true);
+        given(userService.verifyUsername(usernameReq.username())).willReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/users/verify-username")
-                        .param("username", username)
+                post("/api/v1/users/verify-username")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(usernameReq))
         );
 
         // then
@@ -77,15 +78,15 @@ public class UserControllerTest {
     @DisplayName("아이디 중복 확인 - 존재 x")
     void verifyUsernameNonExistsTest() throws Exception {
         // given
-        String username = "test";
+        UsernameReq usernameReq = new UsernameReq("test123");
 
-        given(userService.verifyUsername(username)).willReturn(false);
+        given(userService.verifyUsername(usernameReq.username())).willReturn(false);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/users/verify-username")
-                        .param("username", username)
+                post("/api/v1/users/verify-username")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(usernameReq))
         );
 
         // then
@@ -98,15 +99,15 @@ public class UserControllerTest {
     @DisplayName("닉네임 중복 확인 - 존재 o")
     void verifyNicknameExistsTest() throws Exception {
         // given
-        String nickname = "test";
+        NicknameReq nicknameReq = new NicknameReq("test");
 
-        given(userService.verifyNickname(nickname)).willReturn(true);
+        given(userService.verifyNickname(nicknameReq.nickname())).willReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/users/verify-nickname")
-                        .param("nickname", nickname)
+                post("/api/v1/users/verify-nickname")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(nicknameReq))
         );
 
         // then
@@ -120,15 +121,15 @@ public class UserControllerTest {
     @DisplayName("아이디 중복 확인 - 존재 x")
     void verifyNicknameNonExistsTest() throws Exception {
         // given
-        String nickname = "test";
+        NicknameReq nicknameReq = new NicknameReq("test");
 
-        given(userService.verifyNickname(nickname)).willReturn(false);
+        given(userService.verifyNickname(nicknameReq.nickname())).willReturn(false);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/users/verify-nickname")
-                        .param("nickname", nickname)
+                post("/api/v1/users/verify-nickname")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(nicknameReq))
         );
 
         // then

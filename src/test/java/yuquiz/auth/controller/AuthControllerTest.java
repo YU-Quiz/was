@@ -86,7 +86,7 @@ public class AuthControllerTest {
     @DisplayName("회원가입 테스트")
     void signUpTest() throws Exception {
         // given
-        SignUpReq signUpReq = new SignUpReq("test", "password1234",
+        SignUpReq signUpReq = new SignUpReq("test123", "password1234@",
                 "테스터", "test@naver.com", "컴퓨터공학과", true);
 
         ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())
@@ -157,8 +157,8 @@ public class AuthControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.username").value("아이디는 특수문자를 제외한 4~20자리여야 합니다."))
-                .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문과 숫자를 사용하세요."))
+                .andExpect(jsonPath("$.username").value("아이디는 영문자와 숫자를 포함하여 6~20자여야 합니다."))
+                .andExpect(jsonPath("$.password").value("비밀번호는 영문, 숫자, 특수문자를 포함하여 8~16자여야 합니다."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
                 .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
     }

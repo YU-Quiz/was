@@ -12,16 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.user.api.UserApi;
 import yuquiz.domain.user.dto.req.CodeVerificationReq;
 import yuquiz.domain.user.dto.req.EmailReq;
+import yuquiz.domain.user.dto.req.NicknameReq;
 import yuquiz.domain.user.dto.req.PasswordReq;
 import yuquiz.domain.user.dto.req.PasswordUpdateReq;
 import yuquiz.domain.user.dto.req.UserUpdateReq;
+import yuquiz.domain.user.dto.req.UsernameReq;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.service.MailCodeService;
 import yuquiz.domain.user.service.UserService;
@@ -75,20 +76,20 @@ public class UserController implements UserApi {
 
     /* 아이디 중복 확인 */
     @Override
-    @GetMapping("/verify-username")
-    public ResponseEntity<?> verifyUsername(@RequestParam(name = "username") String username) {
+    @PostMapping("/verify-username")
+    public ResponseEntity<?> verifyUsername(@Valid @RequestBody UsernameReq usernameReq) {
 
-        if (userService.verifyUsername(username))
+        if (userService.verifyUsername(usernameReq.username()))
             throw new CustomException(UserExceptionCode.EXIST_USERNAME);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /* 닉네임 중복 확인 */
     @Override
-    @GetMapping("/verify-nickname")
-    public ResponseEntity<?> verifyNickname(@RequestParam(name = "nickname") String nickname) {
+    @PostMapping("/verify-nickname")
+    public ResponseEntity<?> verifyNickname(@Valid @RequestBody NicknameReq nicknameReq) {
 
-        if (userService.verifyNickname(nickname))
+        if (userService.verifyNickname(nicknameReq.nickname()))
             throw new CustomException(UserExceptionCode.EXIST_NICKNAME);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

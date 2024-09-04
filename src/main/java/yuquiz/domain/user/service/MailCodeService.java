@@ -84,7 +84,7 @@ public class MailCodeService {
         if (storedCode.isEmpty()) {            // 유효시간 지나서 redis에 없음
             throw new CustomException(UserExceptionCode.CODE_EXPIRED);
         }
-        if (!storedCode.equals(codeReq.code())) {      // 코드 일치하지 않음
+        if (!storedCode.get().equals(codeReq.code())) {      // 코드 일치하지 않음
             throw new CustomException(UserExceptionCode.INVALID_CODE);
         }
 
