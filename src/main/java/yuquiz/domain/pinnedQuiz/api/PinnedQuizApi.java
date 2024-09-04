@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -72,4 +73,66 @@ public interface PinnedQuizApi {
     ResponseEntity<?> getPinnedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page") @Min(0) Integer page);
+
+    @Operation(summary = "퀴즈 즐겨찾기", description = "퀴즈 즐겨찾기 api")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "즐겨찾기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                    {
+                                        "response": "성공적으로 추가되었습니다."
+                                    }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "409", description = "퀴즈 즐겨찾기 중복",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                    {
+                                        "status": 409,
+                                        "message": "이미 즐겨찾기 한 퀴즈입니다."
+                                    }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈, 사용자",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "존재하지 않는 퀴즈", value = """
+                                    {
+                                        "status": 404,
+                                        "message": "존재하지 않는 퀴즈입니다."
+                                    }
+                                    """),
+                            @ExampleObject(name = "존재하지 않는 사용자", value = """
+                                    {
+                                        "status": 404,
+                                        "message": "존재하지 않는 사용자입니다."
+                                    }
+                                    """)
+                    })),
+    })
+    ResponseEntity<?> pinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId);
+
+    @Operation(summary = "퀴즈 즐겨찾기 취소", description = "퀴즈 즐겨찾기 취소 api")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "즐겨찾기 취소 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈, 사용자",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "존재하지 않는 퀴즈", value = """
+                                    {
+                                        "status": 404,
+                                        "message": "존재하지 않는 퀴즈입니다."
+                                    }
+                                    """),
+                            @ExampleObject(name = "존재하지 않는 사용자", value = """
+                                    {
+                                        "status": 404,
+                                        "message": "존재하지 않는 사용자입니다."
+                                    }
+                                    """)
+                    })),
+    })
+    ResponseEntity<?> deletePinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId);
 }

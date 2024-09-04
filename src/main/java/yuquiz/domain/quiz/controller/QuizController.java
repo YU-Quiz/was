@@ -87,46 +87,6 @@ public class QuizController implements QuizApi {
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
 
-    @PostMapping("/{quizId}/pin")
-    public ResponseEntity<?> pinQuiz(
-            @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @PathVariable(value = "quizId") Long quizId) {
-
-        quizService.pinQuiz(userDetails.getId(), quizId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 추가되었습니다."));
-    }
-
-    @DeleteMapping("/{quizId}/pin")
-    public ResponseEntity<?> deletePinQuiz(
-            @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @PathVariable(value = "quizId") Long quizId) {
-
-        quizService.deletePinQuiz(userDetails.getId(), quizId);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @PostMapping("/{quizId}/likes")
-    public ResponseEntity<?> likeQuiz(
-            @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @PathVariable(value = "quizId") Long quizId) {
-
-        quizService.likeQuiz(userDetails.getId(), quizId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 추가되었습니다."));
-    }
-
-    @DeleteMapping("/{quizId}/likes")
-    public ResponseEntity<?> deleteLikeQuiz(
-            @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @PathVariable(value = "quizId") Long quizId) {
-
-        quizService.deleteLikeQuiz(userDetails.getId(), quizId);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @GetMapping("/my")
     public ResponseEntity<?> getQuizzesByWriter(
             @AuthenticationPrincipal SecurityUserDetails userDetails,

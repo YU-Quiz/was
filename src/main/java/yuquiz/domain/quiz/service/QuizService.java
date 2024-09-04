@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.pinnedQuiz.repository.PinnedQuizRepository;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.dto.QuizRes;
@@ -16,7 +15,6 @@ import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
-import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.likedQuiz.repository.LikedQuizRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
@@ -121,56 +119,6 @@ public class QuizService {
             Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
             return QuizSummaryRes.fromEntity(quiz, isSolved);
         });
-    }
-
-    @Transactional
-    public void pinQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        if (pinnedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            throw new CustomException(QuizExceptionCode.ALREADY_PINNED);
-        }
-
-        PinnedQuiz pinnedQuiz = PinnedQuiz.builder()
-                .user(user)
-                .quiz(quiz)
-                .build();
-
-        pinnedQuizRepository.save(pinnedQuiz);
-    }
-
-    @Transactional
-    public void deletePinQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        pinnedQuizRepository.deleteByUserAndQuiz(user, quiz);
-    }
-
-    @Transactional
-    public void likeQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        if (likedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            throw new CustomException(QuizExceptionCode.ALREADY_LIKED);
-        }
-
-        LikedQuiz likedQuiz = LikedQuiz.builder()
-                .user(user)
-                .quiz(quiz)
-                .build();
-
-        likedQuizRepository.save(likedQuiz);
-    }
-
-    @Transactional
-    public void deleteLikeQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        likedQuizRepository.deleteByUserAndQuiz(user, quiz);
     }
 
     @Transactional(readOnly = true)
