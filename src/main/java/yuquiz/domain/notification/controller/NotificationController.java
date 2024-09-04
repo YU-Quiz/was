@@ -22,7 +22,7 @@ public class NotificationController {
     public ResponseEntity<?> getAllMyAlert(@AuthenticationPrincipal SecurityUserDetails userDetails,
                                            @RequestParam(value = "page") Integer page,
                                            @RequestParam(value = "sort") NotificationSortType sort,
-                                           @RequestParam(value = "view")DisplayType displayType) {
+                                           @RequestParam(value = "view") DisplayType displayType) {
 
         Page<NotificationRes> notifications = notificationService.getAllNotification(userDetails.getId(), page, sort, displayType);
 
