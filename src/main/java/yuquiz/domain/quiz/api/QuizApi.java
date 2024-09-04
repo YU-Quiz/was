@@ -181,77 +181,9 @@ public interface QuizApi {
     })
     ResponseEntity<?> getAnswer(@PathVariable(value = "quizId") Long quizId);
 
-    @Operation(summary = "과목별 퀴즈 조회", description = "과목별 퀴즈 목록을 조회하는 API")
+    @Operation(summary = "퀴즈 검색", description = "퀴즈를 키워드 혹은 과목 별로 목록을 조회하는 api")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "퀴즈 목록 조회 성공",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                         "totalPages": 1,
-                                         "totalElements": 2,
-                                         "first": true,
-                                         "last": true,
-                                         "size": 20,
-                                         "content": [
-                                             {
-                                                 "quizId": 4,
-                                                 "quizTitle": "보지마세요",
-                                                 "nickname": "테스터다",
-                                                 "createdAt": "2024-08-10T16:33:00",
-                                                 "likeCount": 0,
-                                                 "viewCount": 1
-                                             },
-                                             {
-                                                 "quizId": 7,
-                                                 "quizTitle": "testing",
-                                                 "nickname": "테스터111",
-                                                 "createdAt": "2024-08-11T19:43:53",
-                                                 "likeCount": 5,
-                                                 "viewCount": 15
-                                             }
-                                         ],
-                                         "number": 0,
-                                         "sort": {
-                                             "empty": false,
-                                             "sorted": true,
-                                             "unsorted": false
-                                         },
-                                         "numberOfElements": 2,
-                                         "pageable": {
-                                             "pageNumber": 0,
-                                             "pageSize": 20,
-                                             "sort": {
-                                                 "empty": false,
-                                                 "sorted": true,
-                                                 "unsorted": false
-                                             },
-                                             "offset": 0,
-                                             "paged": true,
-                                             "unpaged": false
-                                         },
-                                         "empty": false
-                                     }
-                                    """)
-
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 과목",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                        "status": 404,
-                                        "message": "존재하지 않는 과목입니다."
-                                    }
-                                    """)
-                    }))
-    })
-    ResponseEntity<?> getQuizzesBySubject(@AuthenticationPrincipal SecurityUserDetails userDetails,
-                                          @PathVariable(value = "subjectId") Long subjectId,
-                                          @RequestParam(value = "page") @Min(0) Integer page,
-                                          @RequestParam(value = "sort") QuizSortType sort);
-
-    @Operation(summary = "퀴즈 검색", description = "키워드를 이용해 퀴즈를 검색하는 기능")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "퀴즈 조회 성공",
+            @ApiResponse(responseCode = "200", description = "검색 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
@@ -262,20 +194,22 @@ public interface QuizApi {
                                         "size": 20,
                                         "content": [
                                             {
-                                                "quizId": 9,
-                                                "quizTitle": "testtest",
-                                                "nickname": "admin",
-                                                "createdAt": "2024-08-12T13:33:45",
-                                                "likeCount": 10,
-                                                "viewCount": 222
-                                            },
-                                            {
                                                 "quizId": 7,
                                                 "quizTitle": "testing",
                                                 "nickname": "테스터111",
                                                 "createdAt": "2024-08-11T19:43:53",
                                                 "likeCount": 5,
-                                                "viewCount": 15
+                                                "viewCount": 21,
+                                                "isSolved": true
+                                            },
+                                            {
+                                                "quizId": 16,
+                                                "quizTitle": "testing",
+                                                "nickname": "테스터111",
+                                                "createdAt": "2024-08-11T19:43:53",
+                                                "likeCount": 5,
+                                                "viewCount": 18,
+                                                "isSolved": null
                                             }
                                         ],
                                         "number": 0,
@@ -298,58 +232,25 @@ public interface QuizApi {
                                             "unpaged": false
                                         },
                                         "empty": false
-                                    }{
-                                         "totalPages": 1,
-                                         "totalElements": 2,
-                                         "first": true,
-                                         "last": true,
-                                         "size": 20,
-                                         "content": [
-                                             {
-                                                 "quizId": 9,
-                                                 "quizTitle": "testtest",
-                                                 "nickname": "admin",
-                                                 "createdAt": "2024-08-12T13:33:45",
-                                                 "likeCount": 10,
-                                                 "viewCount": 222
-                                             },
-                                             {
-                                                 "quizId": 7,
-                                                 "quizTitle": "testing",
-                                                 "nickname": "테스터111",
-                                                 "createdAt": "2024-08-11T19:43:53",
-                                                 "likeCount": 5,
-                                                 "viewCount": 15
-                                             }
-                                         ],
-                                         "number": 0,
-                                         "sort": {
-                                             "empty": false,
-                                             "sorted": true,
-                                             "unsorted": false
-                                         },
-                                         "numberOfElements": 2,
-                                         "pageable": {
-                                             "pageNumber": 0,
-                                             "pageSize": 20,
-                                             "sort": {
-                                                 "empty": false,
-                                                 "sorted": true,
-                                                 "unsorted": false
-                                             },
-                                             "offset": 0,
-                                             "paged": true,
-                                             "unpaged": false
-                                         },
-                                         "empty": false
-                                     }
+                                    }
                                     """)
                     })),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                    {
+                                        "status": 404,
+                                        "message": "존재하지 않는 사용자입니다."
+                                    }
+                                    """)
+                    }))
     })
-    ResponseEntity<?> getQuizzesByKeyword(@AuthenticationPrincipal SecurityUserDetails userDetails,
-                                          @RequestParam(value = "keyword") String keyword,
-                                          @RequestParam(value = "sort") QuizSortType sort,
-                                          @RequestParam(value = "page") @Min(0) Integer page);
+    ResponseEntity<?> getQuizzesByKeywordAndSubject(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "subject", required = false) Long subjectId,
+            @RequestParam(value = "sort") QuizSortType sort,
+            @RequestParam(value = "page") @Min(0) Integer page);
 
     @Operation(summary = "작성한 퀴즈 목록", description = "사용자가 작성한 퀴즈 목록을 불러오는 api")
     @ApiResponses({
