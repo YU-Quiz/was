@@ -322,24 +322,21 @@ public interface QuizApi {
                                     }
                                     """)
                     })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈, 사용자",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                            @ExampleObject(name = "존재하지 않는 퀴즈", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 퀴즈입니다."
                                     }
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                                    """),
+                            @ExampleObject(name = "존재하지 않는 사용자", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 사용자입니다."
                                     }
                                     """)
-                    }))
+                    })),
     })
     ResponseEntity<?> pinQuiz(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
@@ -348,24 +345,21 @@ public interface QuizApi {
     @Operation(summary = "퀴즈 즐겨찾기 취소", description = "퀴즈 즐겨찾기 취소 api")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "즐겨찾기 취소 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈, 사용자",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                            @ExampleObject(name = "존재하지 않는 퀴즈", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 퀴즈입니다."
                                     }
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                                    """),
+                            @ExampleObject(name = "존재하지 않는 사용자", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 사용자입니다."
                                     }
                                     """)
-                    }))
+                    })),
     })
     ResponseEntity<?> deletePinQuiz(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
@@ -390,24 +384,21 @@ public interface QuizApi {
                                     }
                                     """)
                     })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈, 사용자",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                            @ExampleObject(name = "존재하지 않는 퀴즈", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 퀴즈입니다."
                                     }
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                                    """),
+                            @ExampleObject(name = "존재하지 않는 사용자", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 사용자입니다."
                                     }
                                     """)
-                    }))
+                    })),
     })
     ResponseEntity<?> likeQuiz(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
@@ -416,24 +407,21 @@ public interface QuizApi {
     @Operation(summary = "퀴즈 좋아요 삭제", description = "퀴즈 좋아요 삭제 api")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "좋아요 취소 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈",
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 퀴즈, 사용자",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                            @ExampleObject(name = "존재하지 않는 퀴즈", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 퀴즈입니다."
                                     }
-                                    """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                                    """),
+                            @ExampleObject(name = "존재하지 않는 사용자", value = """
                                     {
                                         "status": 404,
                                         "message": "존재하지 않는 사용자입니다."
                                     }
                                     """)
-                    }))
+                    })),
     })
     ResponseEntity<?> deleteLikeQuiz(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
