@@ -96,7 +96,7 @@ public interface AuthApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
-                                            "status": 401,
+                                            "status": 404,
                                             "message": "아이디 또는 비밀번호가 유효하지 않습니다."
                                         }
                                     """)
