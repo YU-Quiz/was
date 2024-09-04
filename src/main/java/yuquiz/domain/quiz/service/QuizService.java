@@ -103,26 +103,11 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QuizSummaryRes> getQuizzesBySubject(Long userId, Long subjectId, QuizSortType sort, Integer page) {
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
-
-        User user = findUserByUserId(userId);
-        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
-        Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
-
-        return quizzes.map(quiz-> {
-            Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
-            return QuizSummaryRes.fromEntity(quiz, isSolved);
-        });
-    }
-
-    @Transactional(readOnly = true)
-    public Page<QuizSummaryRes> getQuizzesByKeyword(Long userId, String keyword, QuizSortType sort, Integer page) {
+    public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Integer page) {
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
         User user = findUserByUserId(userId);
-        Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
+        Page<Quiz> quizzes = quizRepository.findQuizzesByKeywordAndSubject(keyword, subjectId, pageable);
 
         return quizzes.map(quiz -> {
             Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);

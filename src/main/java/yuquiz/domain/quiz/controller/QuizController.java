@@ -74,26 +74,15 @@ public class QuizController implements QuizApi {
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from(quizService.getAnswer(quizId)));
     }
 
-    @GetMapping("/subject/{subjectId}")
-    public ResponseEntity<?> getQuizzesBySubject(
-            @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @PathVariable(value = "subjectId") Long subjectId,
-            @RequestParam(value = "page") @Min(0) Integer page,
-            @RequestParam(value = "sort") QuizSortType sort) {
-
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesBySubject(userDetails.getId(), subjectId, sort, page);
-
-        return ResponseEntity.status(HttpStatus.OK).body(quizzes);
-    }
-
     @GetMapping
-    public ResponseEntity<?> getQuizzesByKeyword(
+    public ResponseEntity<?> getQuizzesByKeywordAndSubject(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "subject", required = false) Long subjectId,
             @RequestParam(value = "sort") QuizSortType sort,
             @RequestParam(value = "page") @Min(0) Integer page) {
 
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeyword(userDetails.getId(), keyword, sort, page);
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
