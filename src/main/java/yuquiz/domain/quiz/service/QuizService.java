@@ -55,18 +55,26 @@ public class QuizService {
 
     @Transactional
     public void deleteQuiz(Long quizId, Long userId) {
-        Quiz quiz = findQuizByIdAndValidateUser(quizId, userId);
-        quizRepository.delete(quiz);
+
+        if (!isWriter(quizId, userId)) {
+            throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        quizRepository.deleteById(quizId);
     }
 
     @Transactional
     public void updateQuiz(Long quizId, QuizReq quizReq, Long userId) {
-        Quiz quiz = findQuizByIdAndValidateUser(quizId, userId);
+
+        if (!isWriter(quizId, userId)) {
+            throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
+        }
 
         Subject subject = subjectRepository.findById(quizReq.subjectId())
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        quiz.update(quizReq, subject);
+        quizRepository.updateById(quizId, quizReq.title(), quizReq.question(), subject,
+                quizReq.answer(), quizReq.choices(), quizReq.quizImg(), quizReq.quizType());
     }
 
     @Transactional
@@ -185,14 +193,10 @@ public class QuizService {
                 .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
     }
 
-    private Quiz findQuizByIdAndValidateUser(Long quizId, Long userId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
+    private boolean isWriter(Long quizId, Long userId) {
+        Long writerId = quizRepository.findWriterById(quizId)
+                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
 
-        if (!quiz.getWriter().equals(user)) {
-            throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
-        }
-
-        return quiz;
+        return writerId.equals(userId);
     }
 }
