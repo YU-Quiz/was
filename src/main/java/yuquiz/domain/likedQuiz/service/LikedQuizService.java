@@ -55,13 +55,17 @@ public class LikedQuizService {
                 .quiz(quiz)
                 .build();
 
+        quiz.increaseLikeCount();
+
         likedQuizRepository.save(likedQuiz);
     }
 
     @Transactional
     public void deleteLikeQuiz(Long userId, Long quizId) {
-
-        likedQuizRepository.deleteByUserIdAndQuizId(userId, quizId);
+        likedQuizRepository.findByUserIdAndQuizId(userId, quizId).ifPresent(lq -> {
+            lq.getQuiz().decreaseLikeCount();
+            likedQuizRepository.delete(lq);
+        });
     }
 
 }

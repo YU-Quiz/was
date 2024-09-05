@@ -95,4 +95,12 @@ public class Quiz extends BaseTimeEntity {
     public void increaseViewCount() {
         this.viewCount += 1;
     }
+
+    public void decreaseLikeCount() {
+        this.likeCount -= 1;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount += 1;
+    }
 }
