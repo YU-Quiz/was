@@ -8,7 +8,7 @@ import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.user.entity.User;
 
 public interface LikedQuizRepository extends JpaRepository<LikedQuiz, Long> {
-    void deleteByUserAndQuiz(User user, Quiz quiz);
+    void deleteByUserIdAndQuizId(Long userId, Long quizId);
 
     boolean existsByUserAndQuiz(User user, Quiz quiz);
 

@@ -60,12 +60,8 @@ public class LikedQuizService {
 
     @Transactional
     public void deleteLikeQuiz(Long userId, Long quizId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
 
-        likedQuizRepository.deleteByUserAndQuiz(user, quiz);
+        likedQuizRepository.deleteByUserIdAndQuizId(userId, quizId);
     }
 
 }
