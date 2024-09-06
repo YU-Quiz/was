@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.likedPost.api.LikedPostApi;
 import yuquiz.domain.likedPost.service.LikedPostService;
 import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.security.auth.SecurityUserDetails;
@@ -15,11 +16,12 @@ import yuquiz.security.auth.SecurityUserDetails;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
-public class LikedPostController {
+public class LikedPostController implements LikedPostApi {
 
     private final LikedPostService likedPostService;
 
     @GetMapping("/liked")
+    @Override
     public ResponseEntity<?> getLikedPosts(@RequestParam(value = "page") @Min(0) Integer page,
                                            @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
@@ -29,6 +31,7 @@ public class LikedPostController {
     }
 
     @PostMapping("/{postId}/like")
+    @Override
     public ResponseEntity<?> likePost(@PathVariable(value = "postId") Long postId,
                                       @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
@@ -38,6 +41,7 @@ public class LikedPostController {
     }
 
     @DeleteMapping("/{postId}/like")
+    @Override
     public ResponseEntity<?> deleteLikePost(@PathVariable(value = "postId") Long postId,
                                             @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
