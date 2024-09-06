@@ -17,6 +17,9 @@ public enum UserExceptionCode implements ExceptionCode {
 
     USER_LOCKED(423, "정지되어 있는 계정입니다."),
 
+    INVALID_EMAIL(404, "아이디를 찾을 수 없습니다."),
+    INVALID_USER_INFO(400, "정보를 정확히 입력해주세요."),
+
     // 인증 메일 관련 오류
     INVALID_CODE(400, "인증번호가 일치하지 않습니다."),
     EXIST_EMAIL(409, "이미 존재하는 이메일입니다."),
