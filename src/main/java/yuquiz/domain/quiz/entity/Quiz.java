@@ -103,4 +103,10 @@ public class Quiz extends BaseTimeEntity {
     public void increaseLikeCount() {
         this.likeCount += 1;
     }
+
+    public void changeVisibility() {
+        if (this.visibility) {
+            this.visibility = false;
+        }
+    }
 }
