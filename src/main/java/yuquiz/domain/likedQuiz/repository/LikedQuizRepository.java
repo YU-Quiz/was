@@ -7,10 +7,13 @@ import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.user.entity.User;
 
+import java.util.Optional;
+
 public interface LikedQuizRepository extends JpaRepository<LikedQuiz, Long> {
-    void deleteByUserAndQuiz(User user, Quiz quiz);
 
     boolean existsByUserAndQuiz(User user, Quiz quiz);
 
     Page<LikedQuiz> findAllByUser(User user, Pageable pageable);
+
+    Optional<LikedQuiz> findByUserIdAndQuizId(Long userId, Long quizId);
 }

@@ -6,10 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.pinnedQuiz.api.PinnedQuizApi;
 import yuquiz.domain.pinnedQuiz.service.PinnedQuizService;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
@@ -28,5 +26,25 @@ public class PinnedQuizController implements PinnedQuizApi {
 
         Page<QuizSummaryRes> pinnedQuizzes = pinnedQuizService.getPinnedQuizzes(userDetails.getId(), page);
         return ResponseEntity.status(HttpStatus.OK).body(pinnedQuizzes);
+    }
+
+    @PostMapping("/{quizId}/pin")
+    public ResponseEntity<?> pinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        pinnedQuizService.pinQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 추가되었습니다."));
+    }
+
+    @DeleteMapping("/{quizId}/pin")
+    public ResponseEntity<?> deletePinQuiz(
+            @AuthenticationPrincipal SecurityUserDetails userDetails,
+            @PathVariable(value = "quizId") Long quizId) {
+
+        pinnedQuizService.deletePinQuiz(userDetails.getId(), quizId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

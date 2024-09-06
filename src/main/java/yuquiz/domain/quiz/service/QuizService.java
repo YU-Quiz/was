@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.pinnedQuiz.repository.PinnedQuizRepository;
 import yuquiz.domain.quiz.dto.QuizReq;
 import yuquiz.domain.quiz.dto.QuizRes;
@@ -16,7 +15,6 @@ import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
-import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.likedQuiz.repository.LikedQuizRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
@@ -55,18 +53,26 @@ public class QuizService {
 
     @Transactional
     public void deleteQuiz(Long quizId, Long userId) {
-        Quiz quiz = findQuizByIdAndValidateUser(quizId, userId);
-        quizRepository.delete(quiz);
+
+        if (!isWriter(quizId, userId)) {
+            throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        quizRepository.deleteById(quizId);
     }
 
     @Transactional
     public void updateQuiz(Long quizId, QuizReq quizReq, Long userId) {
-        Quiz quiz = findQuizByIdAndValidateUser(quizId, userId);
+
+        if (!isWriter(quizId, userId)) {
+            throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
+        }
 
         Subject subject = subjectRepository.findById(quizReq.subjectId())
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        quiz.update(quizReq, subject);
+        quizRepository.updateById(quizId, quizReq.title(), quizReq.question(), subject,
+                quizReq.answer(), quizReq.choices(), quizReq.quizImg(), quizReq.quizType());
     }
 
     @Transactional
@@ -103,81 +109,16 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QuizSummaryRes> getQuizzesBySubject(Long userId, Long subjectId, QuizSortType sort, Integer page) {
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
-
-        User user = findUserByUserId(userId);
-        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
-        Page<Quiz> quizzes = quizRepository.findAllBySubject(subject, pageable);
-
-        return quizzes.map(quiz-> {
-            Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
-            return QuizSummaryRes.fromEntity(quiz, isSolved);
-        });
-    }
-
-    @Transactional(readOnly = true)
-    public Page<QuizSummaryRes> getQuizzesByKeyword(Long userId, String keyword, QuizSortType sort, Integer page) {
+    public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Integer page) {
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
         User user = findUserByUserId(userId);
-        Page<Quiz> quizzes = quizRepository.findAllByTitleContainingOrQuestionContaining(keyword, keyword, pageable);
+        Page<Quiz> quizzes = quizRepository.findQuizzesByKeywordAndSubject(keyword, subjectId, pageable);
 
         return quizzes.map(quiz -> {
             Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
             return QuizSummaryRes.fromEntity(quiz, isSolved);
         });
-    }
-
-    @Transactional
-    public void pinQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        if (pinnedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            return;
-        }
-
-        PinnedQuiz pinnedQuiz = PinnedQuiz.builder()
-                .user(user)
-                .quiz(quiz)
-                .build();
-
-        pinnedQuizRepository.save(pinnedQuiz);
-    }
-
-    @Transactional
-    public void deletePinQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        pinnedQuizRepository.deleteByUserAndQuiz(user, quiz);
-    }
-
-    @Transactional
-    public void likeQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        if (likedQuizRepository.existsByUserAndQuiz(user, quiz)) {
-            return;
-        }
-
-        LikedQuiz likedQuiz = LikedQuiz.builder()
-                .user(user)
-                .quiz(quiz)
-                .build();
-
-        likedQuizRepository.save(likedQuiz);
-    }
-
-    @Transactional
-    public void deleteLikeQuiz(Long userId, Long quizId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
-
-        likedQuizRepository.deleteByUserAndQuiz(user, quiz);
     }
 
     @Transactional(readOnly = true)
@@ -200,14 +141,10 @@ public class QuizService {
                 .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
     }
 
-    private Quiz findQuizByIdAndValidateUser(Long quizId, Long userId) {
-        User user = findUserByUserId(userId);
-        Quiz quiz = findQuizByQuizId(quizId);
+    private boolean isWriter(Long quizId, Long userId) {
+        Long writerId = quizRepository.findWriterById(quizId)
+                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
 
-        if (!quiz.getWriter().equals(user)) {
-            throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
-        }
-
-        return quiz;
+        return writerId.equals(userId);
     }
 }
