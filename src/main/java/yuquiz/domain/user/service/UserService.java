@@ -47,7 +47,7 @@ public class UserService {
             throw new CustomException(UserExceptionCode.INVALID_PASSWORD);
 
         String encodePassword = passwordEncoder.encode(passwordReq.newPassword());
-        foundUser.updatePassword(encodePassword);
+        userRepository.updatePasswordByUserId(userId, encodePassword);
     }
 
     /* 비밀번호 확인 */
