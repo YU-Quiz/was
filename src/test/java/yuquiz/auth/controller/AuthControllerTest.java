@@ -19,10 +19,13 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.controller.AuthController;
+import yuquiz.domain.auth.dto.FindUsernameReq;
 import yuquiz.domain.auth.dto.OAuthSignUpReq;
+import yuquiz.domain.auth.dto.PasswordResetReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
+import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.User;
@@ -64,6 +67,9 @@ public class AuthControllerTest {
 
     @MockBean
     private CookieUtil cookieUtil;
+
+    @MockBean
+    private AccountService accountService;
 
     private TokenDto tokenDto;
 
@@ -392,6 +398,149 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").value("로그아웃 되었습니다."))
                 .andExpect(cookie().doesNotExist(REFRESH_COOKIE_VALUE));;
+    }
+
+    @Test
+    @DisplayName("아이디 찾기 테스트")
+    void findUsernameTest() throws Exception {
+        // given
+        FindUsernameReq findUsernameReq = new FindUsernameReq("test@gmail.com");
+        when(accountService.findUsernameByEmail(findUsernameReq.email())).thenReturn("test");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/find-username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(findUsernameReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("test"));
+    }
+
+    @Test
+    @DisplayName("아이디 찾기 실패 테스트 - 유효성 검사 실패")
+    void findUsernameFailedTest() throws Exception {
+        // given
+        FindUsernameReq findUsernameReq = new FindUsernameReq(null);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/find-username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(findUsernameReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."));
+    }
+
+    @Test
+    @DisplayName("아이디 찾기 실패 테스트 - 패턴 불일치")
+    void findUsernameInsufficientTest() throws Exception {
+        // given
+        FindUsernameReq findUsernameReq = new FindUsernameReq("testgmail.com");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/find-username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(findUsernameReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 일치")
+    void resetPasswordTrueTest() throws Exception {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "test@gmail.com");
+        when(accountService.validateUserForPasswordReset(passwordResetReq)).thenReturn(true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 불일치")
+    void resetPasswordFailedTest() throws Exception {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "test@gmail.com");
+        when(accountService.validateUserForPasswordReset(passwordResetReq)).thenReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(UserExceptionCode.INVALID_USER_INFO.getStatus()))
+                .andExpect(jsonPath("$.message").value(UserExceptionCode.INVALID_USER_INFO.getMessage()));
+    }
+    @Test
+    @DisplayName("비밀번호 재설정을 위한 확인 실패 테스트 - 유효성 검사 실패")
+    void resetPasswordFailedFailedTest() throws Exception {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq(null, null);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.username").value("아이디는 필수 입력입니다."))
+                .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."));
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정을 위한 확인 실패 테스트 - 패턴 불일치")
+    void resetPasswordFailedInsufficientTest() throws Exception {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "testgmail.com");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
     }
 
 /*    @Test
