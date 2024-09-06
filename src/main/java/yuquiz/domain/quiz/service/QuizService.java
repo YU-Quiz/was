@@ -16,6 +16,7 @@ import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
 import yuquiz.domain.likedQuiz.repository.LikedQuizRepository;
+import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
@@ -35,6 +36,7 @@ public class QuizService {
     private final TriedQuizRepository triedQuizRepository;
     private final PinnedQuizRepository pinnedQuizRepository;
     private final LikedQuizRepository likedQuizRepository;
+    private final ReportRepository reportRepository;
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
@@ -73,6 +75,8 @@ public class QuizService {
 
         quizRepository.updateById(quizId, quizReq.title(), quizReq.question(), subject,
                 quizReq.answer(), quizReq.choices(), quizReq.quizImg(), quizReq.quizType());
+
+        reportRepository.deleteByQuiz(quizId);
     }
 
     @Transactional
