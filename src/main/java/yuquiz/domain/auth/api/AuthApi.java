@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import yuquiz.domain.auth.dto.FindUsernameReq;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.OAuthSignUpReq;
+import yuquiz.domain.auth.dto.PasswordResetReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 
@@ -217,4 +219,70 @@ public interface AuthApi {
                               @CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
                               HttpServletResponse response);
 
+    @Operation(summary = "아이디 찾기", description = "아이디 찾기를 위한 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "아이디 찾기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "test"
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "email": "이메일은 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "email": "유효한 이메일 형식이 아닙니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "유저 존재하지 않음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 404,
+                                            "message": "아이디를 찾을 수 없습니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> findUsername(@Valid @RequestBody FindUsernameReq findUsernameReq);
+
+    @Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정하기 위한 API입니다. 성공한다면, 비밀번호 업데이트 api를 요청해주세요")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 재설정 확인 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject()
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "username": "아이디는 필수 입력 값입니다.",
+                                            "email": "이메일은 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "email": "유효한 이메일 형식이 아닙니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "잘못된 정보 입력",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 400,
+                                            "message": "정보를 정확히 입력해주세요."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetReq passwordResetReq);
 }
