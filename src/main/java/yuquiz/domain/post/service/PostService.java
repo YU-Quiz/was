@@ -65,22 +65,11 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostSummaryRes> getPostsByKeyword(String keyword, PostSortType sortType, Integer page) {
+    public Page<PostSummaryRes> getPosts(String keyword, Long categoryId, PostSortType sort, Integer page) {
 
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sortType.getSort());
-        Page<Post> posts =  postRepository.findAllByTitleContainingOrContentContaining(keyword, keyword, pageable);
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
 
-        return posts.map(PostSummaryRes::fromEntity);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PostSummaryRes> getPostsByCategory(String categoryName, PostSortType sortType, Integer page){
-
-        Category category = categoryRepository.findByCategoryName(categoryName)
-                .orElseThrow(() -> new CustomException(CategoryExceptionCode.INVALID_NAME));
-
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sortType.getSort());
-        Page<Post> posts = postRepository.findAllByCategory(category, pageable);
+        Page<Post> posts = postRepository.findPostsByKeywordAndCategory(keyword, categoryId, pageable);
 
         return posts.map(PostSummaryRes::fromEntity);
     }
@@ -113,6 +102,4 @@ public class PostService {
 
         return writerId.isPresent() && writerId.get().equals(userId);
     }
-
-
 }

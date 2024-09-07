@@ -46,22 +46,12 @@ public class PostController implements PostApi {
 
     @GetMapping
     @Override
-    public ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
-                                               @RequestParam(value = "sort") PostSortType sort,
-                                               @RequestParam(value = "page") @Min(0) Integer page){
+    public ResponseEntity<?> getPosts(@RequestParam(value = "keyword", required = false) String keyword,
+                                      @RequestParam(value = "categoryName", required = false) Long categoryId,
+                                      @RequestParam(value = "sort") PostSortType sort,
+                                      @RequestParam(value = "page") @Min(0) Integer page){
 
-        Page<PostSummaryRes> posts = postService.getPostsByKeyword(keyword, sort, page);
-
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
-    }
-
-    @GetMapping("/category/{categoryName}")
-    @Override
-    public ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
-                                                @RequestParam(value = "sort") PostSortType sort,
-                                                @RequestParam(value = "page") @Min(0) Integer page){
-
-        Page<PostSummaryRes> posts = postService.getPostsByCategory(categoryName, sort, page);
+        Page<PostSummaryRes> posts = postService.getPosts(keyword, categoryId, sort, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
