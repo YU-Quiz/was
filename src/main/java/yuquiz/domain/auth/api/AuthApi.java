@@ -287,7 +287,9 @@ public interface AuthApi {
     })
     ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyReq userVerifyReq);
 
-    @Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정하기 위한 API입니다. 성공한다면, 비밀번호 업데이트 api를 요청해주세요")
+    @Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정하기 위한 API입니다." +
+            "이 과정에서는 인증번호를 통한 확인이 필요합니다. 회원가입 시, 사용했던 인증번호 확인 api를 사용해주세요." +
+            " 성공한다면, 비밀번호 업데이트 api를 요청해주세요")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비밀번호 재설정 확인 성공",
                     content = @Content(mediaType = "application/json", examples = {
