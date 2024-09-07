@@ -11,6 +11,7 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.category.entity.Category;
 import yuquiz.domain.category.exception.CategoryExceptionCode;
 import yuquiz.domain.category.repository.CategoryRepository;
+import yuquiz.domain.likedPost.repository.LikedPostRepository;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
 import yuquiz.domain.post.dto.PostSortType;
@@ -31,6 +32,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final LikedPostRepository likedPostRepository;
 
     private final Integer POST_PER_PAGE = 20;
 
@@ -48,12 +50,16 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostRes getPostById(Long postId) {
+    public PostRes getPostById(Long postId, Long userId) {
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
 
-        return PostRes.fromEntity(post);
+        boolean isLiked = likedPostRepository.existsByUserAndPost(user, post);
+
+        return PostRes.fromEntity(post, isLiked);
     }
 
     @Transactional(readOnly = true)

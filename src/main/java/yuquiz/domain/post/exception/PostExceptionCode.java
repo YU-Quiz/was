@@ -7,7 +7,8 @@ import yuquiz.common.exception.exceptionCode.ExceptionCode;
 public enum PostExceptionCode implements ExceptionCode {
 
     INVALID_ID(404, "존재하지 않는 게시글 입니다."),
-    UNAUTHORIZED_ACTION(403, "권한이 없습니다.");
+    UNAUTHORIZED_ACTION(403, "권한이 없습니다."),
+    ALREADY_LIKED(409, "이미 좋아요한 게시글 입니다." );
 
     private final int status;
     private final String message;

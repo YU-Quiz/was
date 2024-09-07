@@ -36,9 +36,10 @@ public class PostController implements PostApi {
 
     @GetMapping("/{postId}")
     @Override
-    public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId){
+    public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId,
+                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
 
-        PostRes postRes = postService.getPostById(postId);
+        PostRes postRes = postService.getPostById(postId, userDetails.getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(postRes);
     }

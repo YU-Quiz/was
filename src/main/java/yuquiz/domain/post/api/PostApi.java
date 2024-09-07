@@ -57,7 +57,8 @@ public interface PostApi {
                                         "likeCount": 0,
                                         "viewCount": 0,
                                         "createdAt": "2024-08-20T14:57:51.031651",
-                                        "modified": true
+                                        "modified": true,
+                                        "isLiked": false
                                     }
                                     """)
                     })),
@@ -72,7 +73,7 @@ public interface PostApi {
                     })),
 
     })
-    ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId);
+    ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId, @AuthenticationPrincipal SecurityUserDetails userDetails);
 
     @Operation(summary = "게시글 검색", description = "키워드를 이용해 게시글을 조회하는 기능")
     @ApiResponses({
