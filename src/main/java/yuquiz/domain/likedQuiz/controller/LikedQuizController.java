@@ -24,7 +24,7 @@ public class LikedQuizController implements LikedQuizApi {
     public ResponseEntity<?> getLikedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "page", required = false, defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "sort", required = false, defaultValue = "QUIZ_DATE_DESC")LikedQuizSortType sort) {
+            @RequestParam(value = "sort", required = false, defaultValue = "LIKED_DATE_DESC")LikedQuizSortType sort) {
 
         Page<QuizSummaryRes> likedQuizzes = likedQuizService.getLikedQuizzes(userDetails.getId(), page, sort);
 
