@@ -75,177 +75,58 @@ public interface PostApi {
     })
     ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId, @AuthenticationPrincipal SecurityUserDetails userDetails);
 
-    @Operation(summary = "게시글 검색", description = "키워드를 이용해 게시글을 조회하는 기능")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "게시글 조회 성공",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                          "totalPages": 1,
-                                          "totalElements": 5,
-                                          "first": true,
-                                          "last": true,
-                                          "size": 20,
-                                          "content": [
-                                              {
-                                                  "postId": 11,
-                                                  "postTitle": "제목1",
-                                                  "nickname": "테스터",
-                                                  "createdAt": "2024-08-21T02:19:39.775264",
-                                                  "likeCount": 0,
-                                                  "viewCount": 0
-                                              },
-                                              {
-                                                  "postId": 9,
-                                                  "postTitle": "2제목",
-                                                  "nickname": "테스터",
-                                                  "createdAt": "2024-08-20T15:33:51.620851",
-                                                  "likeCount": 0,
-                                                  "viewCount": 0
-                                              },
-                                              {
-                                                  "postId": 8,
-                                                  "postTitle": "1제목",
-                                                  "nickname": "테스터",
-                                                  "createdAt": "2024-08-20T15:33:46.902076",
-                                                  "likeCount": 0,
-                                                  "viewCount": 0
-                                              },
-                                              {
-                                                  "postId": 7,
-                                                  "postTitle": "1제목",
-                                                  "nickname": "테스터",
-                                                  "createdAt": "2024-08-20T15:33:43.375318",
-                                                  "likeCount": 0,
-                                                  "viewCount": 0
-                                              },
-                                              {
-                                                  "postId": 6,
-                                                  "postTitle": "제목1",
-                                                  "nickname": "테스터",
-                                                  "createdAt": "2024-08-20T15:33:34.426304",
-                                                  "likeCount": 0,
-                                                  "viewCount": 0
-                                              }
-                                          ],
-                                          "number": 0,
-                                          "sort": {
-                                              "empty": false,
-                                              "unsorted": false,
-                                              "sorted": true
-                                          },
-                                          "pageable": {
-                                              "pageNumber": 0,
-                                              "pageSize": 20,
-                                              "sort": {
-                                                  "empty": false,
-                                                  "unsorted": false,
-                                                  "sorted": true
-                                              },
-                                              "offset": 0,
-                                              "unpaged": false,
-                                              "paged": true
-                                          },
-                                          "numberOfElements": 5,
-                                          "empty": false
-                                      }
-                                    """)
-                    })),
-    })
-    ResponseEntity<?> getPostsByKeyword(@RequestParam(value = "keyword") String keyword,
-                                        @RequestParam(value = "sort") PostSortType sort,
-                                        @RequestParam(value = "page") @Min(0) Integer page);
-
-    @Operation(summary = "카테고리별 게시글 조회", description = "카테고리 이름과 정렬 기준에 따라 게시글 페이지를 조회하는 API")
+    @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회하는 API, 키워드, 카테고리 옵션 설정 가능")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
-                                        "totalPages": 1,
-                                        "totalElements": 5,
-                                        "first": true,
-                                        "last": true,
-                                        "size": 20,
                                         "content": [
                                             {
-                                                "postId": 11,
-                                                "postTitle": "제목1",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-21T02:19:39.775264",
+                                                "id": 1,
+                                                "title": "새로운 타이틀",
+                                                "category": "자유게시판",
+                                                "nickname": "테스터111",
                                                 "likeCount": 0,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 9,
-                                                "postTitle": "2제목",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-20T15:33:51.620851",
-                                                "likeCount": 0,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 8,
-                                                "postTitle": "1제목",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-20T15:33:46.902076",
-                                                "likeCount": 0,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 7,
-                                                "postTitle": "1제목",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-20T15:33:43.375318",
-                                                "likeCount": 0,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 6,
-                                                "postTitle": "제목1",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-20T15:33:34.426304",
-                                                "likeCount": 0,
-                                                "viewCount": 0
+                                                "viewCount": 0,
+                                                "createdAt": "2024-08-20T14:57:51.031651",
+                                                "modified": true,
+                                                "isLiked": false
                                             }
                                         ],
+                                        "pageable": {
+                                            "sort": {
+                                                "sorted": false,
+                                                "unsorted": true,
+                                                "empty": true
+                                            },
+                                            "pageSize": 10,
+                                            "pageNumber": 0,
+                                            "offset": 0,
+                                            "paged": true,
+                                            "unpaged": false
+                                        },
+                                        "totalPages": 1,
+                                        "totalElements": 1,
+                                        "last": true,
+                                        "size": 10,
                                         "number": 0,
                                         "sort": {
-                                            "empty": false,
-                                            "unsorted": false,
-                                            "sorted": true
+                                            "sorted": false,
+                                            "unsorted": true,
+                                            "empty": true
                                         },
-                                        "pageable": {
-                                            "pageNumber": 0,
-                                            "pageSize": 20,
-                                            "sort": {
-                                                "empty": false,
-                                                "unsorted": false,
-                                                "sorted": true
-                                            },
-                                            "offset": 0,
-                                            "unpaged": false,
-                                            "paged": true
-                                        },
-                                        "numberOfElements": 5,
+                                        "numberOfElements": 1,
+                                        "first": true,
                                         "empty": false
-                                    }
-                                    """)
-
-                    })),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                        "status": 404,
-                                        "message": "존재하지 않는 카테고리입니다."
                                     }
                                     """)
                     }))
     })
-    ResponseEntity<?> getPostsByCategory(@PathVariable(value = "categoryName") String categoryName,
-                                         @RequestParam(value = "sort") PostSortType sort,
-                                         @RequestParam(value = "page") @Min(0) Integer page);
+    ResponseEntity<?> getPosts(@RequestParam(value = "keyword", required = false) String keyword,
+                               @RequestParam(value = "categoryName", required = false) Long categoryId,
+                               @RequestParam(value = "sort") PostSortType sort,
+                               @RequestParam(value = "page") @Min(0) Integer page);
 
     @Operation(summary = "게시글 수정", description = "게시글을 수정하는 API")
     @ApiResponses({
