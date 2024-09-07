@@ -30,7 +30,7 @@ public class ReportService {
 
         reportNotification(quiz.getTitle(), report.getReason(), quiz.getWriter().getId());
 
-        if (reportRepository.countByQuiz(quiz) + 1 >= 5) {
+        if (reportRepository.countByQuiz(quiz) + 1 >= 10) {
             quiz.changeVisibility();
         }
 
