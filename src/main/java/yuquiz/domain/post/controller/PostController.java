@@ -48,8 +48,8 @@ public class PostController implements PostApi {
     @Override
     public ResponseEntity<?> getPosts(@RequestParam(value = "keyword", required = false) String keyword,
                                       @RequestParam(value = "categoryName", required = false) Long categoryId,
-                                      @RequestParam(value = "sort") PostSortType sort,
-                                      @RequestParam(value = "page") @Min(0) Integer page){
+                                      @RequestParam(value = "sort", defaultValue = "DATE_DESC") PostSortType sort,
+                                      @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page){
 
         Page<PostSummaryRes> posts = postService.getPosts(keyword, categoryId, sort, page);
 
