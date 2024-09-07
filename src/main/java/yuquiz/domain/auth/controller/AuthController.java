@@ -22,6 +22,7 @@ import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
 import yuquiz.domain.auth.dto.PasswordResetReq;
+import yuquiz.domain.auth.dto.UserVerifyReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
@@ -138,14 +139,22 @@ public class AuthController implements AuthApi {
 
     /* 비밀번호 재설정 확인 */
     @Override
-    @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetReq passwordResetReq) {
+    @PostMapping("/reset-password/verify-user")
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyReq userVerifyReq) {
 
-        if (!accountService.validateUserForPasswordReset(passwordResetReq))
+        if (!accountService.validateUserForPasswordReset(userVerifyReq))
             throw new CustomException(UserExceptionCode.INVALID_USER_INFO);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    /* 비밀번호 재설정 */
+    @Override
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetReq passwordResetReq) {
+
+        accountService.resetPassword(passwordResetReq);
+        return ResponseEntity.ok(SuccessRes.from("비밀번호 재설정 성공."));
+    }
 
     /* 토큰과 관련된 응답값 생성. - TokenDto (일반 로그인 및 토큰 재발급) */
     private ResponseEntity<?> createTokenRes(TokenDto tokenDto) {
