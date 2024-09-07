@@ -59,6 +59,8 @@ public class PostService {
 
         boolean isLiked = likedPostRepository.existsByUserAndPost(user, post);
 
+        post.increaseViewCount();
+
         return PostRes.fromEntity(post, isLiked);
     }
 
