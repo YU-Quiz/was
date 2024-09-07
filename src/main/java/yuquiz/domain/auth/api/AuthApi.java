@@ -16,6 +16,7 @@ import yuquiz.domain.auth.dto.FindUsernameReq;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.PasswordResetReq;
+import yuquiz.domain.auth.dto.UserVerifyReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 
@@ -254,9 +255,9 @@ public interface AuthApi {
     })
     ResponseEntity<?> findUsername(@Valid @RequestBody FindUsernameReq findUsernameReq);
 
-    @Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정하기 위한 API입니다. 성공한다면, 비밀번호 업데이트 api를 요청해주세요")
+    @Operation(summary = "비밀번호 재설정 전 확인", description = "비밀번호 재설정하기 위한 전 과정 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "비밀번호 재설정 확인 성공",
+            @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject()
                     })),
@@ -280,6 +281,33 @@ public interface AuthApi {
                                         {
                                             "status": 400,
                                             "message": "정보를 정확히 입력해주세요."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyReq userVerifyReq);
+
+    @Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정하기 위한 API입니다. 성공한다면, 비밀번호 업데이트 api를 요청해주세요")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 재설정 확인 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "비밀번호 재설정 성공."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "username": "아이디는 필수 입력입니다.",
+                                            "password": "비밀번호는 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "password": "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~16자여야 합니다."
                                         }
                                     """)
                     }))
