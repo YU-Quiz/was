@@ -22,6 +22,7 @@ import yuquiz.domain.auth.controller.AuthController;
 import yuquiz.domain.auth.dto.FindUsernameReq;
 import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.PasswordResetReq;
+import yuquiz.domain.auth.dto.UserVerifyReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
@@ -463,16 +464,16 @@ public class AuthControllerTest {
 
     @Test
     @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 일치")
-    void resetPasswordTrueTest() throws Exception {
+    void verifyUserTrueTest() throws Exception {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "test@gmail.com");
-        when(accountService.validateUserForPasswordReset(passwordResetReq)).thenReturn(true);
+        UserVerifyReq userVerifyReq = new UserVerifyReq("test", "test@gmail.com");
+        when(accountService.validateUserForPasswordReset(userVerifyReq)).thenReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/auth/reset-password")
+                post("/api/v1/auth/reset-password/verify-user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+                        .content(objectMapper.writeValueAsBytes(userVerifyReq))
         );
 
         // then
@@ -483,16 +484,16 @@ public class AuthControllerTest {
 
     @Test
     @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 불일치")
-    void resetPasswordFailedTest() throws Exception {
+    void verifyUserFailedTest() throws Exception {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "test@gmail.com");
-        when(accountService.validateUserForPasswordReset(passwordResetReq)).thenReturn(false);
+        UserVerifyReq userVerifyReq = new UserVerifyReq("test", "test@gmail.com");
+        when(accountService.validateUserForPasswordReset(userVerifyReq)).thenReturn(false);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/auth/reset-password")
+                post("/api/v1/auth/reset-password/verify-user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+                        .content(objectMapper.writeValueAsBytes(userVerifyReq))
         );
 
         // then
@@ -504,7 +505,69 @@ public class AuthControllerTest {
     }
     @Test
     @DisplayName("비밀번호 재설정을 위한 확인 실패 테스트 - 유효성 검사 실패")
-    void resetPasswordFailedFailedTest() throws Exception {
+    void verifyUserFailedFailedTest() throws Exception {
+        // given
+        UserVerifyReq userVerifyReq = new UserVerifyReq(null, null);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password/verify-user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userVerifyReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.username").value("아이디는 필수 입력입니다."))
+                .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."));
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정을 위한 확인 실패 테스트 - 패턴 불일치")
+    void verifyUserFailedInsufficientTest() throws Exception {
+        // given
+        UserVerifyReq userVerifyReq = new UserVerifyReq("test", "testgmail.com");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password/verify-user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userVerifyReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정 테스트")
+    void resetPasswordTest() throws Exception {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@");
+        doNothing().when(accountService).resetPassword(passwordResetReq);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordResetReq))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("비밀번호 재설정 성공."));
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정 실패 테스트 - 유효성 검사 실패")
+    void resetPasswordFailedTest() throws Exception {
         // given
         PasswordResetReq passwordResetReq = new PasswordResetReq(null, null);
 
@@ -520,14 +583,14 @@ public class AuthControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.username").value("아이디는 필수 입력입니다."))
-                .andExpect(jsonPath("$.email").value("이메일은 필수 입력 값입니다."));
+                .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."));
     }
 
     @Test
-    @DisplayName("비밀번호 재설정을 위한 확인 실패 테스트 - 패턴 불일치")
-    void resetPasswordFailedInsufficientTest() throws Exception {
+    @DisplayName("비밀번호 재설정 실패 테스트 - 패턴 불일치")
+    void resetPasswordInsufficientTest() throws Exception {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "testgmail.com");
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123");
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -540,7 +603,7 @@ public class AuthControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.email").value("유효한 이메일 형식이 아닙니다."));
+                .andExpect(jsonPath("$.password").value("비밀번호는 영문, 숫자, 특수문자를 포함하여 8~16자여야 합니다."));
     }
 
 /*    @Test
