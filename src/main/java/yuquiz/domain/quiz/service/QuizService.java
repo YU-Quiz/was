@@ -146,9 +146,8 @@ public class QuizService {
     }
 
     private boolean isWriter(Long quizId, Long userId) {
-        Long writerId = quizRepository.findWriterById(quizId)
-                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
-
-        return writerId.equals(userId);
+        return quizRepository.findWriterById(quizId)
+                .map(writerId -> writerId.equals(userId))
+                .orElse(false);
     }
 }
