@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import yuquiz.domain.likedQuiz.dto.LikedQuizSortType;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[퀴즈 API]", description = "퀴즈 관련 API")
@@ -63,7 +64,8 @@ public interface LikedQuizApi {
     )
     ResponseEntity<?> getLikedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @RequestParam(value = "page") @Min(0) Integer page);
+            @RequestParam(value = "page") @Min(0) Integer page,
+            @RequestParam(value = "sort") LikedQuizSortType sort);
 
     @Operation(summary = "퀴즈 좋아요", description = "퀴즈 좋아요 api")
     @ApiResponses({
