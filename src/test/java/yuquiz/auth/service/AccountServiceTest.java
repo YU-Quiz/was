@@ -7,8 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.PasswordResetReq;
+import yuquiz.domain.auth.dto.UserVerifyReq;
 import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
@@ -23,12 +25,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private AccountService accountService;
@@ -81,12 +89,12 @@ public class AccountServiceTest {
     @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 일치")
     void validateUserForPasswordResetTrueTest() {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", email);
-        given(userRepository.existsByUsernameAndEmail(passwordResetReq.username(), passwordResetReq.email()))
+        UserVerifyReq userVerifyReq = new UserVerifyReq("test", email);
+        given(userRepository.existsByUsernameAndEmail(userVerifyReq.username(), userVerifyReq.email()))
                 .willReturn(true);
 
         // when
-        boolean isExists = accountService.validateUserForPasswordReset(passwordResetReq);
+        boolean isExists = accountService.validateUserForPasswordReset(userVerifyReq);
 
         // then
         assertTrue(isExists);
@@ -96,14 +104,29 @@ public class AccountServiceTest {
     @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 불일치")
     void validateUserForPasswordResetFalseTest() {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", email);
-        given(userRepository.existsByUsernameAndEmail(passwordResetReq.username(), passwordResetReq.email()))
+        UserVerifyReq userVerifyReq = new UserVerifyReq("test", email);
+        given(userRepository.existsByUsernameAndEmail(userVerifyReq.username(), userVerifyReq.email()))
                 .willReturn(false);
 
         // when
-        boolean isExists = accountService.validateUserForPasswordReset(passwordResetReq);
+        boolean isExists = accountService.validateUserForPasswordReset(userVerifyReq);
 
         // then
         assertFalse(isExists);
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정 테스트")
+    void resetPasswordTest() {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@@");
+        when(passwordEncoder.encode("newPassword123@@")).thenReturn("encodedNewPassword");
+        doNothing().when(userRepository).updatePasswordByUsername("test", "encodedNewPassword");
+
+        // when
+        accountService.resetPassword(passwordResetReq);
+
+        // then
+        verify(userRepository).updatePasswordByUsername(passwordResetReq.username(), "encodedNewPassword");
     }
 }
