@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.likedQuiz.dto.LikedQuizSortType;
 import yuquiz.domain.likedQuiz.entity.LikedQuiz;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.likedQuiz.repository.LikedQuizRepository;
@@ -29,11 +30,11 @@ public class LikedQuizService {
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
-    public Page<QuizSummaryRes> getLikedQuizzes(Long userId, Integer page) {
+    public Page<QuizSummaryRes> getLikedQuizzes(Long userId, Integer page, LikedQuizSortType sort) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
-        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE);
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
         return likedQuizRepository.findAllByUser(user, pageable)
                 .map(likedQuiz -> QuizSummaryRes.fromEntity(likedQuiz.getQuiz(), triedQuizRepository.findIsSolvedByUserAndQuiz(user, likedQuiz.getQuiz())));

@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.likedQuiz.api.LikedQuizApi;
+import yuquiz.domain.likedQuiz.dto.LikedQuizSortType;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
 import yuquiz.domain.likedQuiz.service.LikedQuizService;
 import yuquiz.security.auth.SecurityUserDetails;
@@ -22,9 +23,10 @@ public class LikedQuizController implements LikedQuizApi {
     @GetMapping("/liked")
     public ResponseEntity<?> getLikedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @RequestParam(value = "page") @Min(0) Integer page) {
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(value = "sort", defaultValue = "LIKED_DATE_DESC")LikedQuizSortType sort) {
 
-        Page<QuizSummaryRes> likedQuizzes = likedQuizService.getLikedQuizzes(userDetails.getId(), page);
+        Page<QuizSummaryRes> likedQuizzes = likedQuizService.getLikedQuizzes(userDetails.getId(), page, sort);
 
         return ResponseEntity.status(HttpStatus.OK).body(likedQuizzes);
     }
