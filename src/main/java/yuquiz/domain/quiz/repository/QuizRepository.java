@@ -28,7 +28,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     @Modifying
     @Query("update Quiz q set q.title = :title, q.question = :question, q.subject = :subject, " +
-            "q.answer = :answer, q.choices = :choices, q.quizImgs = :quizImgs, q.quizType = :quizType where q.id = :id")
+            "q.answer = :answer, q.choices = :choices, q.quizImgs = :quizImgs, q.quizType = :quizType, q.visibility = true where q.id = :id")
     void updateById(@Param("id") Long id,
                     @Param("title") String title,
                     @Param("question") String question,

@@ -30,6 +30,10 @@ public class ReportService {
 
         reportNotification(quiz.getTitle(), report.getReason(), quiz.getWriter().getId());
 
+        if (reportRepository.countByQuiz(quiz) + 1 >= 10) {
+            quiz.changeVisibility();
+        }
+
         reportRepository.save(report);
     }
 
@@ -42,6 +46,5 @@ public class ReportService {
                 .build();
 
         notificationService.createNotification(userId, notificationReq);
-
     }
 }
