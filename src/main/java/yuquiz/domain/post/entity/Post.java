@@ -63,4 +63,8 @@ public class Post extends BaseTimeEntity {
     public int increaseLikeCount() {
         return ++this.likeCount;
     }
+
+    public int increaseViewCount() {
+        return ++this.viewCount;
+    }
 }
