@@ -3,6 +3,7 @@ package yuquiz.domain.auth.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +17,20 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.api.AuthApi;
+import yuquiz.domain.auth.dto.FindUsernameReq;
 import yuquiz.domain.auth.dto.OAuthCodeDto;
 import yuquiz.domain.auth.dto.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.OAuthTokenDto;
+import yuquiz.domain.auth.dto.PasswordResetReq;
+import yuquiz.domain.auth.dto.UserVerifyReq;
 import yuquiz.domain.auth.dto.SignInReq;
 import yuquiz.domain.auth.dto.SignUpReq;
 import yuquiz.domain.auth.dto.TokenDto;
+import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.OAuthPlatform;
+import yuquiz.domain.user.exception.UserExceptionCode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +46,7 @@ public class AuthController implements AuthApi {
     private final AuthService authService;
     private final CookieUtil cookieUtil;
     private final JwtService jwtService;
+    private final AccountService accountService;
 
     /* 회원가입 */
     @Override
@@ -122,6 +129,32 @@ public class AuthController implements AuthApi {
         return ResponseEntity.ok(SuccessRes.from("로그아웃 되었습니다."));
     }
 
+    /* 아이디 찾기 */
+    @Override
+    @PostMapping("/find-username")
+    public ResponseEntity<?> findUsername(@Valid @RequestBody FindUsernameReq findUsernameReq) {
+
+        return ResponseEntity.ok(SuccessRes.from(accountService.findUsernameByEmail(findUsernameReq.email())));
+    }
+
+    /* 비밀번호 재설정 확인 */
+    @Override
+    @PostMapping("/reset-password/verify-user")
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyReq userVerifyReq) {
+
+        if (!accountService.validateUserForPasswordReset(userVerifyReq))
+            throw new CustomException(UserExceptionCode.INVALID_USER_INFO);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /* 비밀번호 재설정 */
+    @Override
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetReq passwordResetReq) {
+
+        accountService.resetPassword(passwordResetReq);
+        return ResponseEntity.ok(SuccessRes.from("비밀번호 재설정 성공."));
+    }
 
     /* 토큰과 관련된 응답값 생성. - TokenDto (일반 로그인 및 토큰 재발급) */
     private ResponseEntity<?> createTokenRes(TokenDto tokenDto) {

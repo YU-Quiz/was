@@ -19,8 +19,6 @@ import java.io.UnsupportedEncodingException;
 import static yuquiz.common.mail.MailProperties.CODE_SUBJECT;
 import static yuquiz.common.mail.MailProperties.CODE_TEXT;
 import static yuquiz.common.mail.MailProperties.MAIL_SENDER;
-import static yuquiz.common.mail.MailProperties.PASS_SUBJECT;
-import static yuquiz.common.mail.MailProperties.PASS_TEXT;
 
 @RequiredArgsConstructor
 @EnableAsync
@@ -41,7 +39,6 @@ public class MailService {
         try {
             switch (type) {
                 case CODE -> message = getCodeMessage(email, content);
-                case PASS -> message = getPassMessage(email, content);
             }
             javaMailSender.send(message);
         } catch (MessagingException | UnsupportedEncodingException e) {
@@ -58,20 +55,6 @@ public class MailService {
         helper.setBcc(email);
         helper.setSubject(CODE_SUBJECT);
         helper.setText(CODE_TEXT + code, true);
-        helper.setFrom(new InternetAddress(emailUsername, MAIL_SENDER, "UTF-8"));
-
-        return message;
-    }
-
-    /* Pass Message 만들기. */
-    private MimeMessage getPassMessage(String email, String pass) throws MessagingException, UnsupportedEncodingException  {
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setBcc(email);
-        helper.setSubject(PASS_SUBJECT);
-        helper.setText(PASS_TEXT + pass, true);
         helper.setFrom(new InternetAddress(emailUsername, MAIL_SENDER, "UTF-8"));
 
         return message;
