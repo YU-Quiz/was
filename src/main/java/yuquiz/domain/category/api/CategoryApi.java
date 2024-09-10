@@ -19,11 +19,11 @@ public interface CategoryApi {
                             @ExampleObject(value = """
                                     [
                                         {
-                                            "Id": 1,
+                                            "id": 1,
                                             "categoryName": "공지게시판"
                                         },
                                         {
-                                            "Id": 2,
+                                            "id": 2,
                                             "categoryName": "자유게시판"
                                         }
                                     ]
