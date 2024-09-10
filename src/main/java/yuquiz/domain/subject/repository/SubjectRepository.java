@@ -1,11 +1,8 @@
 package yuquiz.domain.subject.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.subject.entity.Subject;
 
 import java.util.List;
