@@ -25,6 +25,10 @@ public class Subject {
     @Column(name = "subject_name")
     private String subjectName;
 
+    @NotNull
+    @Column(name = "subject_code", unique = true)
+    private String subjectCode;
+
     @OneToMany(mappedBy = "subject", cascade = CascadeType.REMOVE)
     private List<Quiz> quizzes = new ArrayList<>();
 
@@ -33,7 +37,8 @@ public class Subject {
     private Major major;
 
     @Builder
-    public Subject(String subjectName) {
+    public Subject(String subjectName, String subjectCode) {
         this.subjectName = subjectName;
+        this.subjectCode = subjectCode;
     }
 }
