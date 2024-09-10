@@ -3,7 +3,6 @@ package yuquiz.domain.category.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yuquiz.domain.category.dto.CategorySummaryRes;
-import yuquiz.domain.category.entity.Category;
 import yuquiz.domain.category.repository.CategoryRepository;
 
 import java.util.List;
@@ -17,9 +16,7 @@ public class CategoryService {
 
     public List<CategorySummaryRes> getCategories() {
 
-        List<Category> categories = categoryRepository.findAll();
-
-        return categories.stream()
+        return categoryRepository.findAll().stream()
                 .map(CategorySummaryRes::fromEntity)
                 .collect(Collectors.toList());
     }
