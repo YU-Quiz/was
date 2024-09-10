@@ -3,7 +3,7 @@ package yuquiz.domain.category.dto;
 import yuquiz.domain.category.entity.Category;
 
 public record CategorySummaryRes(
-        Long Id,
+        Long id,
         String categoryName
 ) {
     public static CategorySummaryRes fromEntity(Category category) {
