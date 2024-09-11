@@ -81,43 +81,77 @@ public interface PostApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
+                                        "totalPages": 1,
+                                        "totalElements": 5,
+                                        "first": true,
+                                        "last": true,
+                                        "size": 20,
                                         "content": [
                                             {
-                                                "id": 1,
-                                                "title": "새로운 타이틀",
-                                                "category": "자유게시판",
-                                                "nickname": "테스터111",
+                                                "postId": 12,
+                                                "postTitle": "qwe12",
+                                                "nickname": "test1111",
+                                                "categoryName": "공지게시판",
+                                                "createdAt": "2024-08-22T18:28:30.319814",
+                                                "likeCount": 1,
+                                                "viewCount": 0
+                                            },
+                                            {
+                                                "postId": 9,
+                                                "postTitle": "2제목",
+                                                "nickname": "테스터",
+                                                "categoryName": "공지게시판",
+                                                "createdAt": "2024-08-20T15:33:51.620851",
                                                 "likeCount": 0,
-                                                "viewCount": 0,
+                                                "viewCount": 0
+                                            },
+                                            {
+                                                "postId": 8,
+                                                "postTitle": "새로운 타이틀",
+                                                "nickname": "테스터",
+                                                "categoryName": "자유게시판",
+                                                "createdAt": "2024-08-20T15:33:46.902076",
+                                                "likeCount": 1,
+                                                "viewCount": 0
+                                            },
+                                            {
+                                                "postId": 6,
+                                                "postTitle": "새로운 타이틀",
+                                                "nickname": "테스터",
+                                                "categoryName": "자유게시판",
+                                                "createdAt": "2024-08-20T15:33:34.426304",
+                                                "likeCount": 0,
+                                                "viewCount": 0
+                                            },
+                                            {
+                                                "postId": 4,
+                                                "postTitle": "새로운 타이틀",
+                                                "nickname": "테스터111",
+                                                "categoryName": "자유게시판",
                                                 "createdAt": "2024-08-20T14:57:51.031651",
-                                                "modified": true,
-                                                "isLiked": false
+                                                "likeCount": 0,
+                                                "viewCount": 0
                                             }
                                         ],
-                                        "pageable": {
-                                            "sort": {
-                                                "sorted": false,
-                                                "unsorted": true,
-                                                "empty": true
-                                            },
-                                            "pageSize": 10,
-                                            "pageNumber": 0,
-                                            "offset": 0,
-                                            "paged": true,
-                                            "unpaged": false
-                                        },
-                                        "totalPages": 1,
-                                        "totalElements": 1,
-                                        "last": true,
-                                        "size": 10,
                                         "number": 0,
                                         "sort": {
-                                            "sorted": false,
-                                            "unsorted": true,
-                                            "empty": true
+                                            "empty": false,
+                                            "unsorted": false,
+                                            "sorted": true
                                         },
-                                        "numberOfElements": 1,
-                                        "first": true,
+                                        "pageable": {
+                                            "pageNumber": 0,
+                                            "pageSize": 20,
+                                            "sort": {
+                                                "empty": false,
+                                                "unsorted": false,
+                                                "sorted": true
+                                            },
+                                            "offset": 0,
+                                            "unpaged": false,
+                                            "paged": true
+                                        },
+                                        "numberOfElements": 5,
                                         "empty": false
                                     }
                                     """)
