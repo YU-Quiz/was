@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import yuquiz.domain.pinnedQuiz.dto.PinnedQuizSortType;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[퀴즈 API]", description = "퀴즈 관련 API")
@@ -72,7 +73,8 @@ public interface PinnedQuizApi {
     })
     ResponseEntity<?> getPinnedQuizzes(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @RequestParam(value = "page") @Min(0) Integer page);
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(value = "sort", defaultValue = "LIKED_DATE_DESC") PinnedQuizSortType sort);
 
     @Operation(summary = "퀴즈 즐겨찾기", description = "퀴즈 즐겨찾기 api")
     @ApiResponses({
