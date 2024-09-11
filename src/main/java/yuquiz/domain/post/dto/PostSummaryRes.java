@@ -8,6 +8,7 @@ public record PostSummaryRes(
         Long postId,
         String postTitle,
         String nickname,
+        String categoryName,
         LocalDateTime createdAt,
         int likeCount,
         int viewCount
@@ -17,6 +18,7 @@ public record PostSummaryRes(
                 post.getId(),
                 post.getTitle(),
                 post.getWriter().getNickname(),
+                post.getCategory().getCategoryName(),
                 post.getCreatedAt(),
                 post.getLikeCount(),
                 post.getViewCount()
