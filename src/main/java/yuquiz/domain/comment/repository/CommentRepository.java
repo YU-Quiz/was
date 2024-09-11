@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import yuquiz.domain.comment.entity.Comment;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -14,7 +15,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Long> findWriterIdById(@Param("id") Long id);
 
     @Modifying
-    @Query("update Comment c set c.content = :contnet where c.id = :id")
+    @Query("update Comment c set c.content = :content where c.id = :id")
     void updateById(@Param("id") Long id,
                     @Param("content") String content);
+
+    List<Comment> findAllByPost_Id(Long postId);
 }

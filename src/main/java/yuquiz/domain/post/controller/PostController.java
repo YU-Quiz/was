@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.comment.dto.CommentRes;
+import yuquiz.domain.comment.service.CommentService;
 import yuquiz.domain.post.api.PostApi;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
@@ -17,12 +19,16 @@ import yuquiz.domain.post.dto.PostSummaryRes;
 import yuquiz.domain.post.service.PostService;
 import yuquiz.security.auth.SecurityUserDetails;
 
+import java.util.HashMap;
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
 public class PostController implements PostApi {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @PostMapping
     @Override
@@ -40,8 +46,13 @@ public class PostController implements PostApi {
                                          @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
         PostRes postRes = postService.getPostById(postId, userDetails.getId());
+        List<CommentRes> comments = commentService.getCommentsByPostId(postId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(postRes);
+        HashMap<String, Object> responseData = new HashMap<>();
+        responseData.put("post", postRes);
+        responseData.put("comments", comments);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
     @GetMapping
