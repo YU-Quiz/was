@@ -5,13 +5,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.user.entity.User;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class PinnedQuiz {
+public class PinnedQuiz extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

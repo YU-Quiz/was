@@ -79,8 +79,8 @@ public class QuizController implements QuizApi {
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "subject", required = false) Long subjectId,
-            @RequestParam(value = "sort") QuizSortType sort,
-            @RequestParam(value = "page") @Min(0) Integer page) {
+            @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
 
         Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, page);
 
@@ -90,8 +90,8 @@ public class QuizController implements QuizApi {
     @GetMapping("/my")
     public ResponseEntity<?> getQuizzesByWriter(
             @AuthenticationPrincipal SecurityUserDetails userDetails,
-            @RequestParam(value = "sort") QuizSortType sort,
-            @RequestParam(value = "page") @Min(0) Integer page) {
+            @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
 
         Page<QuizSummaryRes> quizzes = quizService.getQuizzesByWriter(userDetails.getId(), sort, page);
 

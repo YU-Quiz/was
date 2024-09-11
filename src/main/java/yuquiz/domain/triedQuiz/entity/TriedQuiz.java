@@ -36,6 +36,8 @@ public class TriedQuiz {
     }
 
     public void updateIsSolved(boolean isSolved) {
-        this.isSolved = isSolved;
+        if (!this.isSolved) {
+            this.isSolved = isSolved;
+        }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.pinnedQuiz.dto.PinnedQuizSortType;
 import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.pinnedQuiz.repository.PinnedQuizRepository;
 import yuquiz.domain.quiz.dto.QuizSummaryRes;
@@ -29,11 +30,11 @@ public class PinnedQuizService {
 
     private static final Integer QUIZ_PER_PAGE = 20;
 
-    public Page<QuizSummaryRes> getPinnedQuizzes(Long userId, Integer page) {
+    public Page<QuizSummaryRes> getPinnedQuizzes(Long userId, Integer page, PinnedQuizSortType sort) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
-        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE);
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
 
         return pinnedQuizRepository.findAllByUser(user, pageable)
                 .map(pinnedQuiz -> QuizSummaryRes.fromEntity(pinnedQuiz.getQuiz(), triedQuizRepository.findIsSolvedByUserAndQuiz(user, pinnedQuiz.getQuiz())));
