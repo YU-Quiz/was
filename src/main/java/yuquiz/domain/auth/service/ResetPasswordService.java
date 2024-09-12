@@ -6,6 +6,7 @@ import yuquiz.common.mail.MailType;
 import yuquiz.common.mail.service.MailService;
 import yuquiz.common.utils.redis.RedisUtil;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static yuquiz.common.utils.redis.RedisProperties.PASS_EXPIRATION_TIME;
@@ -43,9 +44,9 @@ public class ResetPasswordService {
     public boolean isValidCode(String username, String code) {
 
         String key = PASS_KEY_PREFIX + username;
-        String savedCode = (String) redisUtil.get(key);
+        Optional<String> savedCode = Optional.ofNullable((String) redisUtil.get(key));
 
-        if (!code.equals(savedCode)) {
+        if (savedCode.isEmpty() || !code.equals(savedCode.get())) {
             return false;
         }
 
