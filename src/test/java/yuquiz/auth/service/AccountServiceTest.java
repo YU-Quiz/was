@@ -12,6 +12,7 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.auth.dto.PasswordResetReq;
 import yuquiz.domain.auth.dto.UserVerifyReq;
 import yuquiz.domain.auth.service.AccountService;
+import yuquiz.domain.auth.service.ResetPasswordService;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -21,10 +22,9 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,6 +37,9 @@ public class AccountServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ResetPasswordService resetPasswordService;
 
     @InjectMocks
     private AccountService accountService;
@@ -92,12 +95,14 @@ public class AccountServiceTest {
         UserVerifyReq userVerifyReq = new UserVerifyReq("test", email);
         given(userRepository.existsByUsernameAndEmail(userVerifyReq.username(), userVerifyReq.email()))
                 .willReturn(true);
+        doNothing().when(resetPasswordService).sendPassResetLinkToMail(userVerifyReq.email(), userVerifyReq.username());
 
         // when
-        boolean isExists = accountService.validateUserForPasswordReset(userVerifyReq);
+        accountService.validateUserForPasswordReset(userVerifyReq);
 
         // then
-        assertTrue(isExists);
+        then(userRepository).should().existsByUsernameAndEmail(userVerifyReq.username(), userVerifyReq.email());
+        then(resetPasswordService).should().sendPassResetLinkToMail(userVerifyReq.email(), userVerifyReq.username());
     }
 
     @Test
@@ -109,17 +114,21 @@ public class AccountServiceTest {
                 .willReturn(false);
 
         // when
-        boolean isExists = accountService.validateUserForPasswordReset(userVerifyReq);
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            accountService.validateUserForPasswordReset(userVerifyReq);
+        });
 
         // then
-        assertFalse(isExists);
+        assertEquals(UserExceptionCode.INVALID_USER_INFO.getStatus(), exception.getStatus());
+        assertEquals(UserExceptionCode.INVALID_USER_INFO.getMessage(), exception.getMessage());
     }
 
     @Test
-    @DisplayName("비밀번호 재설정 테스트")
+    @DisplayName("비밀번호 재설정 테스트 - 성공")
     void resetPasswordTest() {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@@");
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@@", "code");
+        given(resetPasswordService.isValidCode(passwordResetReq.username(), passwordResetReq.code())).willReturn(true);
         when(passwordEncoder.encode("newPassword123@@")).thenReturn("encodedNewPassword");
         doNothing().when(userRepository).updatePasswordByUsername("test", "encodedNewPassword");
 
@@ -128,5 +137,21 @@ public class AccountServiceTest {
 
         // then
         verify(userRepository).updatePasswordByUsername(passwordResetReq.username(), "encodedNewPassword");
+    }
+
+    @Test
+    @DisplayName("비밀번호 재설정 테스트 - 실패 (code 불일치)")
+    void resetPasswordFailedTest() {
+        // given
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@@", "code");
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            accountService.resetPassword(passwordResetReq);
+        });
+
+        // then
+        assertEquals(UserExceptionCode.UNAUTHORIZED_ACTION.getMessage(), exception.getMessage());
+        assertEquals(UserExceptionCode.UNAUTHORIZED_ACTION.getStatus(), exception.getStatus());
     }
 }
