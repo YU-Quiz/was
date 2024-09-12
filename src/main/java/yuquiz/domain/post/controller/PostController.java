@@ -27,7 +27,7 @@ public class PostController implements PostApi {
     @PostMapping
     @Override
     public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq,
-                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
         postService.createPost(postReq, userDetails.getId());
 
@@ -37,7 +37,7 @@ public class PostController implements PostApi {
     @GetMapping("/{postId}")
     @Override
     public ResponseEntity<?> getPostById(@PathVariable(value = "postId") Long postId,
-                                         @AuthenticationPrincipal SecurityUserDetails userDetails){
+                                         @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
         PostRes postRes = postService.getPostById(postId, userDetails.getId());
 
@@ -47,9 +47,9 @@ public class PostController implements PostApi {
     @GetMapping
     @Override
     public ResponseEntity<?> getPosts(@RequestParam(value = "keyword", required = false) String keyword,
-                                      @RequestParam(value = "categoryName", required = false) Long categoryId,
+                                      @RequestParam(value = "categoryId", required = false) Long categoryId,
                                       @RequestParam(value = "sort", defaultValue = "DATE_DESC") PostSortType sort,
-                                      @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page){
+                                      @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
 
         Page<PostSummaryRes> posts = postService.getPosts(keyword, categoryId, sort, page);
 
@@ -60,7 +60,7 @@ public class PostController implements PostApi {
     @Override
     public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
                                         @Valid @RequestBody PostReq postReq,
-                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
         postService.updatePostById(postId, postReq, userDetails.getId());
 
@@ -70,7 +70,7 @@ public class PostController implements PostApi {
     @DeleteMapping("/{postId}")
     @Override
     public ResponseEntity<?> deletePost(@PathVariable(value = "postId") Long postId,
-                                        @AuthenticationPrincipal SecurityUserDetails userDetails){
+                                        @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
         postService.deletePostById(postId, userDetails.getId());
 

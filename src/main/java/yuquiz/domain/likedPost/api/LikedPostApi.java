@@ -15,74 +15,78 @@ import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[게시글 좋아요 API]", description = "게시글 좋아요 관련 API")
 public interface LikedPostApi {
-    
+
     @Operation(summary = "좋아요 게시글 목록", description = "사용자가 좋아요한 게시글 목록 API")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "게시글 좋아요 목록 불러오기 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
-                                    {
-                                        "totalPages": 1,
-                                        "totalElements": 4,
-                                        "first": true,
-                                        "last": true,
-                                        "size": 20,
-                                        "content": [
                                             {
-                                                "postId": 4,
-                                                "postTitle": "새로운 타이틀",
-                                                "nickname": "테스터111",
-                                                "createdAt": "2024-08-20T14:57:51.031651",
-                                                "likeCount": 0,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 6,
-                                                "postTitle": "새로운 타이틀",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-20T15:33:34.426304",
-                                                "likeCount": 0,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 8,
-                                                "postTitle": "새로운 타이틀",
-                                                "nickname": "테스터",
-                                                "createdAt": "2024-08-20T15:33:46.902076",
-                                                "likeCount": 1,
-                                                "viewCount": 0
-                                            },
-                                            {
-                                                "postId": 12,
-                                                "postTitle": "qwe12",
-                                                "nickname": "test1111",
-                                                "createdAt": "2024-08-22T18:28:30.319814",
-                                                "likeCount": 1,
-                                                "viewCount": 0
+                                                 "totalPages": 1,
+                                                 "totalElements": 4,
+                                                 "first": true,
+                                                 "last": true,
+                                                 "size": 20,
+                                                 "content": [
+                                                     {
+                                                         "postId": 4,
+                                                         "postTitle": "새로운 타이틀",
+                                                         "nickname": "테스터111",
+                                                         "categoryName": "자유게시판",
+                                                         "createdAt": "2024-08-20T14:57:51.031651",
+                                                         "likeCount": 0,
+                                                         "viewCount": 0
+                                                     },
+                                                     {
+                                                         "postId": 6,
+                                                         "postTitle": "새로운 타이틀",
+                                                         "nickname": "테스터",
+                                                         "categoryName": "자유게시판",
+                                                         "createdAt": "2024-08-20T15:33:34.426304",
+                                                         "likeCount": 0,
+                                                         "viewCount": 0
+                                                     },
+                                                     {
+                                                         "postId": 12,
+                                                         "postTitle": "qwe12",
+                                                         "nickname": "test1111",
+                                                         "categoryName": "공지게시판",
+                                                         "createdAt": "2024-08-22T18:28:30.319814",
+                                                         "likeCount": 1,
+                                                         "viewCount": 0
+                                                     },
+                                                     {
+                                                         "postId": 8,
+                                                         "postTitle": "새로운 타이틀",
+                                                         "nickname": "테스터",
+                                                         "categoryName": "자유게시판",
+                                                         "createdAt": "2024-08-20T15:33:46.902076",
+                                                         "likeCount": 1,
+                                                         "viewCount": 0
+                                                     }
+                                                 ],
+                                                 "number": 0,
+                                                 "sort": {
+                                                     "empty": true,
+                                                     "unsorted": true,
+                                                     "sorted": false
+                                                 },
+                                                 "pageable": {
+                                                     "pageNumber": 0,
+                                                     "pageSize": 20,
+                                                     "sort": {
+                                                         "empty": true,
+                                                         "unsorted": true,
+                                                         "sorted": false
+                                                     },
+                                                     "offset": 0,
+                                                     "unpaged": false,
+                                                     "paged": true
+                                                 },
+                                                 "numberOfElements": 4,
+                                                 "empty": false
                                             }
-                                        ],
-                                        "number": 0,
-                                        "sort": {
-                                            "empty": true,
-                                            "unsorted": true,
-                                            "sorted": false
-                                        },
-                                        "pageable": {
-                                            "pageNumber": 0,
-                                            "pageSize": 20,
-                                            "sort": {
-                                                "empty": true,
-                                                "unsorted": true,
-                                                "sorted": false
-                                            },
-                                            "offset": 0,
-                                            "unpaged": false,
-                                            "paged": true
-                                        },
-                                        "numberOfElements": 4,
-                                        "empty": false
-                                    }
-                            """)
+                                    """)
                     }))
     )
     ResponseEntity<?> getLikedPosts(@RequestParam(value = "page") @Min(0) Integer page,

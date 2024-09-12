@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public record PostRes(String title,
                       String content,
-                      String category,
+                      String categoryName,
                       String nickname,
                       int likeCount,
                       int viewCount,
