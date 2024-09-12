@@ -1,9 +1,10 @@
 package yuquiz.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import yuquiz.common.mail.MailType;
 import yuquiz.common.mail.service.MailService;
+import yuquiz.common.mail.strategy.MailStrategy;
 import yuquiz.common.utils.redis.RedisUtil;
 
 import java.util.Optional;
@@ -18,13 +19,15 @@ public class ResetPasswordService {
 
     private final MailService mailService;
     private final RedisUtil redisUtil;
+    @Qualifier("passMailStrategy")
+    private final MailStrategy passMailStrategy;
 
     /* 메일에 비밀번호 재설정 링크 보내기 */
     public void sendPassResetLinkToMail(String email, String username) {
 
         String randomUUID = makeUUID();
         saveUUID(username, randomUUID);
-        mailService.sendMail(email, randomUUID, MailType.PASS);
+        mailService.sendMail(email, randomUUID, passMailStrategy);
     }
 
     /* 랜덤 UUID 생성 */
