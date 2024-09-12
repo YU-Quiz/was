@@ -56,6 +56,10 @@ token:
 cache:
   ttl: ${CACHE_TTL:60}
 
+mail:
+  reset-password:
+    link: ${RESET_PASSWORD_LINK}
+
 oauth2:
   kakao:
     tokenUri: https://kauth.kakao.com/oauth/token
