@@ -8,8 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import yuquiz.common.exception.CustomException;
-import yuquiz.common.mail.MailType;
 import yuquiz.common.mail.service.MailService;
+import yuquiz.common.mail.strategy.MailStrategy;
 import yuquiz.common.utils.redis.RedisUtil;
 import yuquiz.domain.user.dto.req.CodeVerificationReq;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -39,6 +39,9 @@ public class MailCodeServiceTest {
     @Mock
     private RedisUtil redisUtil;
 
+    @Mock
+    private MailStrategy codeMailStrategy;
+
     @InjectMocks
     private MailCodeService mailCodeService;
 
@@ -56,13 +59,13 @@ public class MailCodeServiceTest {
     void sendCodeToMailSuccessTest() {
         // given
         when(redisUtil.existed(anyString())).thenReturn(false);
-        doNothing().when(mailService).sendMail(anyString(), anyString(), eq(MailType.CODE));
+        doNothing().when(mailService).sendMail(anyString(), anyString(), eq(codeMailStrategy));
 
         // when
         mailCodeService.sendCodeToMail(testEmail);
 
         // then
-        verify(mailService).sendMail(eq(testEmail), anyString(), eq(MailType.CODE));
+        verify(mailService).sendMail(eq(testEmail), anyString(), eq(codeMailStrategy));
         verify(redisUtil).set(eq(CODE_KEY_PREFIX + testEmail), anyString());
         verify(redisUtil).expire(eq(CODE_KEY_PREFIX + testEmail), eq(CODE_EXPIRATION_TIME));
     }
