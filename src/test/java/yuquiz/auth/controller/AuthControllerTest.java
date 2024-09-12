@@ -41,6 +41,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -463,11 +464,10 @@ public class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("비밀번호 재설정을 위한 확인 테스트 - 일치")
-    void verifyUserTrueTest() throws Exception {
+    @DisplayName("비밀번호 재설정을 위한 확인 테스트")
+    void verifyUserTest() throws Exception {
         // given
         UserVerifyReq userVerifyReq = new UserVerifyReq("test", "test@gmail.com");
-        when(accountService.validateUserForPasswordReset(userVerifyReq)).thenReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -479,7 +479,8 @@ public class AuthControllerTest {
         // then
         resultActions
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("메일 전송 완료."));
     }
 
     @Test
@@ -487,7 +488,7 @@ public class AuthControllerTest {
     void verifyUserFailedTest() throws Exception {
         // given
         UserVerifyReq userVerifyReq = new UserVerifyReq("test", "test@gmail.com");
-        when(accountService.validateUserForPasswordReset(userVerifyReq)).thenReturn(false);
+        doThrow(new CustomException(UserExceptionCode.INVALID_USER_INFO)).when(accountService).validateUserForPasswordReset(userVerifyReq);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -548,7 +549,7 @@ public class AuthControllerTest {
     @DisplayName("비밀번호 재설정 테스트")
     void resetPasswordTest() throws Exception {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@");
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123@", "code");
         doNothing().when(accountService).resetPassword(passwordResetReq);
 
         // when
@@ -569,7 +570,7 @@ public class AuthControllerTest {
     @DisplayName("비밀번호 재설정 실패 테스트 - 유효성 검사 실패")
     void resetPasswordFailedTest() throws Exception {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq(null, null);
+        PasswordResetReq passwordResetReq = new PasswordResetReq(null, null, null);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -583,14 +584,15 @@ public class AuthControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.username").value("아이디는 필수 입력입니다."))
-                .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."));
+                .andExpect(jsonPath("$.password").value("비밀번호는 필수 입력 값입니다."))
+                .andExpect(jsonPath("$.code").value("사용자 code는 필수 입력입니다."));
     }
 
     @Test
     @DisplayName("비밀번호 재설정 실패 테스트 - 패턴 불일치")
     void resetPasswordInsufficientTest() throws Exception {
         // given
-        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123");
+        PasswordResetReq passwordResetReq = new PasswordResetReq("test", "newPassword123", "code");
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -624,9 +626,10 @@ public class AuthControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(JwtExceptionCode.TOKEN_NOT_FOUND.getMessage()));
-    }*/
+    }
 
-/*    @Test
+
+    @Test
     @DisplayName("로그아웃 테스트 - 헤더에 access Token 없음")
     void signOutFailedByNotFoundAccessTokenInHeaderTest() throws Exception {
         // given
@@ -644,4 +647,5 @@ public class AuthControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(JwtExceptionCode.TOKEN_NOT_FOUND.getMessage()));
     }*/
+
 }
