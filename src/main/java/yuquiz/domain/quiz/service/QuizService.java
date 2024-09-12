@@ -56,7 +56,7 @@ public class QuizService {
     @Transactional
     public void deleteQuiz(Long quizId, Long userId) {
 
-        if (!isWriter(quizId, userId)) {
+        if (!validateWriter(quizId, userId)) {
             throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
         }
 
@@ -66,7 +66,7 @@ public class QuizService {
     @Transactional
     public void updateQuiz(Long quizId, QuizReq quizReq, Long userId) {
 
-        if (!isWriter(quizId, userId)) {
+        if (!validateWriter(quizId, userId)) {
             throw new CustomException(QuizExceptionCode.UNAUTHORIZED_ACTION);
         }
 
@@ -86,10 +86,11 @@ public class QuizService {
 
         boolean isLiked = likedQuizRepository.existsByUserAndQuiz(user, quiz);
         boolean isPinned = pinnedQuizRepository.existsByUserAndQuiz(user, quiz);
+        boolean isWriter = validateWriter(quizId, userId);
 
         quiz.increaseViewCount();
 
-        return QuizRes.fromEntity(quiz, isLiked, isPinned);
+        return QuizRes.fromEntity(quiz, isLiked, isPinned, isWriter);
     }
 
     @Transactional
@@ -145,7 +146,7 @@ public class QuizService {
                 .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
     }
 
-    private boolean isWriter(Long quizId, Long userId) {
+    private boolean validateWriter(Long quizId, Long userId) {
         return quizRepository.findWriterById(quizId)
                 .map(writerId -> writerId.equals(userId))
                 .orElse(false);
