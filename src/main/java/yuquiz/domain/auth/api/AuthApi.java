@@ -255,11 +255,15 @@ public interface AuthApi {
     })
     ResponseEntity<?> findUsername(@Valid @RequestBody FindUsernameReq findUsernameReq);
 
-    @Operation(summary = "비밀번호 재설정 전 확인", description = "비밀번호 재설정하기 위한 전 과정 API입니다.")
+    @Operation(summary = "비밀번호 재설정 전 확인", description = "비밀번호 재설정하기 위한 확인 및 메일 보내는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject()
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "메일 전송 완료."
+                                        }
+                                    """)
                     })),
             @ApiResponse(responseCode = "400", description = "유효성검사 실패",
                     content = @Content(mediaType = "application/json", examples = {
@@ -288,8 +292,7 @@ public interface AuthApi {
     ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyReq userVerifyReq);
 
     @Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정하기 위한 API입니다." +
-            "이 과정에서는 인증번호를 통한 확인이 필요합니다. 회원가입 시, 사용했던 인증번호 확인 api를 사용해주세요." +
-            " 성공한다면, 비밀번호 업데이트 api를 요청해주세요")
+            "code는 서버에서 설정한 UUID를 말한느 것이며, 사용자의 uri에서 code을 파싱 후 json으로 보내주세요.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비밀번호 재설정 확인 성공",
                     content = @Content(mediaType = "application/json", examples = {
@@ -304,12 +307,22 @@ public interface AuthApi {
                             @ExampleObject(name = "notBlank", value = """
                                         {
                                             "username": "아이디는 필수 입력입니다.",
-                                            "password": "비밀번호는 필수 입력 값입니다."
+                                            "password": "비밀번호는 필수 입력 값입니다.",
+                                            "code": "사용자 code는 필수 입력입니다."
                                         }
                                     """),
                             @ExampleObject(name = "patternError", value = """
                                         {
                                             "password": "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~16자여야 합니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "403", description = "비밀번호 재설정 권한 없음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "status": 403,
+                                            "message": "권한이 없습니다."
                                         }
                                     """)
                     }))
