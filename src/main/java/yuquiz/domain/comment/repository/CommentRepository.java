@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("select c.writer.id from Quiz c where c.id = :id")
+    @Query("select c.writer.id from Comment c where c.id = :id")
     Optional<Long> findWriterIdById(@Param("id") Long id);
 
     @Modifying
