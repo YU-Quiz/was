@@ -17,6 +17,7 @@ public class AccountService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ResetPasswordService resetPasswordService;
 
     /* 아이디 찾기 메서드 */
     @Transactional(readOnly = true)
@@ -30,14 +31,21 @@ public class AccountService {
 
     /* 비밀번호 찾기를 위한 사용자 확인 메서드 */
     @Transactional(readOnly = true)
-    public boolean validateUserForPasswordReset(UserVerifyReq userVerifyReq) {
+    public void validateUserForPasswordReset(UserVerifyReq userVerifyReq) {
 
-        return userRepository.existsByUsernameAndEmail(userVerifyReq.username(), userVerifyReq.email());
+        if (!userRepository.existsByUsernameAndEmail(userVerifyReq.username(), userVerifyReq.email())) {
+            throw new CustomException(UserExceptionCode.INVALID_USER_INFO);
+        }
+        resetPasswordService.sendPassResetLinkToMail(userVerifyReq.email(), userVerifyReq.username());
     }
 
     /* 비밀번호 재설정 */
     @Transactional
     public void resetPassword(PasswordResetReq passwordResetReq) {
+
+        if (!resetPasswordService.isValidCode(passwordResetReq.username(), passwordResetReq.code())) {
+            throw new CustomException(UserExceptionCode.UNAUTHORIZED_ACTION);
+        }
 
         String encodePassword = passwordEncoder.encode(passwordResetReq.password());
         userRepository.updatePasswordByUsername(passwordResetReq.username(), encodePassword);
