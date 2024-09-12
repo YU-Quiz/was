@@ -1,4 +1,4 @@
-package yuquiz.domain.auth.dto;
+package yuquiz.domain.auth.dto.res;
 
 public record OAuthTokenDto(
         boolean isRegistered,

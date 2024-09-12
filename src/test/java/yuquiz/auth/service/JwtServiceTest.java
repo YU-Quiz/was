@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.common.utils.jwt.JwtProvider;
-import yuquiz.domain.auth.dto.TokenDto;
+import yuquiz.domain.auth.dto.res.TokenDto;
 import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
