@@ -20,6 +20,8 @@ public enum UserExceptionCode implements ExceptionCode {
     INVALID_EMAIL(404, "아이디를 찾을 수 없습니다."),
     INVALID_USER_INFO(400, "정보를 정확히 입력해주세요."),
 
+    UNAUTHORIZED_ACTION(403, "권한이 없습니다."),
+
     // 인증 메일 관련 오류
     INVALID_CODE(400, "인증번호가 일치하지 않습니다."),
     EXIST_EMAIL(409, "이미 존재하는 이메일입니다."),

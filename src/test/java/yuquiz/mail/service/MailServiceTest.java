@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
-import yuquiz.common.mail.MailType;
 import yuquiz.common.mail.service.MailService;
+import yuquiz.common.mail.strategy.CodeMailStrategy;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -33,7 +33,7 @@ public class MailServiceTest {
         String code = "123456";
 
         // when
-        mailService.sendMail(email, code, MailType.CODE);
+        mailService.sendMail(email, code, new CodeMailStrategy());
 
         // then
     }

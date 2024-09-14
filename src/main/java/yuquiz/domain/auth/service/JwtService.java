@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.common.utils.jwt.JwtProvider;
-import yuquiz.domain.auth.dto.TokenDto;
+import yuquiz.domain.auth.dto.res.TokenDto;
 import yuquiz.domain.user.entity.User;
 import yuquiz.security.token.blacklist.BlackListTokenService;
 import yuquiz.security.token.refresh.RefreshTokenService;

@@ -1,4 +1,4 @@
-package yuquiz.domain.auth.dto;
+package yuquiz.domain.auth.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

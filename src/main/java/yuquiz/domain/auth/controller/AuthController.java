@@ -3,7 +3,6 @@ package yuquiz.domain.auth.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,20 +16,19 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.domain.auth.api.AuthApi;
-import yuquiz.domain.auth.dto.FindUsernameReq;
-import yuquiz.domain.auth.dto.OAuthCodeDto;
-import yuquiz.domain.auth.dto.OAuthSignUpReq;
-import yuquiz.domain.auth.dto.OAuthTokenDto;
-import yuquiz.domain.auth.dto.PasswordResetReq;
-import yuquiz.domain.auth.dto.UserVerifyReq;
-import yuquiz.domain.auth.dto.SignInReq;
-import yuquiz.domain.auth.dto.SignUpReq;
-import yuquiz.domain.auth.dto.TokenDto;
+import yuquiz.domain.auth.dto.req.FindUsernameReq;
+import yuquiz.domain.auth.dto.req.OAuthCodeDto;
+import yuquiz.domain.auth.dto.req.OAuthSignUpReq;
+import yuquiz.domain.auth.dto.res.OAuthTokenDto;
+import yuquiz.domain.auth.dto.req.PasswordResetReq;
+import yuquiz.domain.auth.dto.req.SignInReq;
+import yuquiz.domain.auth.dto.req.SignUpReq;
+import yuquiz.domain.auth.dto.res.TokenDto;
+import yuquiz.domain.auth.dto.req.UserVerifyReq;
 import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.OAuthPlatform;
-import yuquiz.domain.user.exception.UserExceptionCode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,9 +140,8 @@ public class AuthController implements AuthApi {
     @PostMapping("/reset-password/verify-user")
     public ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyReq userVerifyReq) {
 
-        if (!accountService.validateUserForPasswordReset(userVerifyReq))
-            throw new CustomException(UserExceptionCode.INVALID_USER_INFO);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        accountService.validateUserForPasswordReset(userVerifyReq);
+        return ResponseEntity.ok(SuccessRes.from("메일 전송 완료."));
     }
 
     /* 비밀번호 재설정 */

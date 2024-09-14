@@ -1,11 +1,12 @@
 package yuquiz.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
 import yuquiz.common.exception.exceptionCode.GlobalExceptionCode;
-import yuquiz.common.mail.MailType;
 import yuquiz.common.mail.service.MailService;
+import yuquiz.common.mail.strategy.MailStrategy;
 import yuquiz.common.utils.redis.RedisUtil;
 import yuquiz.domain.user.dto.req.CodeVerificationReq;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -27,6 +28,9 @@ public class MailCodeService {
     private final UserRepository userRepository;
     private final MailService mailService;
     private final RedisUtil redisUtil;
+    @Qualifier("codeMailStrategy")
+    private final MailStrategy codeMailStrategy;
+
     private static final int RESEND_THRESHOLD_SECONDS = 2 * 60;
 
     /* 회원가입 인증번호 확인 메서드 */
@@ -38,7 +42,7 @@ public class MailCodeService {
 
         String authCode = createCode();
 
-        mailService.sendMail(email, authCode, MailType.CODE);
+        mailService.sendMail(email, authCode, codeMailStrategy);
 
         String key = CODE_KEY_PREFIX + email;
         redisUtil.set(key, authCode);
