@@ -50,16 +50,41 @@ public interface PostApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
-                                        "title": "새로운 타이틀",
-                                        "content": "새로운 컨텐츠",
-                                        "category": "자유게시판",
-                                        "nickname": "테스터111",
-                                        "likeCount": 0,
-                                        "viewCount": 0,
-                                        "createdAt": "2024-08-20T14:57:51.031651",
-                                        "modified": true,
-                                        "isLiked": false
-                                    }
+                                         "comments": [
+                                             {
+                                                 "id": 1,
+                                                 "content": "123",
+                                                 "writerName": "테스터",
+                                                 "createdAt": "2024-09-05T23:30:58",
+                                                 "modified": true
+                                             },
+                                             {
+                                                 "id": 8,
+                                                 "content": "123",
+                                                 "writerName": "테스터",
+                                                 "createdAt": "2024-09-05T23:30:58",
+                                                 "modified": true
+                                             },
+                                             {
+                                                 "id": 13,
+                                                 "content": "123",
+                                                 "writerName": "테스터",
+                                                 "createdAt": "2024-09-05T23:30:58",
+                                                 "modified": true
+                                             }
+                                         ],
+                                         "post": {
+                                             "title": "새로운 타이틀",
+                                             "content": "새로운 컨텐츠",
+                                             "category": "자유게시판",
+                                             "nickname": "테스터111",
+                                             "likeCount": 0,
+                                             "viewCount": 1,
+                                             "createdAt": "2024-08-20T14:57:51.031651",
+                                             "modified": true,
+                                             "isLiked": true
+                                         }
+                                     }
                                     """)
                     })),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글",
