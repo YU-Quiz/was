@@ -1,6 +1,7 @@
 package yuquiz.domain.quiz.dto;
 
 import yuquiz.domain.quiz.entity.Quiz;
+import yuquiz.domain.quiz.entity.QuizType;
 import yuquiz.domain.triedQuiz.entity.TriedQuiz;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,8 @@ public record QuizSummaryRes(
         LocalDateTime createdAt,
         Integer likeCount,
         Integer viewCount,
-        Boolean isSolved
+        Boolean isSolved,
+        QuizType quizType
 ) {
     public static QuizSummaryRes fromEntity(Quiz quiz, Boolean isSolved) {
         return new QuizSummaryRes(
@@ -22,7 +24,8 @@ public record QuizSummaryRes(
                 quiz.getCreatedAt(),
                 quiz.getLikeCount(),
                 quiz.getViewCount(),
-                isSolved
+                isSolved,
+                quiz.getQuizType()
         );
     }
 }
