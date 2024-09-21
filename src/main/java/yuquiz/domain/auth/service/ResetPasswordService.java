@@ -49,11 +49,10 @@ public class ResetPasswordService {
         String key = PASS_KEY_PREFIX + username;
         Optional<String> savedCode = Optional.ofNullable((String) redisUtil.get(key));
 
-        if (savedCode.isEmpty() || !code.equals(savedCode.get())) {
-            return false;
-        }
-
-        redisUtil.del(key);
-        return true;
+        return savedCode.filter(c -> c.equals(code))
+                .map(c -> {
+                    redisUtil.del(key);
+                    return true;
+                }).orElse(false);
     }
 }
