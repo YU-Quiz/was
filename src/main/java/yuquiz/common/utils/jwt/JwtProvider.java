@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,5 +92,12 @@ public class JwtProvider {
     /* 토큰에 지정한 만료 시간 확인*/
     public boolean isExpired(String token) {
         return parseClaims(token).getExpiration().before(new Date());
+    }
+
+    /* 토큰의 만료시간 가져오기 */
+    public LocalDateTime getExpiryDate(String token) {
+        return parseClaims(token).getExpiration().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 }
