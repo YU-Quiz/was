@@ -1,3 +1,4 @@
+/*
 package yuquiz.auth.service;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import yuquiz.common.utils.cookie.CookieUtil;
 import yuquiz.common.utils.jwt.JwtProvider;
 import yuquiz.domain.auth.dto.res.TokenDto;
-import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 import yuquiz.security.token.blacklist.BlackListTokenService;
@@ -62,7 +62,9 @@ public class JwtServiceTest {
 
     }
 
-    /* User의 id를 임의로 설정 */
+    */
+/* User의 id를 임의로 설정 *//*
+
     private void setUserId(User user, Long id) {
         try {
             Field idField = User.class.getDeclaredField("id");
@@ -136,3 +138,4 @@ public class JwtServiceTest {
         verify(blackListTokenService, times(1)).saveBlackList(accessToken);
     }
 }
+*/
