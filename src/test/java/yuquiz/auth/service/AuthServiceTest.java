@@ -14,8 +14,8 @@ import yuquiz.domain.auth.dto.req.OAuthSignUpReq;
 import yuquiz.domain.auth.dto.req.SignInReq;
 import yuquiz.domain.auth.dto.req.SignUpReq;
 import yuquiz.domain.auth.dto.res.TokenDto;
+import yuquiz.domain.auth.helper.JwtHelper;
 import yuquiz.domain.auth.service.AuthService;
-import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.auth.service.OAuthPlatformService;
 import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
@@ -50,7 +50,7 @@ public class AuthServiceTest {
     private OAuthPlatformService oAuthPlatformService;
 
     @Mock
-    private JwtService jwtService;
+    private JwtHelper jwtHelper;
 
     @InjectMocks
     private AuthService authService;
@@ -116,7 +116,7 @@ public class AuthServiceTest {
         TokenDto tokenDto = TokenDto.of("Bearer " + accessToken, refreshToken);
         when(userRepository.findByUsername(signInReq.username())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(signInReq.password(), user.getPassword())).thenReturn(true);
-        when(jwtService.generateToken(user)).thenReturn(tokenDto);
+        when(jwtHelper.createToken(user)).thenReturn(tokenDto);
 
         // When
         TokenDto token = authService.signIn(signInReq);
@@ -202,12 +202,12 @@ public class AuthServiceTest {
         String accessToken = "Bearer accessToken";
         String trimAccessToken = "accessToken";
 
-        doNothing().when(jwtService).deleteAndBlackListToken(trimAccessToken, refreshToken, response);
+        doNothing().when(jwtHelper).removeToken(trimAccessToken, refreshToken, response);
 
         // when
         authService.signOut(accessToken, refreshToken, response);
 
         // then
-        verify(jwtService, times(1)).deleteAndBlackListToken(trimAccessToken, refreshToken, response);
+        verify(jwtHelper, times(1)).removeToken(trimAccessToken, refreshToken, response);
     }
 }

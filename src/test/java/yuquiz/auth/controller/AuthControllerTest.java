@@ -28,7 +28,6 @@ import yuquiz.domain.auth.dto.req.SignUpReq;
 import yuquiz.domain.auth.dto.res.TokenDto;
 import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.auth.service.AuthService;
-import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 
@@ -63,9 +62,6 @@ public class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
-
-    @MockBean
-    private JwtService jwtService;
 
     @MockBean
     private CookieUtil cookieUtil;
@@ -331,7 +327,7 @@ public class AuthControllerTest {
                 .sameSite("None")
                 .build();
 
-        given(jwtService.reissueAccessToken(tokenDto.refreshToken())).willReturn(newTokenDto);
+        given(authService.reissueAccessToken(tokenDto.refreshToken())).willReturn(newTokenDto);
         given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, newTokenDto.refreshToken())).willReturn(responseCookie);
 
         // when
