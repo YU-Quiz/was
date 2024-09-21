@@ -27,7 +27,6 @@ import yuquiz.domain.auth.dto.res.TokenDto;
 import yuquiz.domain.auth.dto.req.UserVerifyReq;
 import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.auth.service.AuthService;
-import yuquiz.domain.auth.service.JwtService;
 import yuquiz.domain.user.entity.OAuthPlatform;
 
 import java.util.HashMap;
@@ -43,7 +42,6 @@ public class AuthController implements AuthApi {
 
     private final AuthService authService;
     private final CookieUtil cookieUtil;
-    private final JwtService jwtService;
     private final AccountService accountService;
 
     /* 회원가입 */
@@ -85,7 +83,7 @@ public class AuthController implements AuthApi {
             throw new CustomException(JwtExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        TokenDto tokenDto = jwtService.reissueAccessToken(refreshToken);
+        TokenDto tokenDto = authService.reissueAccessToken(refreshToken);
 
         return createTokenRes(tokenDto);
     }

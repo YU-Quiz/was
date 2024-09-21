@@ -13,6 +13,7 @@ import yuquiz.domain.auth.dto.req.SignInReq;
 import yuquiz.domain.auth.dto.req.SignUpReq;
 import yuquiz.domain.auth.dto.res.TokenDto;
 import yuquiz.domain.auth.dto.res.UserInfoDto;
+import yuquiz.domain.auth.helper.JwtHelper;
 import yuquiz.domain.user.entity.OAuthPlatform;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -30,7 +31,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final OAuthPlatformService oAuthPlatformService;
-    private final JwtService jwtService;
+    private final JwtHelper jwtHelper;
 
     /* 회원 생성 */
     @Transactional
@@ -39,7 +40,7 @@ public class AuthService {
         String encodePassword = passwordEncoder.encode(signUpReq.password());
         User createdUser = userRepository.save(signUpReq.toEntity(encodePassword));
 
-        return jwtService.generateToken(createdUser);
+        return jwtHelper.createToken(createdUser);
     }
 
     /* 일반 로그인 */
@@ -57,7 +58,7 @@ public class AuthService {
             lockedCheck(foundUser.getUnlockedAt());
         }
 
-        return jwtService.generateToken(foundUser);
+        return jwtHelper.createToken(foundUser);
     }
 
     /* OAuth 회원 생성 */
@@ -66,7 +67,7 @@ public class AuthService {
 
         User createdUser = userRepository.save(oAuthSignUpReq.toEntity());
 
-        return jwtService.generateToken(createdUser);
+        return jwtHelper.createToken(createdUser);
     }
 
     /* 소셜 로그인 */
@@ -84,7 +85,13 @@ public class AuthService {
 
         boolean isRegistered = foundUser.getEmail() != null;
 
-        return OAuthTokenDto.of(isRegistered, jwtService.generateToken(foundUser));
+        return OAuthTokenDto.of(isRegistered, jwtHelper.createToken(foundUser));
+    }
+
+    /* access 토큰 재발급 */
+    public TokenDto reissueAccessToken(String refreshToken) {
+
+        return jwtHelper.reissueToken(refreshToken);
     }
 
     /* 잠김 확인 */
@@ -108,6 +115,6 @@ public class AuthService {
     public void signOut(String accessTokenInHeader, String refreshToken, HttpServletResponse response) {
 
         String accessToken = accessTokenInHeader.substring(TOKEN_PREFIX.length()).trim();
-        jwtService.deleteAndBlackListToken(accessToken, refreshToken, response);
+        jwtHelper.removeToken(accessToken, refreshToken, response);
     }
 }
