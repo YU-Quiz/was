@@ -82,7 +82,8 @@ public interface PostApi {
                                              "viewCount": 1,
                                              "createdAt": "2024-08-20T14:57:51.031651",
                                              "modified": true,
-                                             "isLiked": true
+                                             "isLiked": true,
+                                             "isWriter": false
                                          }
                                      }
                                     """)
