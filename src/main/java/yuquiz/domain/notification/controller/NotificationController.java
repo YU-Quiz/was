@@ -3,9 +3,11 @@ package yuquiz.domain.notification.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import yuquiz.domain.notification.dto.DisplayType;
 import yuquiz.domain.notification.dto.NotificationRes;
 import yuquiz.domain.notification.dto.NotificationSortType;
@@ -27,5 +29,11 @@ public class NotificationController {
         Page<NotificationRes> notifications = notificationService.getAllNotification(userDetails.getId(), page, sort, displayType);
 
         return ResponseEntity.status(HttpStatus.OK).body(notifications);
+    }
+
+    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+        return notificationService.subscribe(userDetails.getId(), lastEventId);
     }
 }
