@@ -61,7 +61,7 @@ public class CommentService {
             throw new CustomException(CommentExceptionCode.UNAUTHORIZED_ACTION);
         }
 
-        postRepository.deleteById(commentId);
+        commentRepository.deleteById(commentId);
     }
 
     private boolean isWriter(Long commentId, Long userId) {
