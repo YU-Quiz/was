@@ -23,8 +23,6 @@ import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -37,7 +35,7 @@ public class PostService {
     private final Integer POST_PER_PAGE = 20;
 
     @Transactional
-    public void createPost(PostReq postReq, Long userId){
+    public void createPost(PostReq postReq, Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
@@ -58,10 +56,10 @@ public class PostService {
                 .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
 
         boolean isLiked = likedPostRepository.existsByUserAndPost(user, post);
-
+        boolean isWriter = user.getId().equals(post.getWriter().getId());
         post.increaseViewCount();
 
-        return PostRes.fromEntity(post, isLiked);
+        return PostRes.fromEntity(post, isLiked, isWriter);
     }
 
     @Transactional(readOnly = true)
@@ -75,9 +73,9 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePostById(Long postId, PostReq postReq, Long userId){
+    public void updatePostById(Long postId, PostReq postReq, Long userId) {
 
-        if(!isOwner(postId, userId)){
+        if (!validateWriter(postId, userId)) {
             throw new CustomException(PostExceptionCode.UNAUTHORIZED_ACTION);
         }
 
@@ -88,18 +86,18 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePostById(Long postId, Long userId){
+    public void deletePostById(Long postId, Long userId) {
 
-        if(!isOwner(postId, userId)){
+        if (!validateWriter(postId, userId)) {
             throw new CustomException(PostExceptionCode.UNAUTHORIZED_ACTION);
         }
 
         postRepository.deleteById(postId);
     }
 
-    private boolean isOwner(Long postId, Long userId) {
-        Optional<Long> writerId = postRepository.findWriterIdById(postId);
-
-        return writerId.isPresent() && writerId.get().equals(userId);
+    private boolean validateWriter(Long postId, Long userId) {
+        return postRepository.findWriterIdById(postId)
+                .map(writerId -> writerId.equals(userId))
+                .orElse(false);
     }
 }
