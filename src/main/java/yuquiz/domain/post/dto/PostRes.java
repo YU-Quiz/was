@@ -12,9 +12,10 @@ public record PostRes(String title,
                       int viewCount,
                       LocalDateTime createdAt,
                       boolean modified,
-                      boolean isLiked
+                      boolean isLiked,
+                      boolean isWriter
 ) {
-    public static PostRes fromEntity(Post post, boolean isLiked) {
+    public static PostRes fromEntity(Post post, boolean isLiked, boolean isWriter) {
 
         return new PostRes(
                 post.getTitle(),
@@ -25,6 +26,7 @@ public record PostRes(String title,
                 post.getViewCount(),
                 post.getCreatedAt(),
                 !post.getModifiedAt().equals(post.getCreatedAt()),
-                isLiked);
+                isLiked,
+                isWriter);
     }
 }
