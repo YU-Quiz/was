@@ -49,7 +49,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PostRes getPostById(Long postId, Long userId) {
 
         User user = userRepository.findById(userId)
