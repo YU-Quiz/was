@@ -38,9 +38,9 @@ public class CommentService {
         commentRepository.save(commentReq.toEntity(user, post));
     }
 
-    public List<CommentRes> getCommentsByPostId(Long postId) {
+    public List<CommentRes> getCommentsByPostId(Long postId, Long userId) {
         return commentRepository.findAllByPost_Id(postId).stream()
-                .map(CommentRes::fromEntity)
+                .map(comment -> CommentRes.fromEntity(comment, comment.getWriter().getId().equals(userId)))
                 .collect(Collectors.toList());
     }
 
