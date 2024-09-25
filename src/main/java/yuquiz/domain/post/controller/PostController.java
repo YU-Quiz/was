@@ -46,7 +46,7 @@ public class PostController implements PostApi {
                                          @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
         PostRes postRes = postService.getPostById(postId, userDetails.getId());
-        List<CommentRes> comments = commentService.getCommentsByPostId(postId);
+        List<CommentRes> comments = commentService.getCommentsByPostId(postId, userDetails.getId());
 
         HashMap<String, Object> responseData = new HashMap<>();
         responseData.put("post", postRes);

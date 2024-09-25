@@ -9,15 +9,17 @@ public record CommentRes(
         String content,
         String writerName,
         LocalDateTime createdAt,
-        boolean modified
+        boolean modified,
+        boolean isWriter
 ) {
-    public static CommentRes fromEntity(Comment comment) {
+    public static CommentRes fromEntity(Comment comment, boolean isWriter) {
         return new CommentRes(
                 comment.getId(),
                 comment.getContent(),
                 comment.getWriter().getNickname(),
                 comment.getCreatedAt(),
-                !comment.getModifiedAt().equals(comment.getCreatedAt())
+                !comment.getModifiedAt().equals(comment.getCreatedAt()),
+                isWriter
         );
     }
 }
