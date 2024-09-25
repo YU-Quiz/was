@@ -56,21 +56,24 @@ public interface PostApi {
                                                  "content": "123",
                                                  "writerName": "테스터",
                                                  "createdAt": "2024-09-05T23:30:58",
-                                                 "modified": true
+                                                 "modified": true,
+                                                 "isWriter": true
                                              },
                                              {
                                                  "id": 8,
                                                  "content": "123",
                                                  "writerName": "테스터",
                                                  "createdAt": "2024-09-05T23:30:58",
-                                                 "modified": true
+                                                 "modified": true,
+                                                 "isWriter": true
                                              },
                                              {
                                                  "id": 13,
                                                  "content": "123",
-                                                 "writerName": "테스터",
+                                                 "writerName": "테스터111",
                                                  "createdAt": "2024-09-05T23:30:58",
-                                                 "modified": true
+                                                 "modified": true,
+                                                 "isWriter": false
                                              }
                                          ],
                                          "post": {
@@ -83,7 +86,8 @@ public interface PostApi {
                                              "createdAt": "2024-08-20T14:57:51.031651",
                                              "modified": true,
                                              "isLiked": true,
-                                             "isWriter": false
+                                             "isWriter": false,
+                                             "isWriter": true
                                          }
                                      }
                                     """)
