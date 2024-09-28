@@ -22,6 +22,7 @@ import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.likedQuiz.entity.LikedQuiz;
+import yuquiz.domain.studyUser.entity.StudyUser;
 import yuquiz.domain.triedQuiz.entity.TriedQuiz;
 
 import java.time.LocalDateTime;
@@ -92,6 +93,10 @@ public class User extends BaseTimeEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<LikedQuiz> likedQuizs = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REFRESH)
+    private List<StudyUser> studys = new ArrayList<>();
 
     @Builder
     public User(String username, String password, String nickname,
