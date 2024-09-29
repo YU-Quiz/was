@@ -31,9 +31,9 @@ public class StudyUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "created_at")
+    @Column(name = "joined_at")
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime joinedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
