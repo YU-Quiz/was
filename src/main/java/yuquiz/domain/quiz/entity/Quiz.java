@@ -8,11 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.report.entity.Report;
-import yuquiz.domain.pinnedQuiz.entity.PinnedQuiz;
 import yuquiz.domain.quiz.converter.StringListConverter;
-import yuquiz.domain.likedQuiz.entity.LikedQuiz;
+import yuquiz.domain.like.entity.LikedQuiz;
 import yuquiz.domain.subject.entity.Subject;
-import yuquiz.domain.triedQuiz.entity.TriedQuiz;
 import yuquiz.domain.user.entity.User;
 
 import java.util.ArrayList;

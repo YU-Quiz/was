@@ -7,9 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.domain.quiz.api.AdminQuizApi;
-import yuquiz.domain.quiz.dto.AdminQuizSummaryRes;
-import yuquiz.domain.quiz.dto.QuizSortType;
-import yuquiz.domain.quiz.dto.QuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.AdminQuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.QuizSortType;
 import yuquiz.domain.quiz.service.AdminQuizService;
 
 @RestController

@@ -13,9 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import yuquiz.domain.quiz.dto.AnswerReq;
-import yuquiz.domain.quiz.dto.QuizReq;
-import yuquiz.domain.quiz.dto.QuizSortType;
+import yuquiz.domain.quiz.dto.quiz.AnswerReq;
+import yuquiz.domain.quiz.dto.quiz.QuizReq;
+import yuquiz.domain.quiz.dto.quiz.QuizSortType;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[퀴즈 API]", description = "퀴즈 관련 API")

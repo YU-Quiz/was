@@ -6,9 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import yuquiz.domain.quiz.dto.AdminQuizSummaryRes;
-import yuquiz.domain.quiz.dto.QuizSortType;
-import yuquiz.domain.quiz.dto.QuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.AdminQuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.QuizSortType;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.repository.QuizRepository;
 

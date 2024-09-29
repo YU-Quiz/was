@@ -10,10 +10,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.quiz.api.QuizApi;
-import yuquiz.domain.quiz.dto.AnswerReq;
-import yuquiz.domain.quiz.dto.QuizReq;
-import yuquiz.domain.quiz.dto.QuizSortType;
-import yuquiz.domain.quiz.dto.QuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.AnswerReq;
+import yuquiz.domain.quiz.dto.quiz.QuizReq;
+import yuquiz.domain.quiz.dto.quiz.QuizSortType;
+import yuquiz.domain.quiz.dto.quiz.QuizSummaryRes;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
