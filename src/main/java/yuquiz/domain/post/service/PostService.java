@@ -11,7 +11,7 @@ import yuquiz.common.exception.CustomException;
 import yuquiz.domain.category.entity.Category;
 import yuquiz.domain.category.exception.CategoryExceptionCode;
 import yuquiz.domain.category.repository.CategoryRepository;
-import yuquiz.domain.likedPost.repository.LikedPostRepository;
+import yuquiz.domain.like.repository.LikedPostRepository;
 import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.post.dto.PostRes;
 import yuquiz.domain.post.dto.PostSortType;

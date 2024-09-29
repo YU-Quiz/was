@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import yuquiz.domain.quiz.controller.QuizController;
-import yuquiz.domain.quiz.dto.QuizReq;
+import yuquiz.domain.quiz.dto.quiz.QuizReq;
 import yuquiz.domain.quiz.entity.QuizType;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.domain.user.entity.Role;

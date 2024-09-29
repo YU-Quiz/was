@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import yuquiz.domain.quiz.dto.QuizSortType;
+import yuquiz.domain.quiz.dto.quiz.QuizSortType;
 
 @Tag(name = "[관리자용 퀴즈 API]", description = "관리자용 퀴즈 관련 API")
 public interface AdminQuizApi {
