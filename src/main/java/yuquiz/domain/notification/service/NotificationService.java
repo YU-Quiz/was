@@ -59,14 +59,16 @@ public class NotificationService {
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
-        sendClient(emitter, emitterId, "EventStream created.");
+        sendClient(emitter, emitterId, "EventStream created. Id : "+emitterId);
 
         if (!lastEventId.isEmpty()) {
             Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByUserId(String.valueOf(userId));
 
             events.entrySet().stream()
                     .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                    .forEach(entry -> sendClient(emitter, entry.getKey(), entry.getValue()));
+                    .forEach(entry -> {
+                        sendClient(emitter, entry.getKey() , entry.getValue());
+                    });
         }
 
         return emitter;
@@ -79,8 +81,10 @@ public class NotificationService {
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(userId);
         sseEmitters.forEach(
                 (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notification);
-                    sendClient(emitter, key, NotificationRes.fromEntity(notification));
+                    String eventId = userId+"_"+System.currentTimeMillis();
+
+                    emitterRepository.saveEventCache(eventId, NotificationRes.fromEntity(notification));
+                    sendClient(emitter, eventId, NotificationRes.fromEntity(notification));
                 }
         );
     }
