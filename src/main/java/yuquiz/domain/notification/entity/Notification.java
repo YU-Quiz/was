@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
+import yuquiz.domain.notification.dto.NotificationType;
 import yuquiz.domain.user.entity.User;
 
 @Getter
@@ -34,12 +35,15 @@ public class Notification extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private NotificationType notificationType;
+
     @Builder
-    public Notification(String title, String message, String redirectUrl, User user) {
+    public Notification(String title, String message, String redirectUrl, User user, NotificationType notificationType) {
         this.title = title;
         this.message = message;
         this.isChecked = false;
         this.redirectUrl = redirectUrl;
         this.user = user;
+        this.notificationType = notificationType;
     }
 }
