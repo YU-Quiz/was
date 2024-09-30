@@ -7,9 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
-import yuquiz.domain.report.entity.Report;
-import yuquiz.domain.quiz.converter.StringListConverter;
 import yuquiz.domain.like.entity.LikedQuiz;
+import yuquiz.domain.quiz.converter.StringListConverter;
+import yuquiz.domain.quiz.dto.quiz.QuizReq;
+import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.user.entity.User;
 
@@ -106,5 +107,15 @@ public class Quiz extends BaseTimeEntity {
         if (this.visibility) {
             this.visibility = false;
         }
+    }
+
+    public void update(QuizReq quizReq, Subject subject) {
+        this.title = quizReq.title();
+        this.question = quizReq.question();
+        this.answer = quizReq.answer();
+        this.choices = quizReq.choices();
+        this.quizImgs = quizReq.quizImg();
+        this.quizType = quizReq.quizType();
+        this.subject = subject;
     }
 }
