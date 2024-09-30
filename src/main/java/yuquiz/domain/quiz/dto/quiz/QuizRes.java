@@ -31,7 +31,9 @@ public record QuizRes(
 
         boolean isPinned,
 
-        boolean isWriter
+        boolean isWriter,
+
+        boolean modified
 ) {
     public static QuizRes fromEntity(Quiz quiz, boolean isLiked, boolean isPinned, boolean isWriter) {
         return new QuizRes(
@@ -47,7 +49,8 @@ public record QuizRes(
                 quiz.getCreatedAt(),
                 isLiked,
                 isPinned,
-                isWriter
+                isWriter,
+                !quiz.getModifiedAt().equals(quiz.getCreatedAt())
         );
     }
 }
