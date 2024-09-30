@@ -82,7 +82,10 @@ public class PostService {
         Category category = categoryRepository.findById(postReq.categoryId())
                 .orElseThrow(() -> new CustomException(CategoryExceptionCode.INVALID_ID));
 
-        postRepository.updateById(postId, postReq.title(), postReq.content(), category);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(PostExceptionCode.INVALID_ID));
+
+        post.update(postReq, category);
     }
 
     @Transactional
