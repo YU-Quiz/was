@@ -7,7 +7,6 @@ import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.report.entity.ReportType;
 
 public record ReportReq(
-        @NotBlank(message = "신고 사유는 필수 입력입니다.")
         String reason,
         @NotNull(message = "신고 유형은 필수 입력입니다.")
         ReportType type
