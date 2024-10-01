@@ -30,7 +30,7 @@ public class ReportService {
 
     @Transactional
     public void reportQuiz(Long quizId, ReportReq reportReq, Long userId) {
-        if (reportReq.type().equals(ReportType.OTHER) &&
+        if (reportReq.type() == ReportType.OTHER &&
                 Optional.ofNullable(reportReq.reason()).orElse("").isEmpty()) {
             throw new CustomException(ReportExceptionCode.REQUIRED_REASON);
         }
@@ -59,7 +59,7 @@ public class ReportService {
     public void reportNotification(Quiz quiz) {
         User user = quiz.getWriter();
         String content = "\"" + quiz.getTitle() + "\" 퀴즈에 대한 신고가 있습니다.";
-        String url = "/api/v1/quizzes/"+quiz.getId();
+        String url = "/api/v1/quizzes/" + quiz.getId();
 
         notificationService.send(user, NotificationType.REPORT, content, url);
     }
