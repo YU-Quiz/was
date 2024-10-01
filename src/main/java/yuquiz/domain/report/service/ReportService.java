@@ -11,11 +11,14 @@ import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
 import yuquiz.domain.report.dto.ReportReq;
 import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.report.entity.ReportType;
 import yuquiz.domain.report.exception.ReportExceptionCode;
 import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,11 @@ public class ReportService {
 
     @Transactional
     public void reportQuiz(Long quizId, ReportReq reportReq, Long userId) {
+        if (reportReq.type().equals(ReportType.OTHER) &&
+                Optional.ofNullable(reportReq.reason()).orElse("").isEmpty()) {
+            throw new CustomException(ReportExceptionCode.REQUIRED_REASON);
+        }
+
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
 
