@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.user.entity.User;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
@@ -14,4 +15,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Modifying
     @Query("delete from Report r where r.quiz.id = :quizId")
     void deleteByQuiz(@Param("quizId") Long quizId);
+
+    Boolean existsByReporterAndQuiz(User reporter, Quiz quiz);
 }
