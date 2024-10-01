@@ -11,22 +11,33 @@ import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
 import yuquiz.domain.report.dto.ReportReq;
 import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.report.exception.ReportExceptionCode;
 import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.user.entity.User;
+import yuquiz.domain.user.exception.UserExceptionCode;
+import yuquiz.domain.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ReportService {
     private final ReportRepository reportRepository;
     private final QuizRepository quizRepository;
+    private final UserRepository userRepository;
     private final NotificationService notificationService;
 
     @Transactional
-    public void reportQuiz(Long quizId, ReportReq reportReq) {
+    public void reportQuiz(Long quizId, ReportReq reportReq, Long userId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
 
-        Report report = reportReq.toEntity(quiz);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
+
+        if (reportRepository.existsByReporterAndQuiz(user, quiz)) {
+            throw new CustomException(ReportExceptionCode.ALREADY_REPORTED);
+        }
+
+        Report report = reportReq.toEntity(quiz, user);
 
         reportNotification(quiz);
 
