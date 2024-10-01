@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import yuquiz.domain.report.dto.ReportReq;
 import yuquiz.security.auth.SecurityUserDetails;
 
+@Tag(name = "[신고 API]", description = "신고 관련 API")
 public interface ReportApi {
     @Operation(summary = "퀴즈 신고", description = "퀴즈의 오류 혹은 문제를 신고하는 API")
     @ApiResponses({
