@@ -79,11 +79,10 @@ public class NotificationService {
         String userId = String.valueOf(user.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(userId);
+        String eventId = userId+"_"+System.currentTimeMillis();
+        emitterRepository.saveEventCache(eventId, NotificationRes.fromEntity(notification));
         sseEmitters.forEach(
                 (key, emitter) -> {
-                    String eventId = userId+"_"+System.currentTimeMillis();
-
-                    emitterRepository.saveEventCache(eventId, NotificationRes.fromEntity(notification));
                     sendClient(emitter, eventId, NotificationRes.fromEntity(notification));
                 }
         );
