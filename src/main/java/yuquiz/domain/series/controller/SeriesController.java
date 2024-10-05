@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.series.api.SeriesApi;
 import yuquiz.domain.series.dto.SeriesReq;
 import yuquiz.domain.series.dto.SeriesRes;
 import yuquiz.domain.series.dto.SeriesSortType;
@@ -19,10 +20,11 @@ import yuquiz.security.auth.SecurityUserDetails;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/series")
-public class SeriesController {
+public class SeriesController implements SeriesApi {
 
     private final SeriesService seriesService;
 
+    @Override
     @PostMapping
     public ResponseEntity<?> createSeries(@RequestBody @Valid SeriesReq seriesReq, @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
@@ -31,6 +33,7 @@ public class SeriesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("문제집이 생성되었습니다."));
     }
 
+    @Override
     @GetMapping("/{seriesId}")
     public ResponseEntity<?> findSeriesById(@PathVariable(value = "seriesId") Long seriesId, @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
@@ -39,6 +42,7 @@ public class SeriesController {
         return ResponseEntity.status(HttpStatus.OK).body(seriesRes);
     }
 
+    @Override
     @DeleteMapping("/{seriesId}")
     public ResponseEntity<?> deleteSeriesById(@PathVariable(value = "seriesId") Long seriesId, @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
@@ -47,6 +51,7 @@ public class SeriesController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<?> getSeriesSummary(@RequestParam(value = "keyword", required = false) String keyword,
                                               @RequestParam(value = "sort", defaultValue = "DATE_DESC") SeriesSortType sort,
