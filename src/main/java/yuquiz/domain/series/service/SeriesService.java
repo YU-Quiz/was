@@ -1,10 +1,15 @@
 package yuquiz.domain.series.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.series.dto.SeriesReq;
 import yuquiz.domain.series.dto.SeriesRes;
+import yuquiz.domain.series.dto.SeriesSortType;
+import yuquiz.domain.series.dto.SeriesSummaryRes;
 import yuquiz.domain.series.entity.Series;
 import yuquiz.domain.series.exception.SeriesExceptionCode;
 import yuquiz.domain.series.repository.SeriesRepository;
@@ -26,6 +31,8 @@ public class SeriesService {
     private final StudyRepository studyRepository;
     private final StudyUserRepository studyUserRepository;
     private final UserRepository userRepository;
+
+    private final Integer SERIES_PER_PAGE = 20;
 
     public void createSeries(SeriesReq seriesReq, Long userId) {
 
@@ -64,6 +71,15 @@ public class SeriesService {
         }
 
         seriesRepository.deleteById(seriesId);
+    }
+
+    public Page<SeriesSummaryRes> getSeriesSummary(String keyword, SeriesSortType sort, Integer page) {
+
+        Pageable pageable = PageRequest.of(page, SERIES_PER_PAGE, sort.getSort());
+
+        Page<Series> series = seriesRepository.findByKeywordAndStudyIsNull(keyword, pageable);
+
+        return series.map(SeriesSummaryRes::fromEntity);
     }
 
     private boolean validateCreator(Long seriesId, Long userId) {

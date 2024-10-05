@@ -1,7 +1,9 @@
 package yuquiz.domain.series.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.series.dto.SeriesReq;
 import yuquiz.domain.series.dto.SeriesRes;
+import yuquiz.domain.series.dto.SeriesSortType;
+import yuquiz.domain.series.dto.SeriesSummaryRes;
 import yuquiz.domain.series.service.SeriesService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -41,5 +45,15 @@ public class SeriesController {
         seriesService.deleteSeriesById(seriesId, userDetails.getId());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getSeriesSummary(@RequestParam(value = "keyword", required = false) String keyword,
+                                              @RequestParam(value = "sort", defaultValue = "DATE_DESC") SeriesSortType sort,
+                                              @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
+
+        Page<SeriesSummaryRes> seriesSummary = seriesService.getSeriesSummary(keyword, sort, page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(seriesSummary);
     }
 }
