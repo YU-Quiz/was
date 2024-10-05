@@ -7,11 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.quiz.dto.quiz.*;
 import yuquiz.domain.quiz.repository.PinnedQuizRepository;
-import yuquiz.domain.quiz.dto.quiz.QuizReq;
-import yuquiz.domain.quiz.dto.quiz.QuizRes;
-import yuquiz.domain.quiz.dto.quiz.QuizSortType;
-import yuquiz.domain.quiz.dto.quiz.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
@@ -25,6 +22,9 @@ import yuquiz.domain.quiz.repository.TriedQuizRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -114,16 +114,19 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Integer page) {
-        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
-
+    public QuizListRes getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE);
         User user = findUserByUserId(userId);
-        Page<Quiz> quizzes = quizRepository.findQuizzesByKeywordAndSubject(keyword, subjectId, pageable);
+        Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable);
 
-        return quizzes.map(quiz -> {
+        List<QuizSummaryRes> list = new ArrayList<>();
+
+        quizzes.getContent().forEach(quiz -> {
             Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
-            return QuizSummaryRes.fromEntity(quiz, isSolved);
+            list.add(QuizSummaryRes.fromEntity(quiz, isSolved));
         });
+
+        return QuizListRes.of(list, quizzes.getNumber(), quizzes.getTotalElements(), quizzes.getTotalPages());
     }
 
     @Transactional(readOnly = true)

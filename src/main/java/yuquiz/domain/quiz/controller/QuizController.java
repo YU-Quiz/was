@@ -10,10 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.quiz.api.QuizApi;
-import yuquiz.domain.quiz.dto.quiz.AnswerReq;
-import yuquiz.domain.quiz.dto.quiz.QuizReq;
-import yuquiz.domain.quiz.dto.quiz.QuizSortType;
-import yuquiz.domain.quiz.dto.quiz.QuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.*;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -82,7 +79,7 @@ public class QuizController implements QuizApi {
             @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
             @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
 
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, page);
+        QuizListRes quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, page);
 
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
