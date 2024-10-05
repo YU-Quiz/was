@@ -34,4 +34,12 @@ public class SeriesController {
 
         return ResponseEntity.status(HttpStatus.OK).body(seriesRes);
     }
+
+    @DeleteMapping("/{seriesId}")
+    public ResponseEntity<?> deleteSeriesById(@PathVariable(value = "seriesId") Long seriesId, @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        seriesService.deleteSeriesById(seriesId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

@@ -57,6 +57,21 @@ public class SeriesService {
         return SeriesRes.fromEntity(series);
     }
 
+    public void deleteSeriesById(Long seriesId, Long userId) {
+
+        if (!validateCreator(seriesId, userId)) {
+            throw new CustomException(SeriesExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        seriesRepository.deleteById(seriesId);
+    }
+
+    private boolean validateCreator(Long seriesId, Long userId) {
+        return seriesRepository.findCreatorIdById(seriesId)
+                .map(creatorId -> creatorId.equals(userId))
+                .orElse(false);
+    }
+
     private boolean validateMember(Long studyId, Long userId) {
         return studyUserRepository.existsByStudy_IdAndUser_Id(studyId, userId);
     }
