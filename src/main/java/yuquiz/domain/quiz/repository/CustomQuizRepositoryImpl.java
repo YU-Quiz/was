@@ -22,11 +22,11 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
     }
 
     @Override
-    public Page<Quiz> getQuizzes(String keyword, Pageable pageable) {
+    public Page<Quiz> getQuizzes(String keyword, Pageable pageable, Long subjectId) {
         List<Quiz> quizzes = jpaQueryFactory
                 .selectDistinct(quiz)
                 .from(quiz)
-                .where(wordContain(keyword))
+                .where(wordContain(keyword), subjectEqual(subjectId))
                 .orderBy(quiz.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -35,7 +35,7 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
         long total = jpaQueryFactory
                 .select(quiz.count())
                 .from(quiz)
-                .where(wordContain(keyword))
+                .where(wordContain(keyword), subjectEqual(subjectId))
                 .fetchOne();
 
         return new PageImpl<>(quizzes, pageable, total);
@@ -52,6 +52,13 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
                 quiz.question,
                 keyword
         );
+    }
+
+    private BooleanExpression subjectEqual(Long subjectId) {
+        if (subjectId == null) {
+            return null;
+        }
+        return quiz.subject.id.eq(subjectId);
     }
 
 }

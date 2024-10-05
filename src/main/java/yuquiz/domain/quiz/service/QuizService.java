@@ -117,7 +117,7 @@ public class QuizService {
     public QuizListRes getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Integer page) {
         Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE);
         User user = findUserByUserId(userId);
-        Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable);
+        Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable, subjectId);
 
         List<QuizSummaryRes> list = new ArrayList<>();
 
