@@ -10,13 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
-import yuquiz.domain.user.dto.req.CodeVerificationReq;
-import yuquiz.domain.user.dto.req.EmailReq;
-import yuquiz.domain.user.dto.req.NicknameReq;
-import yuquiz.domain.user.dto.req.PasswordReq;
-import yuquiz.domain.user.dto.req.PasswordUpdateReq;
-import yuquiz.domain.user.dto.req.UserUpdateReq;
-import yuquiz.domain.user.dto.req.UsernameReq;
+import yuquiz.domain.user.dto.req.*;
 import yuquiz.security.auth.SecurityUserDetails;
 
 @Tag(name = "[사용자 API]", description = "사용자 관련 API")
@@ -29,9 +23,10 @@ public interface UserApi {
                                         {
                                             "username": "test",
                                             "nickname": "테스터",
-                                            "email": "test@naver.com",
-                                            "agreeEmail": true,
-                                            "majorName": "컴퓨터공학과"
+                                            "email": "test@gmail.com",
+                                            "agreeEmail": false,
+                                            "majorName": "컴퓨터공학과",
+                                            "role": "ADMIN"
                                         }
                                     """)
                     })),

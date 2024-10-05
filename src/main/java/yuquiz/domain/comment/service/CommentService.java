@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.comment.dto.CommentReq;
 import yuquiz.domain.comment.dto.CommentRes;
+import yuquiz.domain.comment.entity.Comment;
 import yuquiz.domain.comment.exception.CommentExceptionCode;
 import yuquiz.domain.comment.repository.CommentRepository;
 import yuquiz.domain.post.entity.Post;
@@ -51,7 +52,10 @@ public class CommentService {
             throw new CustomException(CommentExceptionCode.UNAUTHORIZED_ACTION);
         }
 
-        commentRepository.updateById(commentId, commentReq.content());
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(CommentExceptionCode.INVALID_ID));
+
+        comment.update(commentReq);
     }
 
     @Transactional

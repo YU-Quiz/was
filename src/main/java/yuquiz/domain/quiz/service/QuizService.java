@@ -73,8 +73,10 @@ public class QuizService {
         Subject subject = subjectRepository.findById(quizReq.subjectId())
                 .orElseThrow(() -> new CustomException(SubjectExceptionCode.INVALID_ID));
 
-        quizRepository.updateById(quizId, quizReq.title(), quizReq.question(), subject,
-                quizReq.answer(), quizReq.choices(), quizReq.quizImg(), quizReq.quizType());
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new CustomException(QuizExceptionCode.INVALID_ID));
+
+        quiz.update(quizReq, subject);
 
         reportRepository.deleteByQuiz(quizId);
     }

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
+import yuquiz.domain.comment.dto.CommentReq;
 import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.user.entity.User;
 
@@ -35,5 +36,9 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
         this.writer = writer;
         this.post = post;
+    }
+
+    public void update(CommentReq commentReq) {
+        this.content = commentReq.content();
     }
 }

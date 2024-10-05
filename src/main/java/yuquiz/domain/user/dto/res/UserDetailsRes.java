@@ -1,5 +1,6 @@
 package yuquiz.domain.user.dto.res;
 
+import yuquiz.domain.user.entity.Role;
 import yuquiz.domain.user.entity.User;
 
 public record UserDetailsRes(
@@ -7,7 +8,8 @@ public record UserDetailsRes(
         String nickname,
         String email,
         boolean agreeEmail,
-        String majorName
+        String majorName,
+        Role role
 ) {
     public static UserDetailsRes fromEntity(User user) {
         return new UserDetailsRes(
@@ -15,7 +17,8 @@ public record UserDetailsRes(
                 user.getNickname(),
                 user.getEmail(),
                 user.isAgreeEmail(),
-                user.getMajorName()
+                user.getMajorName(),
+                user.getRole()
         );
     }
 }

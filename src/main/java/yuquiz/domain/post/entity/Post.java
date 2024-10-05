@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.category.entity.Category;
 import yuquiz.domain.comment.entity.Comment;
+import yuquiz.domain.post.dto.PostReq;
 import yuquiz.domain.user.entity.User;
 
 import java.util.ArrayList;
@@ -66,5 +67,11 @@ public class Post extends BaseTimeEntity {
 
     public int increaseViewCount() {
         return ++this.viewCount;
+    }
+
+    public void update(PostReq postReq, Category category) {
+        this.title = postReq.title();
+        this.content = postReq.content();
+        this.category = category;
     }
 }

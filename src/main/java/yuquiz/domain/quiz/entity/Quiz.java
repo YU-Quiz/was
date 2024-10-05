@@ -7,9 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
-import yuquiz.domain.report.entity.Report;
-import yuquiz.domain.quiz.converter.StringListConverter;
 import yuquiz.domain.like.entity.LikedQuiz;
+import yuquiz.domain.quiz.converter.StringListConverter;
+import yuquiz.domain.quiz.dto.quiz.QuizReq;
+import yuquiz.domain.quizSeries.entity.QuizSeries;
+import yuquiz.domain.report.entity.Report;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.user.entity.User;
 
@@ -66,6 +68,9 @@ public class Quiz extends BaseTimeEntity {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<Report> reports = new ArrayList<>();
 
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
+    private List<QuizSeries> series = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private User writer;
@@ -106,5 +111,15 @@ public class Quiz extends BaseTimeEntity {
         if (this.visibility) {
             this.visibility = false;
         }
+    }
+
+    public void update(QuizReq quizReq, Subject subject) {
+        this.title = quizReq.title();
+        this.question = quizReq.question();
+        this.answer = quizReq.answer();
+        this.choices = quizReq.choices();
+        this.quizImgs = quizReq.quizImg();
+        this.quizType = quizReq.quizType();
+        this.subject = subject;
     }
 }
