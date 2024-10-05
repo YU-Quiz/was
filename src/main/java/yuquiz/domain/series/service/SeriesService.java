@@ -43,6 +43,10 @@ public class SeriesService {
         if (seriesReq.studyId() != null) {
             study = studyRepository.findById(seriesReq.studyId())
                     .orElseThrow(() -> new CustomException(StudyExceptionCode.INVALID_ID));
+
+            if (!validateMember(study.getId(), userId)) {
+                throw new CustomException(SeriesExceptionCode.UNAUTHORIZED_ACTION);
+            }
         }
 
         seriesRepository.save(seriesReq.toEntity(user, study));
