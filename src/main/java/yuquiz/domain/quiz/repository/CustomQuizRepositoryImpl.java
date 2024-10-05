@@ -1,5 +1,6 @@
 package yuquiz.domain.quiz.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,12 +23,12 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
     }
 
     @Override
-    public Page<Quiz> getQuizzes(String keyword, Pageable pageable, Long subjectId) {
+    public Page<Quiz> getQuizzes(String keyword, Pageable pageable, String sort, Long subjectId) {
         List<Quiz> quizzes = jpaQueryFactory
                 .selectDistinct(quiz)
                 .from(quiz)
                 .where(wordContain(keyword), subjectEqual(subjectId))
-                .orderBy(quiz.createdAt.desc())
+                .orderBy(getSort(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -39,6 +40,23 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
                 .fetchOne();
 
         return new PageImpl<>(quizzes, pageable, total);
+    }
+
+    private OrderSpecifier<?> getSort(String sort) {
+        switch (sort) {
+            case "LIKE_DESC":
+                return quiz.likeCount.desc();
+            case "LIKE_ASC":
+                return quiz.likeCount.asc();
+            case "VIEW_DESC":
+                return quiz.viewCount.desc();
+            case "VIEW_ASC":
+                return quiz.viewCount.asc();
+            case "DATE_ASC":
+                return quiz.createdAt.asc();
+            default:
+                return quiz.createdAt.desc();
+        }
     }
 
     private BooleanExpression wordContain(String keyword) {
