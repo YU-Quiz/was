@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -76,10 +78,10 @@ public class QuizController implements QuizApi {
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "subject", required = false) Long subjectId,
-            @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
+            @RequestParam(value = "sort", defaultValue = "DATE_DESC") String sort,
+            @PageableDefault(size=20,page=0)Pageable pageable) {
 
-        QuizListRes quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, page);
+        QuizListRes quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
