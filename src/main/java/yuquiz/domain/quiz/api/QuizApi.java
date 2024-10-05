@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -196,134 +198,72 @@ public interface QuizApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                     {
-                                         "totalPages": 1,
-                                         "totalElements": 10,
-                                         "first": true,
-                                         "last": true,
-                                         "size": 20,
-                                         "content": [
-                                             {
-                                                 "quizId": 35,
-                                                 "quizTitle": "진짜ㅏ",
-                                                 "nickname": "지원",
-                                                 "createdAt": "2024-09-19T16:32:08.237412",
-                                                 "likeCount": 0,
-                                                 "viewCount": 4,
-                                                 "isSolved": null,
-                                                 "quizType": "TRUE_FALSE"
-                                             },
-                                             {
-                                                 "quizId": 32,
-                                                 "quizTitle": "tjsdks",
-                                                 "nickname": "관리자",
-                                                 "createdAt": "2024-09-19T15:47:50.017553",
-                                                 "likeCount": 0,
-                                                 "viewCount": 16,
-                                                 "isSolved": null,
-                                                 "quizType": "MULTIPLE_CHOICE"
-                                             },
-                                             {
-                                                 "quizId": 31,
-                                                 "quizTitle": "jiwon",
-                                                 "nickname": "테스터",
-                                                 "createdAt": "2024-09-19T15:46:35.345603",
-                                                 "likeCount": 0,
-                                                 "viewCount": 10,
-                                                 "isSolved": null,
-                                                 "quizType": "SHORT_ANSWER"
-                                             },
-                                             {
-                                                 "quizId": 30,
-                                                 "quizTitle": "11",
-                                                 "nickname": "테스터",
-                                                 "createdAt": "2024-09-19T15:40:42.694588",
-                                                 "likeCount": 0,
-                                                 "viewCount": 14,
-                                                 "isSolved": null,
-                                                 "quizType": "TRUE_FALSE"
-                                             },
-                                             {
-                                                 "quizId": 29,
-                                                 "quizTitle": "하나 둘 삼",
-                                                 "nickname": "관리자",
-                                                 "createdAt": "2024-09-19T13:27:25.505916",
-                                                 "likeCount": 0,
-                                                 "viewCount": 13,
-                                                 "isSolved": null,
-                                                 "quizType": "SHORT_ANSWER"
-                                             },
-                                             {
-                                                 "quizId": 28,
-                                                 "quizTitle": "단답식 테스트입니다.",
-                                                 "nickname": "관리자",
-                                                 "createdAt": "2024-09-19T13:22:04.228084",
-                                                 "likeCount": 0,
-                                                 "viewCount": 8,
-                                                 "isSolved": null,
-                                                 "quizType": "SHORT_ANSWER"
-                                             },
-                                             {
-                                                 "quizId": 26,
-                                                 "quizTitle": "구자욱 오늘 홈런쳤나요>?",
-                                                 "nickname": "관리자",
-                                                 "createdAt": "2024-09-14T16:51:53.768297",
-                                                 "likeCount": 0,
-                                                 "viewCount": 68,
-                                                 "isSolved": null,
-                                                 "quizType": "TRUE_FALSE"
-                                             },
-                                             {
-                                                 "quizId": 15,
-                                                 "quizTitle": "hello",
-                                                 "nickname": "테스터",
-                                                 "createdAt": "2024-08-12T13:32:55",
-                                                 "likeCount": 3,
-                                                 "viewCount": 42,
-                                                 "isSolved": false,
-                                                 "quizType": "MULTIPLE_CHOICE"
-                                             },
-                                             {
-                                                 "quizId": 7,
-                                                 "quizTitle": "퀴즈 테스트",
-                                                 "nickname": "테스터",
-                                                 "createdAt": "2024-08-11T19:43:53",
-                                                 "likeCount": 5,
-                                                 "viewCount": 25,
-                                                 "isSolved": true,
-                                                 "quizType": "MULTIPLE_CHOICE"
-                                             },
-                                             {
-                                                 "quizId": 16,
-                                                 "quizTitle": "testing",
-                                                 "nickname": "테스터111",
-                                                 "createdAt": "2024-08-11T19:43:53",
-                                                 "likeCount": 5,
-                                                 "viewCount": 24,
-                                                 "isSolved": null,
-                                                 "quizType": "MULTIPLE_CHOICE"
-                                             }
-                                         ],
-                                         "number": 0,
-                                         "sort": {
-                                             "empty": false,
-                                             "sorted": true,
-                                             "unsorted": false
-                                         },
-                                         "pageable": {
-                                             "pageNumber": 0,
-                                             "pageSize": 20,
-                                             "sort": {
-                                                 "empty": false,
-                                                 "sorted": true,
-                                                 "unsorted": false
-                                             },
-                                             "offset": 0,
-                                             "unpaged": false,
-                                             "paged": true
-                                         },
-                                         "numberOfElements": 10,
-                                         "empty": false
-                                     }
+                                          "quizList": [
+                                              {
+                                                  "quizId": 40,
+                                                  "quizTitle": "X테스트",
+                                                  "nickname": "test",
+                                                  "createdAt": "2024-09-23T17:46:24.625241",
+                                                  "likeCount": 0,
+                                                  "viewCount": 1,
+                                                  "isSolved": null,
+                                                  "quizType": "TRUE_FALSE"
+                                              },
+                                              {
+                                                  "quizId": 38,
+                                                  "quizTitle": "객관식 테스트 ",
+                                                  "nickname": "test",
+                                                  "createdAt": "2024-09-23T17:06:25.689875",
+                                                  "likeCount": 0,
+                                                  "viewCount": 1,
+                                                  "isSolved": null,
+                                                  "quizType": "MULTIPLE_CHOICE"
+                                              },
+                                              {
+                                                  "quizId": 37,
+                                                  "quizTitle": "아 답안 테스트입니다(객관식)",
+                                                  "nickname": "test",
+                                                  "createdAt": "2024-09-23T17:05:25.655994",
+                                                  "likeCount": 0,
+                                                  "viewCount": 1,
+                                                  "isSolved": null,
+                                                  "quizType": "MULTIPLE_CHOICE"
+                                              },
+                                              {
+                                                  "quizId": 28,
+                                                  "quizTitle": "단답식 테스트입니다.",
+                                                  "nickname": "test",
+                                                  "createdAt": "2024-09-19T13:22:04.228084",
+                                                  "likeCount": 0,
+                                                  "viewCount": 1,
+                                                  "isSolved": null,
+                                                  "quizType": "SHORT_ANSWER"
+                                              },
+                                              {
+                                                  "quizId": 16,
+                                                  "quizTitle": "testing",
+                                                  "nickname": "test",
+                                                  "createdAt": "2024-08-11T19:43:53",
+                                                  "likeCount": 5,
+                                                  "viewCount": 1,
+                                                  "isSolved": null,
+                                                  "quizType": "MULTIPLE_CHOICE"
+                                              },
+                                              {
+                                                  "quizId": 7,
+                                                  "quizTitle": "새로운 제목22",
+                                                  "nickname": "test",
+                                                  "createdAt": "2024-08-11T19:43:53",
+                                                  "likeCount": 5,
+                                                  "viewCount": 0,
+                                                  "isSolved": null,
+                                                  "quizType": "MULTIPLE_CHOICE"
+                                              }
+                                          ],
+                                          "page": 0,
+                                          "total": 6,
+                                          "totalPages": 1
+                                      }
                                     """)
                     })),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
@@ -340,8 +280,8 @@ public interface QuizApi {
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "subject", required = false) Long subjectId,
-            @RequestParam(value = "sort") QuizSortType sort,
-            @RequestParam(value = "page") @Min(0) Integer page);
+            @RequestParam(value = "sort", defaultValue = "DATE_DESC") String sort,
+            @PageableDefault(size=20,page=0) Pageable pageable);
 
     @Operation(summary = "작성한 퀴즈 목록", description = "사용자가 작성한 퀴즈 목록을 불러오는 api")
     @ApiResponses({
