@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.quizSeries.entity.QuizSeries;
 import yuquiz.domain.study.entity.Study;
 import yuquiz.domain.user.entity.User;
@@ -17,7 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Series {
+public class Series extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
