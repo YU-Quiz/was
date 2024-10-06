@@ -1,14 +1,6 @@
 package yuquiz.domain.study.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +8,7 @@ import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.chatRoom.entity.ChatRoom;
 import yuquiz.domain.studyUser.entity.StudyUser;
+import yuquiz.domain.user.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +32,14 @@ public class Study extends BaseTimeEntity {
     @OneToMany(mappedBy = "study", cascade = CascadeType.REMOVE)
     private List<StudyUser> studyUsers = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_id")
+    private User leader;
+
     @Builder
-    public Study(String studyName, ChatRoom chatRoom) {
+    public Study(String studyName, ChatRoom chatRoom, User leader) {
         this.studyName = studyName;
         this.chatRoom = chatRoom;
+        this.leader = leader;
     }
 }
