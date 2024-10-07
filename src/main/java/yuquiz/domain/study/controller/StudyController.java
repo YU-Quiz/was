@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
+import yuquiz.domain.study.api.StudyApi;
 import yuquiz.domain.study.dto.StudyReq;
 import yuquiz.domain.study.service.StudyService;
 import yuquiz.security.auth.SecurityUserDetails;
@@ -14,9 +15,10 @@ import yuquiz.security.auth.SecurityUserDetails;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/study")
-public class StudyController {
+public class StudyController implements StudyApi {
     private final StudyService studyService;
 
+    @Override
     @PostMapping
     public ResponseEntity<?> createStudy(@Valid @RequestBody StudyReq studyReq,
                                          @AuthenticationPrincipal SecurityUserDetails userDetails) {
@@ -26,6 +28,7 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("성공적으로 생성되었습니다."));
     }
 
+    @Override
     @DeleteMapping("/{studyId}")
     public ResponseEntity<?> deleteStudy(@PathVariable(value = "studyId") Long studyId,
                                          @AuthenticationPrincipal SecurityUserDetails userDetails) {
