@@ -117,16 +117,9 @@ public class QuizService {
 
     @Transactional(readOnly = true)
     public QuizListRes getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Pageable pageable) {
-        User user = findUserByUserId(userId);
-        Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable, sort, subjectId);
+        Page<QuizSummaryRes> quizzes = quizRepository.getQuizzes(keyword, pageable, sort, subjectId, userId);
 
-        List<QuizSummaryRes> list = new ArrayList<>();
-
-        quizzes.getContent().forEach(quiz -> {
-            Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
-            list.add(QuizSummaryRes.fromEntity(quiz, isSolved));
-        });
-
+        List<QuizSummaryRes> list = new ArrayList<>(quizzes.getContent());
         return QuizListRes.of(list, quizzes.getNumber(), quizzes.getTotalElements(), quizzes.getTotalPages());
     }
 
