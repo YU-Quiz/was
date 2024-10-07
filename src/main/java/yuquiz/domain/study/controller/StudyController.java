@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.study.dto.StudyReq;
 import yuquiz.domain.study.service.StudyService;
@@ -27,5 +24,14 @@ public class StudyController {
         studyService.createStudy(studyReq, userDetails.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("성공적으로 생성되었습니다."));
+    }
+
+    @DeleteMapping("/{studyId}")
+    public ResponseEntity<?> deleteStudy(@PathVariable(value = "studyId") Long studyId,
+                                         @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        studyService.deleteStudy(studyId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

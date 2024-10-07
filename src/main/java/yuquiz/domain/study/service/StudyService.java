@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.study.dto.StudyReq;
 import yuquiz.domain.study.entity.Study;
+import yuquiz.domain.study.exception.StudyExceptionCode;
 import yuquiz.domain.study.repository.StudyRepository;
 import yuquiz.domain.studyUser.entity.StudyRole;
 import yuquiz.domain.studyUser.entity.StudyUser;
@@ -37,6 +38,20 @@ public class StudyService {
 
         studyRepository.save(study);
         studyUserRepository.save(studyUser);
+    }
 
+    @Transactional
+    public void deleteStudy(Long studyId, Long userId) {
+        if (!validateLeader(studyId, userId)) {
+            throw new CustomException(StudyExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        studyRepository.deleteById(studyId);
+    }
+
+    private boolean validateLeader(Long studyId, Long userId) {
+        return studyRepository.findLeaderById(studyId)
+                .map(leaderId -> leaderId.equals(userId))
+                .orElse(false);
     }
 }
