@@ -280,7 +280,7 @@ public interface QuizApi {
             @AuthenticationPrincipal SecurityUserDetails userDetails,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "subject", required = false) Long subjectId,
-            @RequestParam(value = "sort", defaultValue = "DATE_DESC") String sort,
+            @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
             @PageableDefault(size=20,page=0) Pageable pageable);
 
     @Operation(summary = "작성한 퀴즈 목록", description = "사용자가 작성한 퀴즈 목록을 불러오는 api")
