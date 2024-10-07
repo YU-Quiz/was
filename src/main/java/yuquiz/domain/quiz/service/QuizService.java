@@ -116,7 +116,7 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public QuizListRes getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, String sort, Pageable pageable) {
+    public QuizListRes getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Pageable pageable) {
         User user = findUserByUserId(userId);
         Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable, sort, subjectId);
 
