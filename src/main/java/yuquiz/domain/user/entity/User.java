@@ -1,15 +1,7 @@
 package yuquiz.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,6 +15,7 @@ import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.like.entity.LikedQuiz;
 import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.study.entity.Study;
 import yuquiz.domain.studyUser.entity.StudyUser;
 import yuquiz.domain.quiz.entity.TriedQuiz;
 
@@ -102,6 +95,10 @@ public class User extends BaseTimeEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REFRESH)
     private List<StudyUser> studys = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "leader", cascade = CascadeType.REMOVE)
+    private List<Study> leaders = new ArrayList<>();
 
     @Builder
     public User(String username, String password, String nickname,
