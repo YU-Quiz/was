@@ -97,7 +97,7 @@ public class User extends BaseTimeEntity {
     private List<StudyUser> studys = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "leader", cascade = CascadeType.REMOVE)
     private List<Study> leaders = new ArrayList<>();
 
     @Builder
