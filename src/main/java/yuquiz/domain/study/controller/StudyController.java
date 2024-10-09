@@ -37,4 +37,13 @@ public class StudyController implements StudyApi {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PutMapping("/{studyId}")
+    public ResponseEntity<?> updateStudy(@PathVariable(value = "studyId") Long studyId,
+                                         @Valid @RequestBody StudyReq studyReq,
+                                         @AuthenticationPrincipal SecurityUserDetails userDetails) {
+        studyService.updateStudy(studyReq, studyId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 수정되었습니다."));
+    }
 }

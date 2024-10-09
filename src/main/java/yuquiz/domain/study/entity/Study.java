@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.chatRoom.entity.ChatRoom;
+import yuquiz.domain.study.dto.StudyReq;
 import yuquiz.domain.studyUser.entity.StudyUser;
 import yuquiz.domain.user.entity.User;
 
@@ -59,5 +60,13 @@ public class Study extends BaseTimeEntity {
         this.registerDuration = registerDuration;
         this.leader = leader;
         this.state = StudyState.ACTIVE;
+    }
+
+    public void update(StudyReq studyReq) {
+        this.studyName = studyReq.name();
+        this.description = studyReq.description();
+        this.maxUser = studyReq.maxUser();
+        this.registerDuration = studyReq.registerDuration();
+        this.state = studyReq.state();
     }
 }

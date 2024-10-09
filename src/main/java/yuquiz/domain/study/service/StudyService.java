@@ -49,6 +49,18 @@ public class StudyService {
         studyRepository.deleteById(studyId);
     }
 
+    @Transactional
+    public void updateStudy(StudyReq studyReq, Long studyId, Long userId) {
+        if (!validateLeader(studyId, userId)) {
+            throw new CustomException(StudyExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(StudyExceptionCode.INVALID_ID));
+
+        study.update(studyReq);
+    }
+
     private boolean validateLeader(Long studyId, Long userId) {
         return studyRepository.findLeaderById(studyId)
                 .map(leaderId -> leaderId.equals(userId))
