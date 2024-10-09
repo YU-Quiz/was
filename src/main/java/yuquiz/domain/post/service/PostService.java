@@ -103,4 +103,14 @@ public class PostService {
                 .map(writerId -> writerId.equals(userId))
                 .orElse(false);
     }
+
+    @Transactional(readOnly = true)
+    public Page<PostSummaryRes> getPostsByWriter(Long userId, PostSortType sort, Integer page) {
+
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
+
+        Page<Post> posts = postRepository.findByWriter_Id(userId, pageable);
+
+        return posts.map(PostSummaryRes::fromEntity);
+    }
 }
