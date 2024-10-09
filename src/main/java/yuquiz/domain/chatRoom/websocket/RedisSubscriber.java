@@ -28,7 +28,7 @@ public class RedisSubscriber implements MessageListener {
 
             MessageReq roomMessageReq = objectMapper.readValue(publishMessage, MessageReq.class);
 
-            simpMessageSendingOperations.convertAndSend("/topic/" + roomMessageReq.roomId(), roomMessageReq);
+            simpMessageSendingOperations.convertAndSend("/sub/" + roomMessageReq.roomId(), roomMessageReq);
         } catch (IOException e) {
             log.error("Failed to convert roomMessageReq to JSON", e);
         }
