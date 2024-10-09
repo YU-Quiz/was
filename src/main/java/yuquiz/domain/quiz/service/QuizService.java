@@ -23,6 +23,9 @@ import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -115,7 +118,20 @@ public class QuizService {
     @Transactional(readOnly = true)
     public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Pageable pageable) {
 
-        return quizRepository.getQuizzes(keyword, pageable, sort, subjectId, userId);
+        Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable, sort, subjectId, userId);
+
+        Map<Long, Boolean> triedQuizzes = triedQuizRepository.getTriedQuizzes(userId).stream()
+                .collect(Collectors.toMap(
+                        triedQuiz ->
+                                triedQuiz.getQuiz().getId(),
+                                TriedQuiz::getIsSolved
+                ));
+
+        return quizzes.map(quiz -> {
+            Boolean isSolved = triedQuizzes.getOrDefault(quiz.getId(), null);
+
+            return QuizSummaryRes.fromEntity(quiz, isSolved);
+        });
     }
 
     @Transactional(readOnly = true)

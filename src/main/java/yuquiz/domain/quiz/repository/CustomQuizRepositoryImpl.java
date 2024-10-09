@@ -8,14 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import yuquiz.domain.quiz.dto.quiz.QuizSortType;
-import yuquiz.domain.quiz.dto.quiz.QuizSummaryRes;
 import yuquiz.domain.quiz.entity.Quiz;
-import yuquiz.domain.quiz.entity.TriedQuiz;
 
 import java.util.List;
 
 import static yuquiz.domain.quiz.entity.QQuiz.quiz;
-import static yuquiz.domain.quiz.entity.QTriedQuiz.triedQuiz;
 
 
 public class CustomQuizRepositoryImpl implements CustomQuizRepository{
@@ -26,7 +23,7 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
     }
 
     @Override
-    public Page<QuizSummaryRes> getQuizzes(String keyword, Pageable pageable, QuizSortType sort, Long subjectId, Long userId) {
+    public Page<Quiz> getQuizzes(String keyword, Pageable pageable, QuizSortType sort, Long subjectId, Long userId) {
         List<Quiz> quizzes = jpaQueryFactory
                 .select(quiz)
                 .from(quiz)
@@ -36,26 +33,13 @@ public class CustomQuizRepositoryImpl implements CustomQuizRepository{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        List<TriedQuiz> triedQuizzes = jpaQueryFactory
-                .select(triedQuiz)
-                .from(triedQuiz)
-                .where(triedQuiz.user.id.eq(userId).and(triedQuiz.quiz.in(quizzes)))
-                .fetch();
-
         long total = jpaQueryFactory
                 .select(quiz.count())
                 .from(quiz)
                 .where(wordContain(keyword), subjectEqual(subjectId))
                 .fetchOne();
 
-        List<QuizSummaryRes> quizSummaryResList = quizzes.stream()
-                .map(quiz -> {
-                    boolean isSolved = triedQuizzes.contains(quiz.getId());
-                    return QuizSummaryRes.fromEntity(quiz, isSolved);
-                }).toList();
-
-
-        return new PageImpl<>(quizSummaryResList, pageable, total);
+        return new PageImpl<>(quizzes, pageable, total);
     }
 
     private BooleanExpression wordContain(String keyword) {
