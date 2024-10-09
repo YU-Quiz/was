@@ -116,11 +116,9 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public QuizListRes getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Pageable pageable) {
-        Page<QuizSummaryRes> quizzes = quizRepository.getQuizzes(keyword, pageable, sort, subjectId, userId);
+    public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Pageable pageable) {
 
-        List<QuizSummaryRes> list = new ArrayList<>(quizzes.getContent());
-        return QuizListRes.of(list, quizzes.getNumber(), quizzes.getTotalElements(), quizzes.getTotalPages());
+        return quizRepository.getQuizzes(keyword, pageable, sort, subjectId, userId);
     }
 
     @Transactional(readOnly = true)

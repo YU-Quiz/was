@@ -79,9 +79,9 @@ public class QuizController implements QuizApi {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "subject", required = false) Long subjectId,
             @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
-            @PageableDefault(size=20)Pageable pageable) {
+            @PageableDefault(size=20) Pageable pageable) {
 
-        QuizListRes quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, pageable);
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
