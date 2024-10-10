@@ -87,7 +87,7 @@ public class SecuredUserControllerTest {
     void getUserInfoTest() throws Exception {
         // given
         UserDetailsRes userDetailsRes =
-                new UserDetailsRes("test", "테스터", "test@gmail.com", true, "컴퓨터공학과");
+                new UserDetailsRes("test", "테스터", "test@gmail.com", true, "컴퓨터공학과", Role.USER);
 
         given(userService.getUserInfo(userDetails.getId())).willReturn(userDetailsRes);
 

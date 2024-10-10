@@ -61,13 +61,14 @@ public class AuthService {
         return jwtHelper.createToken(foundUser);
     }
 
-    /* OAuth 회원 생성 */
+    /* OAuth 최초 가입 시, 정보 추가 */
     @Transactional
-    public TokenDto oAuthSignUp(OAuthSignUpReq oAuthSignUpReq) {
+    public void oAuthSignUp(OAuthSignUpReq oAuthSignUpReq, Long userId) {
 
-        User createdUser = userRepository.save(oAuthSignUpReq.toEntity());
+        User foundUser = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(UserExceptionCode.INVALID_USERID));
 
-        return jwtHelper.createToken(createdUser);
+        foundUser.updateOAuthInfo(oAuthSignUpReq);
     }
 
     /* 소셜 로그인 */
