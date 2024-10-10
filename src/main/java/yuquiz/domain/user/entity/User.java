@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
+import yuquiz.domain.auth.dto.req.OAuthSignUpReq;
 import yuquiz.domain.comment.entity.Comment;
 import yuquiz.domain.notification.entity.Notification;
 import yuquiz.domain.quiz.entity.PinnedQuiz;
@@ -130,5 +131,13 @@ public class User extends BaseTimeEntity {
     public void updateSuspendStatus(LocalDateTime unlockedAt, int bannedCnt){
         this.unlockedAt = unlockedAt;
         this.bannedCnt = bannedCnt;
+    }
+
+    /* OAuth 회원가입 추가 정보 입력 */
+    public void updateOAuthInfo(OAuthSignUpReq signUpReq) {
+        this.nickname = signUpReq.nickname();
+        this.email = signUpReq.email();
+        this.majorName = signUpReq.majorName();
+        this.agreeEmail = signUpReq.agreeEmail();
     }
 }

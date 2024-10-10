@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import yuquiz.domain.auth.dto.req.UserVerifyReq;
 import yuquiz.domain.auth.service.AccountService;
 import yuquiz.domain.auth.service.AuthService;
 import yuquiz.domain.user.entity.OAuthPlatform;
+import yuquiz.security.auth.SecurityUserDetails;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,11 +59,12 @@ public class AuthController implements AuthApi {
     /* OAuth 회원가입 */
     @Override
     @PostMapping("/sign-up/oauth")
-    public ResponseEntity<?> oauthSignUp(@Valid @RequestBody OAuthSignUpReq oAuthSignUpReq) {
+    public ResponseEntity<?> oauthSignUp(@Valid @RequestBody OAuthSignUpReq oAuthSignUpReq,
+                                         @AuthenticationPrincipal SecurityUserDetails userDetails) {
 
-        TokenDto tokenDto = authService.oAuthSignUp(oAuthSignUpReq);
+        authService.oAuthSignUp(oAuthSignUpReq, userDetails.getId());
 
-        return createTokenRes(tokenDto);
+        return ResponseEntity.ok(SuccessRes.from("회원가입 성공"));
     }
 
     /* 일반 로그인 */
