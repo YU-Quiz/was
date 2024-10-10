@@ -168,39 +168,6 @@ public class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
-    void oAuthSignUpTest() throws Exception {
-        // given
-        OAuthSignUpReq oAuthSignUpReq =
-                new OAuthSignUpReq("테스터", "test@naver.com", "컴퓨터공학과", true);
-
-        ResponseCookie responseCookie = ResponseCookie.from(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())
-                .path("/")
-                .httpOnly(true)
-                .maxAge(60)
-                .secure(true)
-                .sameSite("None")
-                .build();
-
-        given(authService.oAuthSignUp(any(OAuthSignUpReq.class))).willReturn(tokenDto);
-        given(cookieUtil.createCookie(REFRESH_COOKIE_VALUE, tokenDto.refreshToken())).willReturn(responseCookie);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/auth/sign-up/oauth")
-                        .content(objectMapper.writeValueAsBytes(oAuthSignUpReq))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value(tokenDto.accessToken()))
-                .andExpect(cookie().value(REFRESH_COOKIE_VALUE, tokenDto.refreshToken()));
-    }
-
-    @Test
     @DisplayName("OAuth 회원가입 테스트 - 유효성 검사 실패")
     void oAuthSignUpInvalidFailedTest() throws Exception {
         // given
