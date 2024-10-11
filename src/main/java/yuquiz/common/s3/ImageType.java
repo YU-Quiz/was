@@ -1,2 +1,5 @@
-package yuquiz.common.s3;public enum ImageType {
+package yuquiz.common.s3;
+
+public enum ImageType {
+    QUIZ
 }
