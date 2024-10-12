@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,6 +20,7 @@ import yuquiz.domain.auth.dto.req.PasswordResetReq;
 import yuquiz.domain.auth.dto.req.UserVerifyReq;
 import yuquiz.domain.auth.dto.req.SignInReq;
 import yuquiz.domain.auth.dto.req.SignUpReq;
+import yuquiz.security.auth.SecurityUserDetails;
 
 import static yuquiz.common.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
 import static yuquiz.common.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
@@ -63,7 +65,7 @@ public interface AuthApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
-                                            "accessToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MTExMTExIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjQ5LCJpc3MiOiJ5dS1xdWloxNzI0MjYyMjAyLCJleHAiOjE3MjQyNjQwMDJ9.p0zUTytV5heng6zwhrTgJVT0t4z-08tC6r272d0WVMs"
+                                            "response": "회원가입 성공"
                                         }
                                     """)
                     })),
@@ -83,7 +85,8 @@ public interface AuthApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> oauthSignUp(@Valid @RequestBody OAuthSignUpReq oAuthSignUpReq);
+    ResponseEntity<?> oauthSignUp(@Valid @RequestBody OAuthSignUpReq oAuthSignUpReq,
+                                  @AuthenticationPrincipal SecurityUserDetails userDetails);
 
     @Operation(summary = "일반 로그인", description = "서비스를 이용하기 위해 로그인하는 API입니다.")
     @ApiResponses({
@@ -145,13 +148,13 @@ public interface AuthApi {
                             @ExampleObject(name = "FirstLogin", value = """
                                         {
                                             "accessToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIisInJvbGUiOiJPV05FUiIsImNhdGVnb3J5IjoiYWNjZXNzIiwidXNlcklkIjo2LCJpYXQiOjE3MjI2Njc1MzYsImV4cCI6MTcyMjY2OTMzNn0.9eY_1aSfKLfDhKN5X4f85N2hv_I65QOPFtq_2YXEhoA",
-                                            "isRegistered": true
+                                            "isRegistered": false
                                         }
                                     """),
                             @ExampleObject(name = "ReturningLogin", value = """
                                         {
                                             "accessToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXNbGUiOiJPV05FUiIsImNhdGVnb3J5IjoiYWNjZXNzIiwidXNlcklkIjo2LCJpYXQiOjE3MjI2Njc1MzYsImV4cCI6MTcyMjY2OTMzNn0.9eY_1aSfKLfDhKN5X4f85N2hv_I65QOPFtq_2YXEhoA",
-                                            "isRegistered": false
+                                            "isRegistered": true
                                         }
                                     """)
                     })),

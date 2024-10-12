@@ -20,4 +20,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostsByKeywordAndCategory(@Param("keyword") String keyword,
                                              @Param("categoryId") Long categoryId,
                                              Pageable pageable);
+
+    Page<Post> findByWriter_Id(Long userId, Pageable pageable);
 }

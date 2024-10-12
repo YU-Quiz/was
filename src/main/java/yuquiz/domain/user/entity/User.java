@@ -1,21 +1,14 @@
 package yuquiz.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
+import yuquiz.domain.auth.dto.req.OAuthSignUpReq;
 import yuquiz.domain.comment.entity.Comment;
 import yuquiz.domain.notification.entity.Notification;
 import yuquiz.domain.quiz.entity.PinnedQuiz;
@@ -23,6 +16,7 @@ import yuquiz.domain.post.entity.Post;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.like.entity.LikedQuiz;
 import yuquiz.domain.report.entity.Report;
+import yuquiz.domain.study.entity.Study;
 import yuquiz.domain.studyUser.entity.StudyUser;
 import yuquiz.domain.quiz.entity.TriedQuiz;
 
@@ -103,6 +97,10 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REFRESH)
     private List<StudyUser> studys = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "leader", cascade = CascadeType.REMOVE)
+    private List<Study> leaders = new ArrayList<>();
+
     @Builder
     public User(String username, String password, String nickname,
                 String email, String majorName, boolean agreeEmail, Role role) {
@@ -133,5 +131,13 @@ public class User extends BaseTimeEntity {
     public void updateSuspendStatus(LocalDateTime unlockedAt, int bannedCnt){
         this.unlockedAt = unlockedAt;
         this.bannedCnt = bannedCnt;
+    }
+
+    /* OAuth 회원가입 추가 정보 입력 */
+    public void updateOAuthInfo(OAuthSignUpReq signUpReq) {
+        this.nickname = signUpReq.nickname();
+        this.email = signUpReq.email();
+        this.majorName = signUpReq.majorName();
+        this.agreeEmail = signUpReq.agreeEmail();
     }
 }

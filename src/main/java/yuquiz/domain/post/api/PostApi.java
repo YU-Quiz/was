@@ -192,6 +192,83 @@ public interface PostApi {
                                @RequestParam(value = "sort") PostSortType sort,
                                @RequestParam(value = "page") @Min(0) Integer page);
 
+    @Operation(summary = "내가 작성한 게시글 목록 조회", description = "내가 작성한 게시글 목록을 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                    {
+                                         "totalPages": 1,
+                                         "totalElements": 4,
+                                         "first": true,
+                                         "last": true,
+                                         "size": 20,
+                                         "content": [
+                                             {
+                                                 "postId": 13,
+                                                 "postTitle": "새로운 타이d틀",
+                                                 "nickname": "테스터",
+                                                 "categoryName": "자유게시판",
+                                                 "createdAt": "2024-09-12T16:36:17.781965",
+                                                 "likeCount": 0,
+                                                 "viewCount": 4
+                                             },
+                                             {
+                                                 "postId": 9,
+                                                 "postTitle": "2제목",
+                                                 "nickname": "테스터",
+                                                 "categoryName": "공지게시판",
+                                                 "createdAt": "2024-08-20T15:33:51.620851",
+                                                 "likeCount": 1,
+                                                 "viewCount": 0
+                                             },
+                                             {
+                                                 "postId": 8,
+                                                 "postTitle": "새로운 타이틀",
+                                                 "nickname": "테스터",
+                                                 "categoryName": "자유게시판",
+                                                 "createdAt": "2024-08-20T15:33:46.902076",
+                                                 "likeCount": 2,
+                                                 "viewCount": 2
+                                             },
+                                             {
+                                                 "postId": 6,
+                                                 "postTitle": "새로운 타이d틀",
+                                                 "nickname": "테스터",
+                                                 "categoryName": "자유게시판",
+                                                 "createdAt": "2024-08-20T15:33:34.426304",
+                                                 "likeCount": 0,
+                                                 "viewCount": 0
+                                             }
+                                         ],
+                                         "number": 0,
+                                         "sort": {
+                                             "empty": false,
+                                             "sorted": true,
+                                             "unsorted": false
+                                         },
+                                         "numberOfElements": 4,
+                                         "pageable": {
+                                             "pageNumber": 0,
+                                             "pageSize": 20,
+                                             "sort": {
+                                                 "empty": false,
+                                                 "sorted": true,
+                                                 "unsorted": false
+                                             },
+                                             "offset": 0,
+                                             "paged": true,
+                                             "unpaged": false
+                                         },
+                                         "empty": false
+                                     }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> getPostsByWriter(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                       @RequestParam(value = "sort", defaultValue = "DATE_DESC") PostSortType sort,
+                                       @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page);
+
     @Operation(summary = "게시글 수정", description = "게시글을 수정하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 수정 성공",

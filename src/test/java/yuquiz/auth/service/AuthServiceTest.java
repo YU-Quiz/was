@@ -94,17 +94,24 @@ public class AuthServiceTest {
     @DisplayName("OAuth 회원가입 테스트")
     void oAuthSignUpTest() {
         // given
+        Long userId = 1L;
+
         OAuthSignUpReq oAuthSignUpReq =
                 new OAuthSignUpReq("테스터", "test@naver.com", "컴퓨터공학과", true);
 
-        User user = oAuthSignUpReq.toEntity();
-        given(userRepository.save(any(User.class))).willReturn(user);
+        User user = User.builder().build();
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        authService.oAuthSignUp(oAuthSignUpReq);
+        authService.oAuthSignUp(oAuthSignUpReq, userId);
 
         // then
-        verify(userRepository, times(1)).save(any(User.class));
+        assertEquals(oAuthSignUpReq.nickname(), user.getNickname());
+        assertEquals(oAuthSignUpReq.email(), user.getEmail());
+        assertEquals(oAuthSignUpReq.majorName(), user.getMajorName());
+        assertEquals(oAuthSignUpReq.agreeEmail(), user.isAgreeEmail());
+
+        verify(userRepository, times(1)).findById(userId);
     }
 
     @Test

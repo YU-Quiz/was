@@ -1,7 +1,6 @@
 package yuquiz.common.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,9 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");
 
-        try {
-            jwtProvider.isExpired(accessToken);      // 만료되었는지
-        } catch (ExpiredJwtException e) {
+        if (jwtProvider.isExpired(accessToken)) {      // 만료되었는지
             handleExceptionToken(response, JwtExceptionCode.ACCESS_TOKEN_EXPIRED);
             return null;
         }

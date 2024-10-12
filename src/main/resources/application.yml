@@ -40,6 +40,11 @@ spring:
             enable: true
             trust: smtp.naver.com
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 jwt:
   secret: ${JWT_KEY:exampleSecretKeyForYUQuizSystemAccessSecretKeyTestForPadding}
   access-expiration: ${JWT_ACCESS_EXPIRATION:1800000}
@@ -74,3 +79,15 @@ oauth2:
     clientSecret: ${NAVER_CLIENT_SECRET}
     redirectUri: ${NAVER_REDIRECT_URL}
     getUserInfoUri: https://openapi.naver.com/v1/nid/me
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ${AWS_REGION}
+    stack:
+      auto: false
+    s3:
+      bucket-name: ${S3_BUCKET_NAME}

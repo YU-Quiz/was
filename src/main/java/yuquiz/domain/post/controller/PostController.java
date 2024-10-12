@@ -67,6 +67,17 @@ public class PostController implements PostApi {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
+    @GetMapping("/my")
+    @Override
+    public ResponseEntity<?> getPostsByWriter(@AuthenticationPrincipal SecurityUserDetails userDetails,
+                                              @RequestParam(value = "sort", defaultValue = "DATE_DESC") PostSortType sort,
+                                              @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
+
+        Page<PostSummaryRes> postSummaryRes = postService.getPostsByWriter(userDetails.getId(), sort, page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postSummaryRes);
+    }
+
     @PutMapping("/{postId}")
     @Override
     public ResponseEntity<?> updatePost(@PathVariable(value = "postId") Long postId,
