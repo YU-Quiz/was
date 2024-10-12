@@ -11,7 +11,7 @@ import yuquiz.domain.user.entity.User;
 
 import java.util.Optional;
 
-public interface TriedQuizRepository extends JpaRepository<TriedQuiz, Long> {
+public interface TriedQuizRepository extends JpaRepository<TriedQuiz, Long>, CustomTriedQuizRepository {
     boolean existsByUserAndQuiz(User user, Quiz quiz);
 
     @Query("SELECT tq.isSolved FROM TriedQuiz tq WHERE tq.user =:user AND tq.quiz =:quiz")

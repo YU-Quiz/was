@@ -7,24 +7,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
-import yuquiz.domain.like.repository.LikedQuizRepository;
-import yuquiz.domain.quiz.dto.quiz.QuizReq;
-import yuquiz.domain.quiz.dto.quiz.QuizRes;
-import yuquiz.domain.quiz.dto.quiz.QuizSortType;
-import yuquiz.domain.quiz.dto.quiz.QuizSummaryRes;
-import yuquiz.domain.quiz.entity.Quiz;
-import yuquiz.domain.quiz.entity.TriedQuiz;
-import yuquiz.domain.quiz.exception.QuizExceptionCode;
+import yuquiz.domain.quiz.dto.quiz.*;
 import yuquiz.domain.quiz.repository.PinnedQuizRepository;
+import yuquiz.domain.quiz.entity.Quiz;
+import yuquiz.domain.quiz.exception.QuizExceptionCode;
 import yuquiz.domain.quiz.repository.QuizRepository;
-import yuquiz.domain.quiz.repository.TriedQuizRepository;
+import yuquiz.domain.like.repository.LikedQuizRepository;
 import yuquiz.domain.report.repository.ReportRepository;
 import yuquiz.domain.subject.entity.Subject;
 import yuquiz.domain.subject.exception.SubjectExceptionCode;
 import yuquiz.domain.subject.repository.SubjectRepository;
+import yuquiz.domain.quiz.entity.TriedQuiz;
+import yuquiz.domain.quiz.repository.TriedQuizRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -116,14 +116,20 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Integer page) {
-        Pageable pageable = PageRequest.of(page, QUIZ_PER_PAGE, sort.getSort());
+    public Page<QuizSummaryRes> getQuizzesByKeywordAndSubject(Long userId, String keyword, Long subjectId, QuizSortType sort, Pageable pageable) {
 
-        User user = findUserByUserId(userId);
-        Page<Quiz> quizzes = quizRepository.findQuizzesByKeywordAndSubject(keyword, subjectId, pageable);
+        Page<Quiz> quizzes = quizRepository.getQuizzes(keyword, pageable, sort, subjectId, userId);
+
+        Map<Long, Boolean> triedQuizzes = triedQuizRepository.getTriedQuizzes(userId).stream()
+                .collect(Collectors.toMap(
+                        triedQuiz ->
+                                triedQuiz.getQuiz().getId(),
+                                TriedQuiz::getIsSolved
+                ));
 
         return quizzes.map(quiz -> {
-            Boolean isSolved = triedQuizRepository.findIsSolvedByUserAndQuiz(user, quiz);
+            Boolean isSolved = triedQuizzes.getOrDefault(quiz.getId(), null);
+
             return QuizSummaryRes.fromEntity(quiz, isSolved);
         });
     }

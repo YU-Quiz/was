@@ -4,16 +4,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.quiz.api.QuizApi;
-import yuquiz.domain.quiz.dto.quiz.AnswerReq;
-import yuquiz.domain.quiz.dto.quiz.QuizReq;
-import yuquiz.domain.quiz.dto.quiz.QuizSortType;
-import yuquiz.domain.quiz.dto.quiz.QuizSummaryRes;
+import yuquiz.domain.quiz.dto.quiz.*;
 import yuquiz.domain.quiz.service.QuizService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -80,9 +79,9 @@ public class QuizController implements QuizApi {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "subject", required = false) Long subjectId,
             @RequestParam(value = "sort", defaultValue = "DATE_DESC") QuizSortType sort,
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page) {
+            @PageableDefault(size=20) Pageable pageable) {
 
-        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, page);
+        Page<QuizSummaryRes> quizzes = quizService.getQuizzesByKeywordAndSubject(userDetails.getId(), keyword, subjectId, sort, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(quizzes);
     }
