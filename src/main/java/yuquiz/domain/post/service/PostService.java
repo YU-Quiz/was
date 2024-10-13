@@ -64,10 +64,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<PostSummaryRes> getPosts(String keyword, Long categoryId, PostSortType sort, Integer page) {
+        Pageable pageable = PageRequest.of(page, POST_PER_PAGE);
 
-        Pageable pageable = PageRequest.of(page, POST_PER_PAGE, sort.getSort());
-
-        Page<Post> posts = postRepository.findPostsByKeywordAndCategory(keyword, categoryId, pageable);
+        Page<Post> posts = postRepository.getPosts(keyword, categoryId, pageable, sort);
 
         return posts.map(PostSummaryRes::fromEntity);
     }

@@ -9,17 +9,10 @@ import yuquiz.domain.post.entity.Post;
 
 import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, CustomPostRepository {
 
     @Query("select p.writer.id from Post p where p.id = :id")
     Optional<Long> findWriterIdById(@Param("id") Long id);
-
-    @Query("SELECT p FROM Post p WHERE"
-            + "(:keyword IS NULL OR p.title LIKE %:keyword% OR p.content LIKE %:keyword%)"
-            + "AND (:categoryId IS NULL OR p.category.id = :categoryId)")
-    Page<Post> findPostsByKeywordAndCategory(@Param("keyword") String keyword,
-                                             @Param("categoryId") Long categoryId,
-                                             Pageable pageable);
 
     Page<Post> findByWriter_Id(Long userId, Pageable pageable);
 }
