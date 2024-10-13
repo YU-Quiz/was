@@ -2,13 +2,19 @@ package yuquiz.domain.study.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yuquiz.common.api.SuccessRes;
 import yuquiz.domain.study.api.StudyApi;
+import yuquiz.domain.study.dto.StudyFilter;
 import yuquiz.domain.study.dto.StudyReq;
+import yuquiz.domain.study.dto.StudySortType;
+import yuquiz.domain.study.dto.StudySummaryRes;
 import yuquiz.domain.study.service.StudyService;
 import yuquiz.security.auth.SecurityUserDetails;
 
@@ -45,5 +51,16 @@ public class StudyController implements StudyApi {
         studyService.updateStudy(studyReq, studyId, userDetails.getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 수정되었습니다."));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getStudies(@RequestParam(value = "keyword", required = false) String keyword,
+                                        @RequestParam(value = "sort", defaultValue = "CREATED_DESC") StudySortType sort,
+                                        @RequestParam(value = "filter", defaultValue = "ONGOING") StudyFilter filter,
+                                        @PageableDefault(size = 20) Pageable pageable) {
+
+        Page<StudySummaryRes> studies = studyService.getStudies(keyword, pageable, sort, filter);
+
+        return ResponseEntity.status(HttpStatus.OK).body(studies);
     }
 }

@@ -1,10 +1,15 @@
 package yuquiz.domain.study.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.study.dto.StudyFilter;
 import yuquiz.domain.study.dto.StudyReq;
+import yuquiz.domain.study.dto.StudySortType;
+import yuquiz.domain.study.dto.StudySummaryRes;
 import yuquiz.domain.study.entity.Study;
 import yuquiz.domain.study.exception.StudyExceptionCode;
 import yuquiz.domain.study.repository.StudyRepository;
@@ -59,6 +64,14 @@ public class StudyService {
                 .orElseThrow(() -> new CustomException(StudyExceptionCode.INVALID_ID));
 
         study.update(studyReq);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<StudySummaryRes> getStudies(String keyword, Pageable pageable, StudySortType sort, StudyFilter filter) {
+
+        Page<Study> studies = studyRepository.getStudies(keyword, pageable, sort, filter);
+
+        return studies.map(StudySummaryRes::fromEntity);
     }
 
     private boolean validateLeader(Long studyId, Long userId) {

@@ -51,6 +51,9 @@ public class Study extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private StudyState state;
 
+    @Column(name = "cur_user")
+    private Integer currentUser;
+
     @Builder
     public Study(String studyName, String description, ChatRoom chatRoom,Integer maxUser, LocalDateTime registerDuration, User leader) {
         this.studyName = studyName;
@@ -60,6 +63,7 @@ public class Study extends BaseTimeEntity {
         this.registerDuration = registerDuration;
         this.leader = leader;
         this.state = StudyState.ACTIVE;
+        this.currentUser = 1;
     }
 
     public void update(StudyReq studyReq) {
