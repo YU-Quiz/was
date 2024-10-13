@@ -16,15 +16,15 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    @Cacheable(value = "users", key = "#username")
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    @Cacheable(value = "users", key = "#userId")
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
-        if(username == null || username.equals("")) {
-            throw new UsernameNotFoundException(username);
+        if (userId == null || userId.equals("")) {
+            throw new UsernameNotFoundException(userId);
         }
 
-        User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username: " + username));
+        User foundUser = userRepository.findById(Long.valueOf(userId)).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username: " + userId));
 
         return new SecurityUserDetails(foundUser);
     }
