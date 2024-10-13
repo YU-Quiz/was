@@ -79,9 +79,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /* Authentication 가져오기 */
     private Authentication getAuthentication(String token) {
 
-        String username = jwtProvider.getUsername(token);
+        String userId = String.valueOf(jwtProvider.getUserId(token));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
