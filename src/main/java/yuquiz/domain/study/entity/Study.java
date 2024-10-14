@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yuquiz.common.entity.BaseTimeEntity;
 import yuquiz.domain.chatRoom.entity.ChatRoom;
+import yuquiz.domain.study.dto.StudyReq;
 import yuquiz.domain.studyUser.entity.StudyUser;
 import yuquiz.domain.user.entity.User;
 
@@ -50,6 +51,9 @@ public class Study extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private StudyState state;
 
+    @Column(name = "cur_user")
+    private Integer currentUser;
+
     @Builder
     public Study(String studyName, String description, ChatRoom chatRoom,Integer maxUser, LocalDateTime registerDuration, User leader) {
         this.studyName = studyName;
@@ -59,5 +63,14 @@ public class Study extends BaseTimeEntity {
         this.registerDuration = registerDuration;
         this.leader = leader;
         this.state = StudyState.ACTIVE;
+        this.currentUser = 1;
+    }
+
+    public void update(StudyReq studyReq) {
+        this.studyName = studyReq.name();
+        this.description = studyReq.description();
+        this.maxUser = studyReq.maxUser();
+        this.registerDuration = studyReq.registerDuration();
+        this.state = studyReq.state();
     }
 }
