@@ -24,7 +24,6 @@ import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
