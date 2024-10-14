@@ -2,6 +2,7 @@ package yuquiz.domain.quizSeries.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.quiz.entity.Quiz;
 import yuquiz.domain.quiz.exception.QuizExceptionCode;
@@ -21,6 +22,7 @@ public class QuizSeriesService {
     private final QuizRepository quizRepository;
     private final SeriesRepository seriesRepository;
 
+    @Transactional
     public void addQuiz(Long seriesId, Long quizId, Long userId) {
 
         if (!validateCreator(seriesId, userId)) {
@@ -39,6 +41,16 @@ public class QuizSeriesService {
                 .build();
 
         quizSeriesRepository.save(quizSeries);
+    }
+
+    @Transactional
+    public void deleteQuiz(Long seriesId, Long quizId, Long userId) {
+
+        if (!validateCreator(seriesId, userId)) {
+            throw new CustomException(QuizSeriesExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        quizSeriesRepository.deleteBySeries_IdAndQuiz_Id(seriesId, quizId);
     }
 
     private boolean validateCreator(Long seriesId, Long userId) {
