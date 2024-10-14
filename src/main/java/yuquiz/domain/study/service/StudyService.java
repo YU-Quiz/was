@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.study.dto.StudyFilter;
 import yuquiz.domain.study.dto.StudyReq;
+import yuquiz.domain.study.dto.StudyRequestRes;
 import yuquiz.domain.study.dto.StudyRes;
 import yuquiz.domain.study.dto.StudySortType;
 import yuquiz.domain.study.dto.StudySummaryRes;
@@ -21,6 +22,9 @@ import yuquiz.domain.studyUser.repository.StudyUserRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
 import yuquiz.domain.user.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +112,17 @@ public class StudyService {
                 .build();
 
         studyUserRepository.save(studyUser);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudyRequestRes> getRegisterRequests(Long studyId, Long userId) {
+        if (!validateLeader(studyId, userId)) {
+            throw new CustomException(StudyExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        List<StudyUser> studyUsers = studyUserRepository.findByStudyIdAndState(studyId, UserState.PENDING);
+
+        return studyUsers.stream().map(StudyRequestRes::fromEntity).toList();
     }
 
     private boolean validateLeader(Long studyId, Long userId) {
