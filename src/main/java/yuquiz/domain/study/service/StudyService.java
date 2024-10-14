@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
 import yuquiz.domain.study.dto.StudyFilter;
 import yuquiz.domain.study.dto.StudyReq;
+import yuquiz.domain.study.dto.StudyRes;
 import yuquiz.domain.study.dto.StudySortType;
 import yuquiz.domain.study.dto.StudySummaryRes;
 import yuquiz.domain.study.entity.Study;
@@ -72,6 +73,17 @@ public class StudyService {
         Page<Study> studies = studyRepository.getStudies(keyword, pageable, sort, filter);
 
         return studies.map(StudySummaryRes::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public StudyRes getStudy(Long studyId, Long userId) {
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(StudyExceptionCode.INVALID_ID));
+
+        return studyUserRepository.findStudyUserByStudy_IdAndUser_Id(studyId, userId)
+                .map(studyUser -> StudyRes.fromEntity(study, true, studyUser.getRole()))
+                .orElseGet(() -> StudyRes.fromEntity(study, false, null));
     }
 
     private boolean validateLeader(Long studyId, Long userId) {

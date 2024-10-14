@@ -63,4 +63,11 @@ public class StudyController implements StudyApi {
 
         return ResponseEntity.status(HttpStatus.OK).body(studies);
     }
+
+    @GetMapping("/{studyId}")
+    public ResponseEntity<?> getStudy(@PathVariable(value = "studyId") Long studyId,
+                                      @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(studyService.getStudy(studyId, userDetails.getId()));
+    }
 }
