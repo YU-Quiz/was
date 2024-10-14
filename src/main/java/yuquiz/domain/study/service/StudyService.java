@@ -125,6 +125,22 @@ public class StudyService {
         return studyUsers.stream().map(StudyRequestRes::fromEntity).toList();
     }
 
+    @Transactional
+    public void acceptRequest(Long studyId, Long pendingUserId, Long userId) {
+        if (!validateLeader(studyId, userId)) {
+            throw new CustomException(StudyExceptionCode.UNAUTHORIZED_ACTION);
+        }
+
+        StudyUser studyUser = studyUserRepository.findStudyUserByStudy_IdAndUser_Id(studyId, pendingUserId)
+                .orElseThrow(() -> new CustomException(StudyExceptionCode.REQUEST_NOT_EXIST));
+
+        if (studyUser.getState().equals(UserState.REGISTERED)) {
+            throw new CustomException(StudyExceptionCode.ALREADY_REGISTERED);
+        }
+
+        studyUser.accept();
+    }
+
     private boolean validateLeader(Long studyId, Long userId) {
         return studyRepository.findLeaderById(studyId)
                 .map(leaderId -> leaderId.equals(userId))

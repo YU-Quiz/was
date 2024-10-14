@@ -44,6 +44,7 @@ public class StudyUser {
 
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "state", length = 50)
     private UserState state;
 
     @Builder
@@ -53,5 +54,10 @@ public class StudyUser {
         this.chatRoom = chatRoom;
         this.role = role;
         this.state = state;
+    }
+
+    public void accept() {
+        this.joinedAt = LocalDateTime.now();
+        this.state = UserState.REGISTERED;
     }
 }
