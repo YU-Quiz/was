@@ -16,6 +16,7 @@ import yuquiz.domain.study.exception.StudyExceptionCode;
 import yuquiz.domain.study.repository.StudyRepository;
 import yuquiz.domain.studyUser.entity.StudyRole;
 import yuquiz.domain.studyUser.entity.StudyUser;
+import yuquiz.domain.studyUser.entity.UserState;
 import yuquiz.domain.studyUser.repository.StudyUserRepository;
 import yuquiz.domain.user.entity.User;
 import yuquiz.domain.user.exception.UserExceptionCode;
@@ -84,6 +85,29 @@ public class StudyService {
         return studyUserRepository.findStudyUserByStudy_IdAndUser_Id(studyId, userId)
                 .map(studyUser -> StudyRes.fromEntity(study, true, studyUser.getRole()))
                 .orElseGet(() -> StudyRes.fromEntity(study, false, null));
+    }
+
+    @Transactional
+    public void requestRegister(Long studyId, Long userId) {
+
+        if (studyUserRepository.existsByStudy_IdAndUser_Id(studyId, userId)) {
+            throw new CustomException(StudyExceptionCode.ALREADY_REGISTERED);
+        }
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(StudyExceptionCode.INVALID_ID));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
+
+        StudyUser studyUser = StudyUser.builder()
+                .user(user)
+                .study(study)
+                .state(UserState.PENDING)
+                .role(StudyRole.USER)
+                .build();
+
+        studyUserRepository.save(studyUser);
     }
 
     private boolean validateLeader(Long studyId, Long userId) {

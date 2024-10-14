@@ -70,4 +70,13 @@ public class StudyController implements StudyApi {
 
         return ResponseEntity.status(HttpStatus.OK).body(studyService.getStudy(studyId, userDetails.getId()));
     }
+
+    @PostMapping("/{studyId}/request")
+    public ResponseEntity<?> requestRegister(@PathVariable(value = "studyId") Long studyId,
+                                             @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        studyService.requestRegister(studyId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("성공적으로 신청되었습니다."));
+    }
 }
