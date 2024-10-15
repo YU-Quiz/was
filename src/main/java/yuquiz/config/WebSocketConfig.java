@@ -8,14 +8,14 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import yuquiz.domain.chatRoom.websocket.error.StompErrorHandler;
-import yuquiz.domain.chatRoom.websocket.interceptor.JwtChannelInterceptor;
+import yuquiz.domain.chatRoom.websocket.interceptor.SocketChannelInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JwtChannelInterceptor jwtChannelInterceptor;
+    private final SocketChannelInterceptor socketChannelInterceptor;
     private final StompErrorHandler stompErrorHandler;
 
     @Override
@@ -33,7 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(jwtChannelInterceptor);
+        registration.interceptors(socketChannelInterceptor);
     }
 
 }

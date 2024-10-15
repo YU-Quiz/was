@@ -24,7 +24,7 @@ import static yuquiz.common.utils.jwt.JwtProperties.TOKEN_PREFIX;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class JwtChannelInterceptor implements ChannelInterceptor {
+public class SocketChannelInterceptor implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
     private final BlackListTokenService blackListTokenService;
