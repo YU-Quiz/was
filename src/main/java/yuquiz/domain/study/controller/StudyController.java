@@ -63,4 +63,37 @@ public class StudyController implements StudyApi {
 
         return ResponseEntity.status(HttpStatus.OK).body(studies);
     }
+
+    @GetMapping("/{studyId}")
+    public ResponseEntity<?> getStudy(@PathVariable(value = "studyId") Long studyId,
+                                      @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(studyService.getStudy(studyId, userDetails.getId()));
+    }
+
+    @PostMapping("/{studyId}/request")
+    public ResponseEntity<?> requestRegister(@PathVariable(value = "studyId") Long studyId,
+                                             @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        studyService.requestRegister(studyId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessRes.from("성공적으로 신청되었습니다."));
+    }
+
+    @GetMapping("/{studyId}/request")
+    public ResponseEntity<?> getRequests(@PathVariable(value = "studyId") Long studyId,
+                                         @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(studyService.getRegisterRequests(studyId, userDetails.getId()));
+    }
+
+    @PostMapping("/{studyId}/accept")
+    public ResponseEntity<?> acceptRequest(@PathVariable(value = "studyId") Long studyId,
+                                           @RequestParam(value = "id") Long pendingUserId,
+                                           @AuthenticationPrincipal SecurityUserDetails userDetails) {
+
+        studyService.acceptRequest(studyId, pendingUserId, userDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessRes.from("성공적으로 승인되었습니다."));
+    }
 }

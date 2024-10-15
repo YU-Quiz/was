@@ -42,11 +42,22 @@ public class StudyUser {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", length = 50)
+    private UserState state;
+
     @Builder
-    public StudyUser(User user, Study study, ChatRoom chatRoom, StudyRole role) {
+    public StudyUser(User user, Study study, ChatRoom chatRoom, StudyRole role, UserState state) {
         this.user = user;
         this.study = study;
         this.chatRoom = chatRoom;
         this.role = role;
+        this.state = state;
+    }
+
+    public void accept() {
+        this.joinedAt = LocalDateTime.now();
+        this.state = UserState.REGISTERED;
     }
 }
