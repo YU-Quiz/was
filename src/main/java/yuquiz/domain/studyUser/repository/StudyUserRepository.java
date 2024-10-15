@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface StudyUserRepository extends JpaRepository<StudyUser, Long> {
     boolean existsByStudy_IdAndUser_Id(Long studyId, Long userId);
 
+    boolean existsByChatRoom_IdAndUser_Id(Long roomId, Long userId);
+
     Optional<StudyUser> findStudyUserByStudy_IdAndUser_IdAndState(Long studyId, Long userId, UserState state);
 
     List<StudyUser> findByStudyIdAndState(Long studyId, UserState state);
