@@ -7,11 +7,15 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import yuquiz.common.exception.JwtBlackListException;
 import yuquiz.common.exception.JwtExpiredException;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
 import yuquiz.common.utils.jwt.JwtProvider;
+import yuquiz.domain.chatRoom.exception.ChatRoomExceptionCode;
+import yuquiz.domain.chatRoom.exception.ChatSendException;
+import yuquiz.domain.chatRoom.service.ChatRoomService;
 import yuquiz.security.token.blacklist.BlackListTokenService;
 
 import static yuquiz.common.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
@@ -24,30 +28,56 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
     private final BlackListTokenService blackListTokenService;
-//    private final ChatUserService chatUserService;
+    private final ChatRoomService chatRoomService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        // 연결 요청시 JWT 검증
+
+        // 연결 시
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            // Authorization 헤더 추출
-            String accessTokenInHeader = accessor.getFirstNativeHeader(ACCESS_HEADER_VALUE);
-            String accessToken = passingAccessToken(accessTokenInHeader);
+            handleConnect(accessor);
+        }
 
-            isTokenValid(accessToken);
-
-            Long userId = jwtProvider.getUserId(accessToken);
-            Long roomId = Long.valueOf(accessor.getFirstNativeHeader("roomId"));
-
-//            if (!chatUserService.isChatMember(userId, roomId)) {
-//                throw new AccessDeniedException(UserExceptionCode.UNAUTHORIZED_ACTION.getMessage());
-//            }
-
-            accessor.getSessionAttributes().put("userId", userId);
-
+        // 메시지 전송 시
+        if (StompCommand.SEND.equals(accessor.getCommand())) {
+            handleSend(accessor);
         }
         return message;
+    }
+
+    private void handleConnect(StompHeaderAccessor accessor) {
+        String accessTokenInHeader = accessor.getFirstNativeHeader(ACCESS_HEADER_VALUE);
+        String accessToken = passingAccessToken(accessTokenInHeader);
+
+        isTokenValid(accessToken);
+
+        Long userId = jwtProvider.getUserId(accessToken);
+        Long roomId = getRoomId(accessor);
+
+        if (!chatRoomService.isChatMemberForEnterChat(userId, roomId)) {
+            throw new AccessDeniedException(ChatRoomExceptionCode.UNAUTHORIZED_ACTION.getMessage());
+        }
+
+        chatRoomService.saveChatMemberInRedis(userId, roomId);
+        accessor.getSessionAttributes().put("userId", userId);
+    }
+
+    private void handleSend(StompHeaderAccessor accessor) {
+        Long roomId = getRoomId(accessor);
+        Long userId = getUserId(accessor);
+
+        if (!chatRoomService.isChatMemberForSendMessage(userId, roomId)) {
+            throw new ChatSendException(ChatRoomExceptionCode.CANNOT_SEND_MESSAGE);
+        }
+    }
+
+    private Long getRoomId(StompHeaderAccessor accessor) {
+        return Long.valueOf(accessor.getFirstNativeHeader("roomId"));
+    }
+
+    private Long getUserId(StompHeaderAccessor accessor) {
+        return Long.valueOf(accessor.getFirstNativeHeader("userId"));
     }
 
     /* 토큰 유효성 검사 */
