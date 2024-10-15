@@ -85,7 +85,7 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(StudyExceptionCode.INVALID_ID));
 
-        return studyUserRepository.findStudyUserByStudy_IdAndUser_Id(studyId, userId)
+        return studyUserRepository.findStudyUserByStudy_IdAndUser_IdAndState(studyId, userId, UserState.REGISTERED)
                 .map(studyUser -> StudyRes.fromEntity(study, true, studyUser.getRole()))
                 .orElseGet(() -> StudyRes.fromEntity(study, false, null));
     }
@@ -130,12 +130,8 @@ public class StudyService {
             throw new CustomException(StudyExceptionCode.UNAUTHORIZED_ACTION);
         }
 
-        StudyUser studyUser = studyUserRepository.findStudyUserByStudy_IdAndUser_Id(studyId, pendingUserId)
+        StudyUser studyUser = studyUserRepository.findStudyUserByStudy_IdAndUser_IdAndState(studyId, pendingUserId, UserState.PENDING)
                 .orElseThrow(() -> new CustomException(StudyExceptionCode.REQUEST_NOT_EXIST));
-
-        if (studyUser.getState().equals(UserState.REGISTERED)) {
-            throw new CustomException(StudyExceptionCode.ALREADY_REGISTERED);
-        }
 
         studyUser.accept();
     }
