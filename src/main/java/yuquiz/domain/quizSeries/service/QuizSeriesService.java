@@ -29,6 +29,10 @@ public class QuizSeriesService {
             throw new CustomException(QuizSeriesExceptionCode.UNAUTHORIZED_ACTION);
         }
 
+        if (quizSeriesRepository.existsBySeries_IdAndQuiz_Id(seriesId, quizId)) {
+            throw new CustomException(QuizSeriesExceptionCode.ALREADY_ADDED);
+        }
+
         Series series = seriesRepository.findById(seriesId)
                 .orElseThrow(() -> new CustomException(SeriesExceptionCode.INVALID_ID));
 

@@ -5,4 +5,6 @@ import yuquiz.domain.quizSeries.entity.QuizSeries;
 
 public interface QuizSeriesRepository extends JpaRepository<QuizSeries, Long> {
     void deleteBySeries_IdAndQuiz_Id(Long seriesId, Long quizId);
+
+    boolean existsBySeries_IdAndQuiz_Id(Long seriesId, Long quizId);
 }
