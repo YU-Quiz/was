@@ -31,6 +31,15 @@ public interface QuizSeriesApi {
                                         "message": "권한이 없습니다."
                                     }
                                     """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "중복된 퀴즈",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                    {
+                                        "status": 404,
+                                        "message": "이미 문제집에 추가된 문제입니다."
+                                    }
+                                    """)
                     }))
     })
     ResponseEntity<?> addQuizToSeries(@PathVariable(value = "seriesId") Long seriesId,
