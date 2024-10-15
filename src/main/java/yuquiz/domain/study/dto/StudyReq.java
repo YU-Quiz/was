@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import yuquiz.domain.chatRoom.entity.ChatRoom;
 import yuquiz.domain.study.entity.Study;
 import yuquiz.domain.study.entity.StudyState;
 import yuquiz.domain.user.entity.User;
@@ -31,12 +32,13 @@ public record StudyReq(
 
 ) {
     //todo : ChatRoom 개발 되면 추가하기
-    public Study toEntity(User leader) {
+    public Study toEntity(User leader, ChatRoom chatRoom) {
         return Study.builder()
                 .studyName(name)
                 .description(description)
                 .registerDuration(registerDuration)
                 .maxUser(maxUser)
+                .chatRoom(chatRoom)
                 .leader(leader)
                 .build();
     }

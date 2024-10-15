@@ -56,8 +56,9 @@ public class StudyUser {
         this.state = state;
     }
 
-    public void accept() {
+    public void accept(ChatRoom chatRoom) {
         this.joinedAt = LocalDateTime.now();
         this.state = UserState.REGISTERED;
+        this.chatRoom = chatRoom;
     }
 }
