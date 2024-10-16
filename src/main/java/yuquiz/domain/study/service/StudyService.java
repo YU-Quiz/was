@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuquiz.common.exception.CustomException;
+import yuquiz.domain.chatRoom.entity.ChatRoom;
+import yuquiz.domain.chatRoom.exception.ChatRoomExceptionCode;
+import yuquiz.domain.chatRoom.repository.ChatRoomRepository;
 import yuquiz.domain.study.dto.StudyFilter;
 import yuquiz.domain.study.dto.StudyReq;
 import yuquiz.domain.study.dto.StudyRequestRes;
@@ -31,22 +34,25 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final StudyUserRepository studyUserRepository;
     private final UserRepository userRepository;
-
+    private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
     public void createStudy(StudyReq studyReq, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(UserExceptionCode.INVALID_USERID));
 
-        Study study = studyReq.toEntity(user);
+        ChatRoom chatRoom = ChatRoom.builder().build();
+        Study study = studyReq.toEntity(user, chatRoom);
 
         StudyUser studyUser = StudyUser.builder()
                 .study(study)
                 .user(user)
+                .chatRoom(chatRoom)
                 .role(StudyRole.LEADER)
                 .build();
 
         studyRepository.save(study);
+        chatRoomRepository.save(chatRoom);
         studyUserRepository.save(studyUser);
     }
 
@@ -133,7 +139,10 @@ public class StudyService {
         StudyUser studyUser = studyUserRepository.findStudyUserByStudy_IdAndUser_IdAndState(studyId, pendingUserId, UserState.PENDING)
                 .orElseThrow(() -> new CustomException(StudyExceptionCode.REQUEST_NOT_EXIST));
 
-        studyUser.accept();
+        ChatRoom chatRoom = chatRoomRepository.findByStudy_Id(studyId)
+                .orElseThrow(() -> new CustomException(ChatRoomExceptionCode.INVALID_ID));
+
+        studyUser.accept(chatRoom);
     }
 
     private boolean validateLeader(Long studyId, Long userId) {

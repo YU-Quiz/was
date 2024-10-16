@@ -17,6 +17,8 @@ import yuquiz.common.exception.JwtExpiredException;
 import yuquiz.common.exception.dto.ExceptionsRes;
 import yuquiz.common.exception.exceptionCode.ExceptionCode;
 import yuquiz.common.exception.exceptionCode.JwtExceptionCode;
+import yuquiz.domain.chatRoom.exception.ChatRoomExceptionCode;
+import yuquiz.domain.chatRoom.exception.ChatSendException;
 import yuquiz.domain.user.exception.UserExceptionCode;
 
 import java.nio.charset.StandardCharsets;
@@ -47,6 +49,10 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
 
         if (rootCause instanceof JwtException) {
             return sendErrorMessage(JwtExceptionCode.INVALID_ACCESS_TOKEN);
+        }
+
+        if (rootCause instanceof ChatSendException) {
+            return sendErrorMessage(ChatRoomExceptionCode.CANNOT_SEND_MESSAGE);
         }
 
         return super.handleClientMessageProcessingError(clientMessage, ex);
