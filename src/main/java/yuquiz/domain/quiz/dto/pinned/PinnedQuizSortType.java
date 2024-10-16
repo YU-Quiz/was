@@ -7,8 +7,8 @@ public enum PinnedQuizSortType {
     LIKE_ASC("quiz.likeCount", Sort.Direction.ASC),
     VIEW_DESC("quiz.viewCount", Sort.Direction.DESC),
     VIEW_ASC("quiz.viewCount", Sort.Direction.ASC),
-    LIKED_DATE_DESC("createdAt", Sort.Direction.DESC),
-    LIKED_DATE_ASC("createdAt", Sort.Direction.ASC),
+    PINNED_DATE_DESC("createdAt", Sort.Direction.DESC),
+    PINNED_DATE_ASC("createdAt", Sort.Direction.ASC),
     QUIZ_DATE_DESC("quiz.createdAt", Sort.Direction.DESC),
     QUIZ_DATE_ASC("quiz.createdAt", Sort.Direction.ASC);
 
